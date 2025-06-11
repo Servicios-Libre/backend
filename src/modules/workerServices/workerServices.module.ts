@@ -1,15 +1,14 @@
-import { Module } from "@nestjs/common";
-import { WorkerServicesController } from "./workerServices.controller";
-import { WorkerServicesService } from "./workerServices.service";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { Service } from "./entities/service.entity";
-import { Category } from "./entities/category.entity";
+import { Module } from '@nestjs/common';
+import { WorkerServicesController } from './workerServices.controller';
+import { WorkerServicesService } from './workerServices.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Service } from './entities/service.entity';
+import { Category } from './entities/category.entity';
+import { User } from '../users/entities/users.entity';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([Service, Category]), 
-    ],
-    controllers: [WorkerServicesController],
-    providers: [WorkerServicesService]
+  imports: [TypeOrmModule.forFeature([Service, Category, User])],
+  controllers: [WorkerServicesController],
+  providers: [WorkerServicesService],
 })
-export class WorkerServicesModule {};
+export class WorkerServicesModule {}

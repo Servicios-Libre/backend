@@ -4,6 +4,8 @@ import { Service } from "./entities/service.entity";
 import { Repository } from "typeorm";
 import { ServiceDto } from "./dtos/service.dto";
 import { Category } from "./entities/category.entity";
+import * as data from "./data/categories.json"
+import { User } from "../users/entities/users.entity";
 
 @Injectable()
 export class WorkerServicesService {
@@ -11,15 +13,21 @@ export class WorkerServicesService {
       @InjectRepository(Service)
       private servicesRepository: Repository<Service>,
       @InjectRepository(Category)
-      private categoryRepository: Repository<Category>
+      private categoryRepository: Repository<Category>,
+      @InjectRepository(User)
+      private userRepository: Repository<User>
     ) {};
 
     async getAllServices() {
-        return await this.servicesRepository.find();
+        const services = await this.servicesRepository.find();
+        if (!services) throw new NotFoundException('Services not found');
+        return services;
     };
 
     async getAllCategories() {
-        return await this.categoryRepository.find();
+        const categories = await this.categoryRepository.find();
+        if (!categories) throw new NotFoundException('Categories not found');
+        return categories;
     };
 
     async createService(service: ServiceDto) {
@@ -28,9 +36,20 @@ export class WorkerServicesService {
         const categoryFound = await this.categoryRepository.findOneBy({name: category});
         if (!categoryFound) throw new NotFoundException(`Category ${category} not found`);
 
-        const newService = this.servicesRepository.create({...serviceKeys, category: categoryFound});
+        const workerFound = await this.userRepository.findOneBy({id: worker_id});
+        if (!workerFound) throw new NotFoundException(`Worker ${worker_id} not found`);
+        
+        const newService = this.servicesRepository.create({...serviceKeys, category: categoryFound, worker: workerFound});
         await this.servicesRepository.save(newService);
 
         return newService;
+    }
+
+    async seedCategories() {
+        data?.forEach(async (category) => {
+            const newCategory = this.categoryRepository.create({name: category.name});
+            await this.categoryRepository.save(newCategory);
+        });
+        return {message: "Categories seeded successfully"}
     }
 }

@@ -23,4 +23,9 @@ export class WorkerServicesController {
     createService(@Body() service: ServiceDto) {
         return this.workerServicesService.createService(service)
     }
+
+    @Post('categories/seeder')
+    seedCategories() {
+        return this.workerServicesService.seedCategories();
+    }
 }
