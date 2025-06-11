@@ -3,6 +3,9 @@ import { User } from '../users/entities/users.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserDto } from '../users/DTOs/user.dto';
+import * as bcrypt from 'bcrypt';
+import { CredentialsDto } from './DTOs/credentials.dto';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +23,7 @@ export class AuthService {
       throw new BadRequestException('las contraseñas no coinciden');
     const hashedPassword: string = await bcrypt.hash(user.password, 10);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, isAdmin, ...newUser } = await this.UserRepository.save({
+    const { password, ...newUser } = await this.UserRepository.save({
       ...user,
       password: hashedPassword,
     });
@@ -41,7 +44,6 @@ export class AuthService {
     const payload = {
       id: confirmUser.id,
       email: confirmUser.email,
-      isAdmin: confirmUser.isAdmin,
     };
     const token = this.jwtService.sign(payload);
     return { token };
