@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import typeOrmConfig from './config/typeorm';
-import { WorkerServicesModule } from './workerServices/workerServices.module';
+import { WorkerServicesModule } from './modules/workerServices/workerServices.module';
 
 @Module({
   imports: [

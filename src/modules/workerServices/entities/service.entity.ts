@@ -9,8 +9,9 @@ export class Service {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    //FK worker_id 
-    // relación con el usuario worker
+    @ManyToOne(()=> User, (user: User)=> user.services)
+    @JoinColumn()
+    worker: User;
 
     @ManyToOne(()=>Category, (category: Category)=> category.services)
     @JoinColumn()
