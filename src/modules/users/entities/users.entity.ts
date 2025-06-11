@@ -44,4 +44,7 @@ export class User {
 
   @OneToMany(() => Address, (address) => address.user_id)
   address_id: Address[];
+
+  @OneToMany(() => Service, (service) => service.worker)
+  services: Service[];
 }
