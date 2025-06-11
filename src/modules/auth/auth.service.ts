@@ -22,10 +22,13 @@ export class AuthService {
     if (user.password !== confirmPassword)
       throw new BadRequestException('las contraseñas no coinciden');
     const hashedPassword: string = await bcrypt.hash(user.password, 10);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     const { password, ...newUser } = await this.UserRepository.save({
       ...user,
       password: hashedPassword,
+      created_at: new Date(),
+      experience: 0,
+      rate: 0,
     });
     return newUser;
   }
