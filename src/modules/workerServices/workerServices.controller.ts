@@ -1,31 +1,28 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
-import { WorkerServicesService } from "./workerServices.service";
-import { ServiceDto } from "./dtos/service.dto";
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { WorkerServicesService } from './workerServices.service';
+import { ServiceDto } from './dtos/service.dto';
 
-@Controller("services")
+@Controller('services')
 export class WorkerServicesController {
-    constructor(
-          private readonly workerServicesService: WorkerServicesService
+  constructor(private readonly workerServicesService: WorkerServicesService) {}
 
-    ) {}
+  @Get()
+  getAllServices(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('category') category: string,
+  ) {
+    return this.workerServicesService.getAllServices(page, limit, category);
+  }
 
-    @Get()
-    getAllServices() {
-        return this.workerServicesService.getAllServices();
-    };
+  @Get('categories')
+  getAllCategories() {
+    return this.workerServicesService.getAllCategories();
+  }
 
-    @Get('categories')
-    getAllCategories() {
-        return this.workerServicesService.getAllCategories();
-    };
-
-    @Post('new')
-    createService(@Body() service: ServiceDto) {
-        return this.workerServicesService.createService(service)
-    }
-
-    @Post('categories/seeder')
-    seedCategories() {
-        return this.workerServicesService.seedCategories();
-    }
+  @Post('new')
+  createService(@Body() service: ServiceDto) {
+    console.log(service);
+    return this.workerServicesService.createService(service);
+  }
 }
