@@ -1,7 +1,7 @@
 import { Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import configTypeorm from './config/config.typeorm';
+import configTypeorm from './config/typeorm.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { WorkerServicesModule } from './modules/workerServices/workerServices.module';
