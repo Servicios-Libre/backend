@@ -34,6 +34,7 @@ export class User {
   @Column({ nullable: true })
   description?: string;
 
+
   @Column({ default: false })
   availability: boolean;
 

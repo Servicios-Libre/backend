@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { WorkerServicesService } from './workerServices.service';
 import { ServiceDto } from './dtos/service.dto';
 
@@ -7,8 +7,12 @@ export class WorkerServicesController {
   constructor(private readonly workerServicesService: WorkerServicesService) {}
 
   @Get()
-  getAllServices() {
-    return this.workerServicesService.getAllServices();
+  getAllServices(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('category') category: string,
+  ) {
+    return this.workerServicesService.getAllServices(page, limit, category);
   }
 
   @Get('categories')
@@ -18,6 +22,8 @@ export class WorkerServicesController {
 
   @Post('new')
   createService(@Body() service: ServiceDto) {
+    console.log(service);
+
     return this.workerServicesService.createService(service);
   }
 }

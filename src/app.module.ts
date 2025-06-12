@@ -1,12 +1,15 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigService } from '@nestjs/config';
-import { WorkerServicesModule } from './modules/workerServices/workerServices.module';
-import configTypeorm from './config/config.typeorm';
-import { UsersModule } from './modules/users/users.module';
+import { Module, OnApplicationBootstrap } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import configTypeorm from './config/typeorm.config';
 import { AuthModule } from './modules/auth/auth.module';
-import { JwtModule } from '@nestjs/jwt';
+import { UsersModule } from './modules/users/users.module';
+import { WorkerServicesModule } from './modules/workerServices/workerServices.module';
+import { JwtConfig } from './config/jwt.config';
+import { WorkerServicesService } from './modules/workerServices/workerServices.service';
+import { Service } from './modules/workerServices/entities/service.entity';
+import { Category } from './modules/workerServices/entities/category.entity';
+import { User } from './modules/users/entities/users.entity';
 
 @Module({
   imports: [
@@ -34,8 +37,16 @@ import { JwtModule } from '@nestjs/jwt';
     WorkerServicesModule,
     UsersModule,
     AuthModule,
+    JwtConfig,
+    TypeOrmModule.forFeature([Service, Category, User]),
   ],
   controllers: [],
-  providers: [],
+  providers: [WorkerServicesService],
 })
-export class AppModule {}
+export class AppModule implements OnApplicationBootstrap {
+  constructor(private readonly workerServiceService: WorkerServicesService) {}
+
+  async onApplicationBootstrap() {
+    await this.workerServiceService.seedCategories();
+  }
+}
