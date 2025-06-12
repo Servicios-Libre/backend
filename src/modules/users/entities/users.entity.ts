@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Address } from './address.entity';
+import { Service } from 'src/modules/workerServices/entities/service.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -33,13 +34,17 @@ export class User {
   @Column()
   description?: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   availability?: boolean;
 
   @Column()
   user_pic?: string;
 
-  @Column()
+  @Column({
+    default: false,
+  })
   premium: boolean;
 
   @OneToMany(() => Address, (address) => address.user_id)

@@ -1,25 +1,23 @@
-import { IsNotEmpty, IsString } from "class-validator";
-import { WorkPhoto } from "../entities/workPhoto.entity";
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { WorkPhoto } from '../entities/workPhoto.entity';
 
 export class ServiceDto {
+  @IsNotEmpty()
+  @IsString()
+  @IsUUID()
+  worker_id: string;
 
-    //@IsNotEmpty()
-    //@IsString
-    //@IsUUID
-    worker_id: string;
+  @IsNotEmpty()
+  @IsString()
+  category: string;
 
-    @IsNotEmpty()
-    @IsString()
-    category: string;
+  @IsNotEmpty()
+  @IsString()
+  title: string;
 
-    @IsNotEmpty()
-    @IsString()
-    title: string;
+  @IsNotEmpty()
+  @IsString()
+  description: string;
 
-    @IsNotEmpty()
-    @IsString()
-    description: string;
-
-    work_photo: Partial<WorkPhoto[]>
-    
+  work_photo: Partial<WorkPhoto[]>;
 }

@@ -1,19 +1,21 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Service } from "./service.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Service } from './service.entity';
 
 @Entity({
-    name: "CATEGORIES"
+  name: 'CATEGORIES',
 })
 export class Category {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column({
-        type: "varchar",
-        length: 50
-    })
-    name: string;
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+    unique: true,
+  })
+  name: string;
 
-    @OneToMany(() => Service, (service: Service) => service.category)
-    services: Service[];
-};
+  @OneToMany(() => Service, (service: Service) => service.category)
+  services: Service[];
+}
