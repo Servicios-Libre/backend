@@ -10,6 +10,7 @@ import { WorkerServicesService } from './modules/workerServices/workerServices.s
 import { Service } from './modules/workerServices/entities/service.entity';
 import { Category } from './modules/workerServices/entities/category.entity';
 import { User } from './modules/users/entities/users.entity';
+import { FilesModule } from './modules/files/files.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { User } from './modules/users/entities/users.entity';
     AuthModule,
     UsersModule,
     WorkerServicesModule,
+    FilesModule,
     TypeOrmModule.forFeature([Service, Category, User]),
   ],
   controllers: [],
