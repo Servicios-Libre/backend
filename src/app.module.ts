@@ -1,6 +1,6 @@
 import { Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import configTypeorm from './config/typeorm.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
@@ -21,18 +21,13 @@ import { FilesModule } from './modules/files/files.module';
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const typeOrmConfig = configService.get('configTypeorm');
-        if (!typeOrmConfig) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const config = configService.get('configTypeorm');
+        if (!config) {
           throw new Error('TypeORM configuration is not defined');
         }
-        return typeOrmConfig;
-      },
-    }),
-    JwtModule.register({
-      global: true,
-      secret: process.env.JWT_SECRET,
-      signOptions: {
-        expiresIn: '1h',
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return config;
       },
     }),
     WorkerServicesModule,

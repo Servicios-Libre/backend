@@ -18,7 +18,7 @@ export class FilesController {
 
   @Post('/service/:id')
   @UseInterceptors(FileInterceptor('image'))
-  async uploadServiceImage(
+  async uploadWorkPhoto(
     @Param('id', ParseUUIDPipe) id: string,
     @UploadedFile(
       new ParseFilePipe({
@@ -35,6 +35,28 @@ export class FilesController {
     )
     file: Express.Multer.File,
   ) {
-    return this.filesService.uploadServiceImage(file, id);
+    return this.filesService.uploadWorkPhoto(file, id);
+  }
+
+  @Post('user/:id')
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadUserImage(
+    @Param('id', ParseUUIDPipe) id: string,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({
+            maxSize: 2000000,
+            message: 'El archivo debe ser menor a 2MB',
+          }),
+          new FileTypeValidator({
+            fileType: /(jpeg|jpg|png|webp)$/,
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    return this.filesService.uploadUserPic(file, id);
   }
 }

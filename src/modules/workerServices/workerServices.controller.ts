@@ -51,7 +51,6 @@ export class WorkerServicesController {
     )
     file: Express.Multer.File,
   ) {
-
     return this.workerServicesService.createService(service, file);
   }
 }

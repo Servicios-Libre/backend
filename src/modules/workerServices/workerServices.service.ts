@@ -81,7 +81,6 @@ export class WorkerServicesService {
       throw new NotFoundException(`Category ${category} not found`);
 
     const workerFound = await this.userRepository.findOneBy({ id: worker_id });
-    console.log(workerFound);
     if (!workerFound)
       throw new NotFoundException(`Worker ${worker_id} not found`);
 
@@ -93,7 +92,7 @@ export class WorkerServicesService {
 
     await this.servicesRepository.save(newService);
 
-    await this.filesService.uploadServiceImage(file, newService.id);
+    await this.filesService.uploadWorkPhoto(file, newService.id);
 
     const serviceDB = await this.servicesRepository.findOne({
       where: { id: newService.id },

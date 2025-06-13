@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { WorkPhoto } from '../workerServices/entities/workPhoto.entity';
 import { Repository } from 'typeorm';
 import { Service } from '../workerServices/entities/service.entity';
+import { User } from '../users/entities/users.entity';
 
 @Injectable()
 export class FilesService {
@@ -13,8 +14,11 @@ export class FilesService {
     private readonly workPhotoRepository: Repository<WorkPhoto>,
     @InjectRepository(Service)
     private readonly serviceRepository: Repository<Service>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
-  async uploadServiceImage(file: Express.Multer.File, service_id: string) {
+
+  private async uploadCloudinary(file: Express.Multer.File) {
     const uploadPromise: Promise<UploadApiResponse> = new Promise(
       (resolve, reject) => {
         const upload = v2.uploader.upload_stream(
@@ -34,9 +38,17 @@ export class FilesService {
     );
 
     const cloudinaryResponse = await Promise.resolve(uploadPromise);
+    return cloudinaryResponse.url;
+  }
+
+  async uploadWorkPhoto(file: Express.Multer.File, service_id: string) {
+    const url = await this.uploadCloudinary(file);
+    if (!url) {
+      throw new Error('Image upload failed');
+    }
 
     const newWorkPhoto = this.workPhotoRepository.create({
-      photo_url: cloudinaryResponse.url,
+      photo_url: url,
     });
     await this.workPhotoRepository.save(newWorkPhoto);
     const service = await this.serviceRepository.findOne({
@@ -46,6 +58,20 @@ export class FilesService {
     service?.work_photos.push(newWorkPhoto);
     await this.serviceRepository.save(service!);
 
+    return { message: 'Image uploaded successfully' };
+  }
+
+  async uploadUserPic(file: Express.Multer.File, user_id: string) {
+    const url = await this.uploadCloudinary(file);
+    if (!url) {
+      throw new Error('Image upload failed');
+    }
+    const userFound = await this.userRepository.findOneBy({ id: user_id });
+    if (!userFound) {
+      throw new Error('User not found');
+    }
+    userFound.user_pic = url;
+    await this.userRepository.save(userFound);
     return { message: 'Image uploaded successfully' };
   }
 }
