@@ -20,21 +20,26 @@ import { FilesModule } from './modules/files/files.module';
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
-        const config = configService.get<TypeOrmModuleOptions>('configTypeorm');
-
-        if (!config) {
-          throw new Error('TypeORM config not found in configService');
+      useFactory: (configService: ConfigService) => {
+        const typeOrmConfig = configService.get('configTypeorm');
+        if (!typeOrmConfig) {
+          throw new Error('TypeORM configuration is not defined');
         }
-
-        return config;
+        return typeOrmConfig;
       },
     }),
-    JwtConfig,
-    AuthModule,
-    UsersModule,
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: {
+        expiresIn: '1h',
+      },
+    }),
     WorkerServicesModule,
     FilesModule,
+    UsersModule,
+    AuthModule,
+    JwtConfig,
     TypeOrmModule.forFeature([Service, Category, User]),
   ],
   controllers: [],

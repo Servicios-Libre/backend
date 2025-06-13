@@ -25,26 +25,23 @@ export class User {
   @Column()
   created_at: Date;
 
-  @Column()
+  @Column({ nullable: true })
   rate?: number;
 
-  @Column()
+  @Column({ nullable: true })
   experience?: number;
 
-  @Column()
+  @Column({ nullable: true })
   description?: string;
 
-  @Column({
-    nullable: true,
-  })
-  availability?: boolean;
 
-  @Column()
+  @Column({ default: false })
+  availability: boolean;
+
+  @Column({ nullable: true })
   user_pic?: string;
 
-  @Column({
-    default: false,
-  })
+  @Column({ default: false })
   premium: boolean;
 
   @OneToMany(() => Address, (address) => address.user_id)
