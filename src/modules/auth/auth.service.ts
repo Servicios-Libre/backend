@@ -36,7 +36,7 @@ export class AuthService {
       rate: 0,
     });
 
-    const newAddress = await this.AddressRepository.save({
+    await this.AddressRepository.save({
       street,
       house_number,
       city,
@@ -45,7 +45,7 @@ export class AuthService {
       user_id: newUser,
     });
 
-    await this.UserRepository.update(newUser.id, { address_id: [newAddress] });
+    // await this.UserRepository.update(newUser.id, { address_id: [newAddress] });
 
     return this.UserRepository.findOne({
       where: { id: newUser.id },

@@ -9,6 +9,11 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  await app.listen(process.env.PORT ?? 3000);
+  app.enableCors({
+    origin: process.env.FRONT_APP ?? 'http://localhost:3000',
+    credentials: true,
+  });
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  await app.listen(process.env.PORT ?? 8080);
 }
 bootstrap();
