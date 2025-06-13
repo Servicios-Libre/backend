@@ -6,11 +6,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserDto } from '../users/DTOs/user.dto';
 import * as bcrypt from 'bcrypt';
 import { CredentialsDto } from './DTOs/credentials.dto';
+import { Address } from '../users/entities/address.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private UserRepository: Repository<User>,
+    @InjectRepository(Address) private AddressRepository: Repository<Address>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -23,15 +25,32 @@ export class AuthService {
       throw new BadRequestException('las contraseñas no coinciden');
     const hashedPassword: string = await bcrypt.hash(user.password, 10);
 
+    const { street, house_number, city, state, zip_code, ...userCreate } = user;
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...newUser } = await this.UserRepository.save({
-      ...user,
+      ...userCreate,
       password: hashedPassword,
       created_at: new Date(),
       experience: 0,
       rate: 0,
     });
-    return newUser;
+
+    const newAddress = await this.AddressRepository.save({
+      street,
+      house_number,
+      city,
+      state,
+      zip_code,
+      user_id: newUser,
+    });
+
+    await this.UserRepository.update(newUser.id, { address_id: [newAddress] });
+
+    return this.UserRepository.findOne({
+      where: { id: newUser.id },
+      relations: { address_id: true },
+    });
   }
 
   async signin(credentials: CredentialsDto) {
