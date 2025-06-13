@@ -1,4 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Address } from './address.entity';
 import { Service } from 'src/modules/workerServices/entities/service.entity';
 
@@ -34,7 +40,6 @@ export class User {
   @Column({ nullable: true })
   description?: string;
 
-
   @Column({ default: false })
   availability: boolean;
 
@@ -45,6 +50,7 @@ export class User {
   premium: boolean;
 
   @OneToMany(() => Address, (address) => address.user_id)
+  @JoinColumn()
   address_id: Address[];
 
   @OneToMany(() => Service, (service) => service.worker)
