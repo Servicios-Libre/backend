@@ -23,6 +23,7 @@ export class WorkerServicesController {
   @Post('new')
   createService(@Body() service: ServiceDto) {
     console.log(service);
+
     return this.workerServicesService.createService(service);
   }
 }
