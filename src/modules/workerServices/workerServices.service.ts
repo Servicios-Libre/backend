@@ -6,6 +6,7 @@ import { ServiceDto } from './dtos/service.dto';
 import { Category } from './entities/category.entity';
 import * as data from './data/categories.json';
 import { User } from '../users/entities/users.entity';
+import { FilesService } from '../files/files.service';
 
 @Injectable()
 export class WorkerServicesService {
@@ -16,6 +17,7 @@ export class WorkerServicesService {
     private categoryRepository: Repository<Category>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private readonly filesService: FilesService,
   ) {}
 
   async getAllServices(page: number = 1, limit: number = 5, category?: string) {
@@ -27,7 +29,7 @@ export class WorkerServicesService {
     let services: Service[];
     if (category) {
       services = await this.servicesRepository.find({
-        relations: ['category', 'worker'],
+        relations: ['category', 'worker', 'work_photos'],
         select: {
           worker: {
             id: true,
@@ -46,7 +48,7 @@ export class WorkerServicesService {
       if (!services) throw new NotFoundException('Services not found');
     } else {
       services = await this.servicesRepository.find({
-        relations: ['category', 'worker'],
+        relations: ['category', 'worker', 'work_photos'],
         select: {
           worker: {
             id: true,
@@ -69,7 +71,7 @@ export class WorkerServicesService {
     return categories;
   }
 
-  async createService(service: ServiceDto) {
+  async createService(service: ServiceDto, file: Express.Multer.File) {
     const { category, worker_id, ...serviceKeys } = service;
 
     const categoryFound = await this.categoryRepository.findOneBy({
@@ -79,7 +81,6 @@ export class WorkerServicesService {
       throw new NotFoundException(`Category ${category} not found`);
 
     const workerFound = await this.userRepository.findOneBy({ id: worker_id });
-    console.log(workerFound);
     if (!workerFound)
       throw new NotFoundException(`Worker ${worker_id} not found`);
 
@@ -88,9 +89,18 @@ export class WorkerServicesService {
       category: categoryFound,
       worker: workerFound,
     });
+
     await this.servicesRepository.save(newService);
 
-    return newService;
+    await this.filesService.uploadWorkPhoto(file, newService.id);
+
+    const serviceDB = await this.servicesRepository.findOne({
+      where: { id: newService.id },
+      relations: ['category', 'worker', 'work_photos'],
+    });
+    if (!serviceDB) throw new NotFoundException('Service not found');
+
+    return serviceDB;
   }
 
   async seedCategories() {

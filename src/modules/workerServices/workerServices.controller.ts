@@ -1,6 +1,18 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  FileTypeValidator,
+  Get,
+  MaxFileSizeValidator,
+  ParseFilePipe,
+  Post,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { WorkerServicesService } from './workerServices.service';
 import { ServiceDto } from './dtos/service.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('services')
 export class WorkerServicesController {
@@ -21,9 +33,24 @@ export class WorkerServicesController {
   }
 
   @Post('new')
-  createService(@Body() service: ServiceDto) {
-    console.log(service);
-
-    return this.workerServicesService.createService(service);
+  @UseInterceptors(FileInterceptor('image'))
+  createService(
+    @Body() service: ServiceDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({
+            maxSize: 2000000,
+            message: 'El archivo debe ser menor a 2MB',
+          }),
+          new FileTypeValidator({
+            fileType: /(jpeg|jpg|png|webp)$/,
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    return this.workerServicesService.createService(service, file);
   }
 }

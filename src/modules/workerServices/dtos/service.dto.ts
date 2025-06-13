@@ -1,5 +1,4 @@
 import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
-import { WorkPhoto } from '../entities/workPhoto.entity';
 
 export class ServiceDto {
   @IsNotEmpty()
@@ -18,6 +17,4 @@ export class ServiceDto {
   @IsNotEmpty()
   @IsString()
   description: string;
-
-  work_photo: Partial<WorkPhoto[]>;
 }
