@@ -38,6 +38,8 @@ import { JwtModule } from '@nestjs/jwt';
     WorkerServicesModule,
     UsersModule,
     AuthModule,
+    JwtConfig,
+    TypeOrmModule.forFeature([Service, Category, User]),
   ],
   controllers: [],
   providers: [WorkerServicesService],
