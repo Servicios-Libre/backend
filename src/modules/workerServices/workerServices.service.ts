@@ -71,7 +71,7 @@ export class WorkerServicesService {
     return categories;
   }
 
-  async createService(service: ServiceDto, file: Express.Multer.File) {
+  async createService(service: ServiceDto) {
     const { category, worker_id, ...serviceKeys } = service;
 
     const categoryFound = await this.categoryRepository.findOneBy({
@@ -92,11 +92,18 @@ export class WorkerServicesService {
 
     await this.servicesRepository.save(newService);
 
-    await this.filesService.uploadWorkPhoto(file, newService.id);
-
     const serviceDB = await this.servicesRepository.findOne({
       where: { id: newService.id },
       relations: ['category', 'worker', 'work_photos'],
+      select: {
+        worker: {
+          id: true,
+          name: true,
+          email: true,
+          user_pic: true,
+          premium: true,
+        },
+      },
     });
     if (!serviceDB) throw new NotFoundException('Service not found');
 
