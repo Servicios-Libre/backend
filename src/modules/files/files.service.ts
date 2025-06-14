@@ -6,6 +6,7 @@ import { WorkPhoto } from '../workerServices/entities/workPhoto.entity';
 import { Repository } from 'typeorm';
 import { Service } from '../workerServices/entities/service.entity';
 import { User } from '../users/entities/users.entity';
+import { ExtractPayload } from 'src/helpers/extractPayload.token';
 
 @Injectable()
 export class FilesService {
@@ -42,6 +43,14 @@ export class FilesService {
   }
 
   async uploadWorkPhoto(file: Express.Multer.File, service_id: string) {
+    const service = await this.serviceRepository.findOne({
+      where: { id: service_id },
+      relations: ['work_photos'],
+    });
+    if (!service) {
+      throw new Error('Service not found');
+    }
+
     const url = await this.uploadCloudinary(file);
     if (!url) {
       throw new Error('Image upload failed');
@@ -51,24 +60,21 @@ export class FilesService {
       photo_url: url,
     });
     await this.workPhotoRepository.save(newWorkPhoto);
-    const service = await this.serviceRepository.findOne({
-      where: { id: service_id },
-      relations: ['work_photos'],
-    });
     service?.work_photos.push(newWorkPhoto);
-    await this.serviceRepository.save(service!);
+    await this.serviceRepository.save(service);
 
     return { message: 'Image uploaded successfully' };
   }
 
-  async uploadUserPic(file: Express.Multer.File, user_id: string) {
+  async uploadUserPic(file: Express.Multer.File, token: string) {
+    const payload = ExtractPayload(token);
+    const userFound = await this.userRepository.findOneBy({ id: payload.id });
+    if (!userFound) {
+      throw new Error('User not found');
+    }
     const url = await this.uploadCloudinary(file);
     if (!url) {
       throw new Error('Image upload failed');
-    }
-    const userFound = await this.userRepository.findOneBy({ id: user_id });
-    if (!userFound) {
-      throw new Error('User not found');
     }
     userFound.user_pic = url;
     await this.userRepository.save(userFound);
