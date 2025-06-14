@@ -7,6 +7,7 @@ import { UserDto } from '../users/DTOs/user.dto';
 import * as bcrypt from 'bcrypt';
 import { CredentialsDto } from './DTOs/credentials.dto';
 import { Address } from '../users/entities/address.entity';
+import { Role } from '../users/entities/roles.enum';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +26,7 @@ export class AuthService {
       throw new BadRequestException('las contraseñas no coinciden');
     const hashedPassword: string = await bcrypt.hash(user.password, 10);
 
-    const { street, house_number, city, state, zip_code, ...userCreate } = user;
+    const { street, city, state, ...userCreate } = user;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...newUser } = await this.UserRepository.save({
@@ -34,14 +35,13 @@ export class AuthService {
       created_at: new Date(),
       experience: 0,
       rate: 0,
+      role: Role.user,
     });
 
     await this.AddressRepository.save({
       street,
-      house_number,
       city,
       state,
-      zip_code,
       user_id: newUser,
     });
 
@@ -67,6 +67,7 @@ export class AuthService {
     const payload = {
       id: confirmUser.id,
       email: confirmUser.email,
+      role: confirmUser.role,
     };
     const token = this.jwtService.sign(payload);
     return { token };

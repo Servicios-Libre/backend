@@ -1,4 +1,4 @@
-import { IsEmail, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsEmpty, IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { Role } from '../entities/roles.enum';
 
 export class UserDto {
@@ -22,23 +22,16 @@ export class UserDto {
   @IsInt()
   phone: number;
 
-  @IsNotEmpty()
-  @IsString()
+  @IsEmpty()
   role: Role;
-
-  @IsString()
-  description?: string;
-
-  @IsString()
-  user_pic?: string;
 
   @IsNotEmpty()
   @IsString()
   street: string;
 
-  @IsNotEmpty()
-  @IsInt()
-  house_number: number;
+  // @IsNotEmpty()
+  // @IsInt()
+  // house_number: number;
 
   @IsNotEmpty()
   @IsString()
@@ -47,8 +40,4 @@ export class UserDto {
   @IsNotEmpty()
   @IsString()
   state: string;
-
-  @IsNotEmpty()
-  @IsString()
-  zip_code: string;
 }
