@@ -1,6 +1,7 @@
 import {
   Controller,
   FileTypeValidator,
+  Headers,
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
@@ -38,10 +39,10 @@ export class FilesController {
     return this.filesService.uploadWorkPhoto(file, id);
   }
 
-  @Post('user/:id')
+  @Post('user')
   @UseInterceptors(FileInterceptor('image'))
   async uploadUserImage(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Headers('authorization') token: string,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -57,6 +58,6 @@ export class FilesController {
     )
     file: Express.Multer.File,
   ) {
-    return this.filesService.uploadUserPic(file, id);
+    return this.filesService.uploadUserPic(file, token);
   }
 }

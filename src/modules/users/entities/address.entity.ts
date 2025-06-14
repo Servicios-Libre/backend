@@ -9,8 +9,8 @@ export class Address {
   @Column()
   street: string;
 
-  @Column()
-  house_number: number;
+  @Column({ nullable: true })
+  house_number?: number;
 
   @Column()
   city: string;
@@ -18,8 +18,8 @@ export class Address {
   @Column()
   state: string;
 
-  @Column()
-  zip_code: string;
+  @Column({ nullable: true })
+  zip_code?: string;
 
   @ManyToOne(() => User, (user) => user.address_id)
   user_id: User;
