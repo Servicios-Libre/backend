@@ -3,11 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/users.entity';
 import { Repository } from 'typeorm';
 import { ExtractPayload } from 'src/helpers/extractPayload.token';
+import { Address } from './entities/address.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private UserRepository: Repository<User>,
+    @InjectRepository(Address) private AddressRepository: Repository<Address>,
   ) {}
   async GetUserById(token: string) {
     const payload = ExtractPayload(token);
@@ -24,6 +26,20 @@ export class UsersService {
 
   async UpdateUser(token: string, body: Partial<User>) {
     const payload = ExtractPayload(token);
-    await this.UserRepository.update(payload.id, {});
+    const userID = payload.id;
+    if (body.phone)
+      await this.UserRepository.update({ id: userID }, { phone: body.phone });
+
+    const addressActualization = {};
+    for (const key in body) {
+      if (body[key]) {
+        if (key !== 'phone') addressActualization[key] = body[key];
+      }
+    }
+
+    await this.AddressRepository.update(
+      { user_id: userID },
+      addressActualization,
+    );
   }
 }
