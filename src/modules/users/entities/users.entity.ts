@@ -3,6 +3,7 @@ import {
   Entity,
   JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Address } from './address.entity';
@@ -49,9 +50,9 @@ export class User {
   @Column({ default: false })
   premium: boolean;
 
-  @OneToMany(() => Address, (address) => address.user_id)
+  @OneToOne(() => Address, (address) => address.user_id)
   @JoinColumn()
-  address_id: Address[];
+  address_id: Address;
 
   @OneToMany(() => Service, (service) => service.worker)
   services: Service[];

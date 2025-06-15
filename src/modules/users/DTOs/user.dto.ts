@@ -29,9 +29,9 @@ export class UserDto {
   @IsString()
   street: string;
 
-  // @IsNotEmpty()
-  // @IsInt()
-  // house_number: number;
+  @IsNotEmpty()
+  @IsInt()
+  house_number: number;
 
   @IsNotEmpty()
   @IsString()
@@ -40,4 +40,8 @@ export class UserDto {
   @IsNotEmpty()
   @IsString()
   state: string;
+
+  @IsNotEmpty()
+  @IsString()
+  zip_code: string;
 }
