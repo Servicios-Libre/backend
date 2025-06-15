@@ -41,5 +41,7 @@ export class UserDto {
   @IsString()
   state: string;
 
+  @IsNotEmpty()
+  @IsString()
   zip_code: string;
 }
