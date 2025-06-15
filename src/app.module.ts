@@ -11,6 +11,7 @@ import { Service } from './modules/workerServices/entities/service.entity';
 import { Category } from './modules/workerServices/entities/category.entity';
 import { User } from './modules/users/entities/users.entity';
 import { FilesModule } from './modules/files/files.module';
+import { CategoriesModule } from './modules/categories/categories.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { FilesModule } from './modules/files/files.module';
     AuthModule,
     JwtConfig,
     TypeOrmModule.forFeature([Service, Category, User]),
+    CategoriesModule,
   ],
   controllers: [],
   providers: [WorkerServicesService],
