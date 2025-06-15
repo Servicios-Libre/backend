@@ -18,6 +18,7 @@ export class UsersService {
       relations: { address_id: true },
     });
     if (user) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...userClean } = user;
       return userClean;
     }
@@ -33,12 +34,13 @@ export class UsersService {
     const addressActualization = {};
     for (const key in body) {
       if (body[key]) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         if (key !== 'phone') addressActualization[key] = body[key];
       }
     }
 
     await this.AddressRepository.update(
-      { user_id: userID },
+      { user_id: { id: userID } },
       addressActualization,
     );
   }
