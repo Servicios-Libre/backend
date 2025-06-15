@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { WorkerServicesService } from './workerServices.service';
 import { ServiceDto } from './dtos/service.dto';
+import { Request } from 'express';
 
 @Controller('services')
 export class WorkerServicesController {
@@ -8,11 +9,23 @@ export class WorkerServicesController {
 
   @Get()
   getAllServices(
+    @Req() request: Request,
     @Query('page') page: number,
     @Query('limit') limit: number,
-    @Query('category') category: string,
+    @Query('busqueda') search?: string,
+    @Query('category') category?: string[],
   ) {
-    return this.workerServicesService.getAllServices(page, limit, category);
+    const categories = Array.isArray(category)
+      ? category
+      : category
+        ? [category]
+        : [];
+    return this.workerServicesService.getAllServices(
+      page,
+      limit,
+      search,
+      categories,
+    );
   }
 
   @Get('categories')
