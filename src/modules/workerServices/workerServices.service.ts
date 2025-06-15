@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Service } from './entities/service.entity';
-import { Like, In, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 import { ServiceDto } from './dtos/service.dto';
 import { Category } from './entities/category.entity';
 import * as data from './data/categories.json';
@@ -22,7 +22,7 @@ export class WorkerServicesService {
 
   async getAllServices(
     page: number = 1,
-    limit: number = 5,
+    limit: number = 8,
     search?: string,
     category?: string[],
   ) {
@@ -37,10 +37,11 @@ export class WorkerServicesService {
     // Si hay búsqueda, filtra por título que contenga el string (case-insensitive)
     if (search && search.trim() !== '') {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      where.title = Like(`%${search}%`);
+      where.title = ILike(`%${search}%`);
     }
 
-    const services = await this.servicesRepository.find({
+    // Obtener todos los servicios que cumplen el filtro (sin paginar)
+    const [services, total] = await this.servicesRepository.findAndCount({
       relations: ['category', 'worker', 'work_photos'],
       select: {
         worker: {
@@ -53,13 +54,14 @@ export class WorkerServicesService {
       },
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       where,
+      skip: (page - 1) * limit,
+      take: limit,
     });
 
-    if (!services || services.length === 0)
-      throw new NotFoundException('Services not found');
-
-    const pagination = [...services].slice((page - 1) * limit, page * limit);
-    return pagination;
+    return {
+      servicios: services,
+      total,
+    };
   }
 
   async getAllCategories() {

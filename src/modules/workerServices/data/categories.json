@@ -1,10 +1,11 @@
 [
-  { "name": "Carpintero" },
-  { "name": "Albañileria" },
-  { "name": "Plomero" },
-  { "name": "Gasista" },
-  { "name": "Electricista" },
-  { "name": "Jardineria" },
-  { "name": "Limpieza" },
-  { "name": "Pintor" }
+  { "name": "Agricultura" },
+  { "name": "Ventas" },
+  { "name": "Desarrollo web" },
+  { "name": "Fitness" },
+  { "name": "Marketing digital" },
+  { "name": "Salud" },
+  { "name": "Desarrollo personal" },
+  { "name": "Estética" },
+  { "name": "Reparación" }
 ]
