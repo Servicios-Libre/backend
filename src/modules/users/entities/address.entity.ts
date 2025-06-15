@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './users.entity';
 
 @Entity()
@@ -10,7 +10,7 @@ export class Address {
   street: string;
 
   @Column({ nullable: true })
-  house_number?: number;
+  house_number: number;
 
   @Column()
   city: string;
@@ -19,8 +19,8 @@ export class Address {
   state: string;
 
   @Column({ nullable: true })
-  zip_code?: string;
+  zip_code: string;
 
-  @ManyToOne(() => User, (user) => user.address_id)
+  @OneToOne(() => User, (user) => user.address_id)
   user_id: User;
 }

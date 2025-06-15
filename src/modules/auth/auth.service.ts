@@ -26,7 +26,7 @@ export class AuthService {
       throw new BadRequestException('las contraseñas no coinciden');
     const hashedPassword: string = await bcrypt.hash(user.password, 10);
 
-    const { street, city, state, ...userCreate } = user;
+    const { street, city, state, zip_code, house_number, ...userCreate } = user;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...newUser } = await this.UserRepository.save({
@@ -42,6 +42,8 @@ export class AuthService {
       street,
       city,
       state,
+      zip_code,
+      house_number,
       user_id: newUser,
     });
 

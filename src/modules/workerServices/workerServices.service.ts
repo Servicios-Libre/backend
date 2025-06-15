@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Service } from './entities/service.entity';
-import { Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 import { ServiceDto } from './dtos/service.dto';
 import { Category } from './entities/category.entity';
 import * as data from './data/categories.json';
@@ -20,49 +20,48 @@ export class WorkerServicesService {
     private readonly filesService: FilesService,
   ) {}
 
-  async getAllServices(page: number = 1, limit: number = 5, category?: string) {
-    const categoryFound = await this.categoryRepository.findOneBy({
-      name: category,
-    });
-    if (!categoryFound) throw new NotFoundException('Category not found');
+  async getAllServices(
+    page: number = 1,
+    limit: number = 8,
+    search?: string,
+    category?: string[],
+  ) {
+    const where: any = {};
 
-    let services: Service[];
-    if (category) {
-      services = await this.servicesRepository.find({
-        relations: ['category', 'worker', 'work_photos'],
-        select: {
-          worker: {
-            id: true,
-            name: true,
-            email: true,
-            user_pic: true,
-            premium: true,
-          },
-        },
-        where: {
-          category: {
-            name: category,
-          },
-        },
-      });
-      if (!services) throw new NotFoundException('Services not found');
-    } else {
-      services = await this.servicesRepository.find({
-        relations: ['category', 'worker', 'work_photos'],
-        select: {
-          worker: {
-            id: true,
-            name: true,
-            email: true,
-            user_pic: true,
-            premium: true,
-          },
-        },
-      });
-      if (!services) throw new NotFoundException('Services not found');
+    // Si hay categorías, filtra por ellas
+    if (category && category.length > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      where.category = { id: In(category) };
     }
-    const pagination = [...services].slice((page - 1) * limit, page * limit);
-    return pagination;
+
+    // Si hay búsqueda, filtra por título que contenga el string (case-insensitive)
+    if (search && search.trim() !== '') {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      where.title = ILike(`%${search}%`);
+    }
+
+    // Obtener todos los servicios que cumplen el filtro (sin paginar)
+    const [services, total] = await this.servicesRepository.findAndCount({
+      relations: ['category', 'worker', 'work_photos'],
+      select: {
+        worker: {
+          id: true,
+          name: true,
+          email: true,
+          user_pic: true,
+          premium: true,
+        },
+      },
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return {
+      servicios: services,
+      total,
+    };
   }
 
   async getAllCategories() {
