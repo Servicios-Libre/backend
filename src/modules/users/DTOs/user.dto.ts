@@ -1,4 +1,11 @@
-import { IsEmail, IsEmpty, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsEmpty,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 import { Role } from '../entities/roles.enum';
 
 export class UserDto {
@@ -19,8 +26,9 @@ export class UserDto {
   name: string;
 
   @IsNotEmpty()
-  @IsInt()
-  phone: number;
+  @IsString()
+  @MaxLength(20)
+  phone: string;
 
   @IsEmpty()
   role: Role;

@@ -23,8 +23,8 @@ export class User {
   @Column()
   name: string;
 
-  @Column()
-  phone: number;
+  @Column({ type: 'varchar', length: 20 })
+  phone: string;
 
   @Column()
   role: string;
