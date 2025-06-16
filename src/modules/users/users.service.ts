@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/users.entity';
 import { Repository } from 'typeorm';
@@ -28,6 +28,11 @@ export class UsersService {
   async UpdateUser(token: string, body: Partial<User>) {
     const payload = ExtractPayload(token);
     const userID = payload.id;
+    const userDB = await this.UserRepository.findOne({
+      where: { id: userID },
+      relations: ['address_id'],
+    });
+    if (!userDB) throw new NotFoundException('User not found');
     if (body.phone)
       await this.UserRepository.update({ id: userID }, { phone: body.phone });
 
@@ -40,7 +45,7 @@ export class UsersService {
     }
 
     await this.AddressRepository.update(
-      { user_id: { id: userID } },
+      { id: userDB?.address_id.id },
       addressActualization,
     );
   }
