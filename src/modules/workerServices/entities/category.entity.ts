@@ -16,6 +16,14 @@ export class Category {
   })
   name: string;
 
+  @Column({
+    type: 'varchar',
+    length: 30,
+    nullable: false,
+    default: 'face-smile',
+  })
+  icon: string;
+
   @OneToMany(() => Service, (service: Service) => service.category)
   services: Service[];
 }
