@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Service } from './entities/service.entity';
 import { ILike, In, Repository } from 'typeorm';
@@ -28,19 +32,16 @@ export class WorkerServicesService {
   ) {
     const where: any = {};
 
-    // Si hay categorías, filtra por ellas
     if (category && category.length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       where.category = { id: In(category) };
     }
 
-    // Si hay búsqueda, filtra por título que contenga el string (case-insensitive)
     if (search && search.trim() !== '') {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       where.title = ILike(`%${search}%`);
     }
 
-    // Obtener todos los servicios que cumplen el filtro (sin paginar)
     const [services, total] = await this.servicesRepository.findAndCount({
       relations: ['category', 'worker', 'work_photos'],
       select: {
@@ -82,6 +83,8 @@ export class WorkerServicesService {
     const workerFound = await this.userRepository.findOneBy({ id: worker_id });
     if (!workerFound)
       throw new NotFoundException(`Worker ${worker_id} not found`);
+    if (workerFound.role !== 'worker')
+      throw new BadRequestException('Only workers can create services');
 
     const newService = this.servicesRepository.create({
       ...serviceKeys,
