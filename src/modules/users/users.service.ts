@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/users.entity';
 import { Repository } from 'typeorm';
@@ -48,5 +52,15 @@ export class UsersService {
       { id: userDB?.address_id.id },
       addressActualization,
     );
+  }
+
+  async userToWorker(id: string) {
+    const user: User | null = await this.UserRepository.findOneBy({ id });
+    if (!user) throw new NotFoundException('User not found');
+    if (user.role === 'worker')
+      throw new BadRequestException('User is already a worker');
+    await this.UserRepository.update({ id }, { role: 'worker' });
+
+    return { message: 'User updated to worker' };
   }
 }
