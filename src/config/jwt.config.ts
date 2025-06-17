@@ -2,6 +2,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { config as dotenvConfig } from 'dotenv';
 
 dotenvConfig({ path: '.env.development.local' });
+dotenvConfig({ path: '.env' });
 
 export const JwtConfig = JwtModule.register({
   global: true,

@@ -3,6 +3,7 @@ import { config } from 'dotenv';
 import { registerAs } from '@nestjs/config';
 
 config({ path: '.env.development.local' });
+config({ path: '.env' });
 
 const dataConfig = {
   type: 'postgres',
