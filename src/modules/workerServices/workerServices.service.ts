@@ -10,7 +10,7 @@ import { ServiceDto } from './dtos/service.dto';
 import { Category } from './entities/category.entity';
 import * as data from './data/categories.json';
 import { User } from '../users/entities/users.entity';
-import { FilesService } from '../files/files.service';
+import { TicketsService } from '../tickets/tickets.service';
 
 @Injectable()
 export class WorkerServicesService {
@@ -21,7 +21,7 @@ export class WorkerServicesService {
     private categoryRepository: Repository<Category>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private readonly filesService: FilesService,
+    private readonly ticketsService: TicketsService,
   ) {}
 
   async getAllServices(
@@ -108,6 +108,8 @@ export class WorkerServicesService {
       },
     });
     if (!serviceDB) throw new NotFoundException('Service not found');
+
+    await this.ticketsService.createServiceTicket(serviceDB, workerFound);
 
     return serviceDB;
   }

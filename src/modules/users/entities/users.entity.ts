@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Address } from './address.entity';
 import { Service } from 'src/modules/workerServices/entities/service.entity';
+import { Ticket } from 'src/modules/tickets/entities/tickets.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -56,4 +57,7 @@ export class User {
 
   @OneToMany(() => Service, (service) => service.worker)
   services: Service[];
+
+  @OneToMany(() => Ticket, (ticket) => ticket.user)
+  tickets: Ticket[];
 }
