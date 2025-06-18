@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Address } from './address.entity';
 import { Service } from 'src/modules/workerServices/entities/service.entity';
-import { Ticket } from 'src/modules/tickets/entities/tickets.entity';
+import { Ticket } from 'src/modules/tickets/entities/ticket.entity';
 
 @Entity({ name: 'users' })
 export class User {

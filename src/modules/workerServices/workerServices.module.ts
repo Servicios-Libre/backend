@@ -8,7 +8,7 @@ import { User } from '../users/entities/users.entity';
 import { FilesService } from '../files/files.service';
 import { WorkPhoto } from './entities/workPhoto.entity';
 import { TicketsService } from '../tickets/tickets.service';
-import { Ticket } from '../tickets/entities/tickets.entity';
+import { Ticket } from '../tickets/entities/ticket.entity';
 
 @Module({
   imports: [

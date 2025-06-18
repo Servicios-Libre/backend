@@ -43,7 +43,7 @@ export class WorkerServicesService {
     }
 
     const [services, total] = await this.servicesRepository.findAndCount({
-      relations: ['category', 'worker', 'work_photos'],
+      relations: ['category', 'worker', 'work_photos', 'ticket'],
       select: {
         worker: {
           id: true,
@@ -73,6 +73,8 @@ export class WorkerServicesService {
 
   async createService(service: ServiceDto) {
     const { category, worker_id, ...serviceKeys } = service;
+
+    await this.ticketsService.checkServiceTicketLimit(worker_id);
 
     const categoryFound = await this.categoryRepository.findOneBy({
       name: category,
@@ -109,7 +111,15 @@ export class WorkerServicesService {
     });
     if (!serviceDB) throw new NotFoundException('Service not found');
 
-    await this.ticketsService.createServiceTicket(serviceDB, workerFound);
+    const ticket = await this.ticketsService.createServiceTicket(
+      serviceDB,
+      workerFound,
+    );
+
+    await this.servicesRepository.update(
+      { id: serviceDB.id },
+      { ticket: ticket },
+    );
 
     return serviceDB;
   }

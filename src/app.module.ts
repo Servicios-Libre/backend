@@ -14,7 +14,7 @@ import { FilesModule } from './modules/files/files.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
 import { TicketsService } from './modules/tickets/tickets.service';
-import { Ticket } from './modules/tickets/entities/tickets.entity';
+import { Ticket } from './modules/tickets/entities/ticket.entity';
 
 @Module({
   imports: [

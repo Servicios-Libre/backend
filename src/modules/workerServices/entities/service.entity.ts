@@ -10,7 +10,7 @@ import {
 import { Category } from './category.entity';
 import { WorkPhoto } from './workPhoto.entity';
 import { User } from 'src/modules/users/entities/users.entity';
-import { Ticket } from 'src/modules/tickets/entities/tickets.entity';
+import { Ticket } from 'src/modules/tickets/entities/ticket.entity';
 
 @Entity({
   name: 'SERVICES',
@@ -44,5 +44,5 @@ export class Service {
 
   @OneToOne(() => Ticket, (ticket: Ticket) => ticket.service)
   @JoinColumn()
-  ticket: Pick<Ticket, 'status'>;
+  ticket: Ticket;
 }
