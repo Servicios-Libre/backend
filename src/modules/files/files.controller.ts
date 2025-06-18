@@ -1,17 +1,21 @@
 import {
   Controller,
   FileTypeValidator,
-  Headers,
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
   ParseUUIDPipe,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
+  Req,
+  UnauthorizedException,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { FilesService } from './files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Request } from 'express';
 
 @Controller('files')
 export class FilesController {
@@ -40,9 +44,10 @@ export class FilesController {
   }
 
   @Post('user')
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('image'))
   async uploadUserImage(
-    @Headers('authorization') token: string,
+    @Req() req: Request,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -58,6 +63,12 @@ export class FilesController {
     )
     file: Express.Multer.File,
   ) {
-    return this.filesService.uploadUserPic(file, token);
+    if (!req.user?.id)
+      throw new UnauthorizedException(
+        'No se encontró el ID del usuario en la solicitud',
+      );
+    const userId = req.user.id;
+
+    return this.filesService.uploadUserPic(file, userId);
   }
 }

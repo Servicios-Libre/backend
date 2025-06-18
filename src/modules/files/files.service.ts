@@ -6,7 +6,6 @@ import { WorkPhoto } from '../workerServices/entities/workPhoto.entity';
 import { Repository } from 'typeorm';
 import { Service } from '../workerServices/entities/service.entity';
 import { User } from '../users/entities/users.entity';
-import { ExtractPayload } from 'src/helpers/extractPayload.token';
 
 @Injectable()
 export class FilesService {
@@ -66,9 +65,8 @@ export class FilesService {
     return { message: 'Image uploaded successfully' };
   }
 
-  async uploadUserPic(file: Express.Multer.File, token: string) {
-    const payload = ExtractPayload(token);
-    const userFound = await this.userRepository.findOneBy({ id: payload.id });
+  async uploadUserPic(file: Express.Multer.File, userId: string) {
+    const userFound = await this.userRepository.findOneBy({ id: userId });
     if (!userFound) {
       throw new Error('User not found');
     }
