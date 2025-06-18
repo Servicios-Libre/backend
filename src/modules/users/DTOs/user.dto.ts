@@ -13,11 +13,17 @@ import {
 import { Role } from '../entities/roles.enum';
 
 export class UserDto {
+  /**
+  @example example@gmail.com
+  */
   @IsNotEmpty()
   @IsEmail()
   @IsString()
   email: string;
 
+  /**
+  @example Password123
+  */
   @IsNotEmpty()
   @IsString()
   @Length(8, 20)
@@ -29,10 +35,16 @@ export class UserDto {
   })
   password: string;
 
+  /**
+  @example Password123
+  */
   @IsNotEmpty()
   @IsString()
   confirmPassword: string;
 
+  /**
+  @example Nombre
+  */
   @IsNotEmpty()
   @IsString()
   @MaxLength(20)
@@ -41,6 +53,9 @@ export class UserDto {
   })
   name: string;
 
+  /**
+  @example 03436569569
+  */
   @IsNotEmpty()
   @IsString()
   @MaxLength(20)
@@ -49,9 +64,13 @@ export class UserDto {
   @IsEmpty()
   role: Role;
 
+
   @IsEmpty()
   premium: boolean;
 
+  /**
+  @example Calle-Falsa
+  */
   @IsNotEmpty()
   @IsString()
   @MaxLength(20)
@@ -61,12 +80,18 @@ export class UserDto {
   })
   street: string;
 
+  /**
+  @example 123
+  */
   @IsNotEmpty()
   @IsInt()
   @Min(1)
   @Max(10000)
   house_number: number;
 
+  /**
+  @example Gran-Ciudad
+  */
   @IsNotEmpty()
   @IsString()
   @MaxLength(20)
@@ -75,6 +100,9 @@ export class UserDto {
   })
   city: string;
 
+  /**
+  @example Gran-Pais
+  */
   @IsNotEmpty()
   @IsString()
   @MaxLength(20)
@@ -84,6 +112,9 @@ export class UserDto {
   })
   state: string;
 
+  /**
+  @example E3100
+  */
   @IsNotEmpty()
   @IsString()
   @MaxLength(7)
