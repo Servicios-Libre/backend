@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Ticket, TicketStatus, TicketType } from './entities/ticket.entity';
 import { Repository } from 'typeorm';
@@ -61,5 +65,30 @@ export class TicketsService {
     await this.ticketRepository.save(newTicket);
 
     return newTicket;
+  }
+
+  async rejectTicket(id: string) {
+    const ticket = await this.ticketRepository.findOneBy({ id });
+    if (!ticket) throw new NotFoundException('Ticket not found');
+    if (ticket.status !== TicketStatus.PENDING)
+      throw new BadRequestException('Ticket is not pending');
+    await this.ticketRepository.update(
+      { id },
+      { status: TicketStatus.REJECTED },
+    );
+    return { message: 'Ticket rejected' };
+  }
+
+  async acceptTicket(id: string) {
+    const ticket = await this.ticketRepository.findOneBy({ id });
+    if (!ticket) throw new NotFoundException('Ticket not found');
+    if (ticket.status !== TicketStatus.PENDING)
+      throw new BadRequestException('Ticket is not pending');
+
+    await this.ticketRepository.update(
+      { id },
+      { status: TicketStatus.ACCEPTED },
+    );
+    return { message: 'Ticket accepted' };
   }
 }
