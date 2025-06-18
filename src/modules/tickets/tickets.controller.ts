@@ -3,6 +3,7 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Post,
   Put,
   Query,
   UseGuards,
@@ -25,6 +26,13 @@ export class TicketsController {
     @Query('status') status?: TicketStatus,
   ) {
     return this.ticketsService.getTickets(type, status);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('user')
+  @Post('new/:id')
+  async createWorkerTicket(@Param('id', ParseUUIDPipe) id: string) {
+    return this.ticketsService.createWorkerTicket(id);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
