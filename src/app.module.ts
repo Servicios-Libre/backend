@@ -12,6 +12,9 @@ import { Category } from './modules/workerServices/entities/category.entity';
 import { User } from './modules/users/entities/users.entity';
 import { FilesModule } from './modules/files/files.module';
 import { CategoriesModule } from './modules/categories/categories.module';
+import { TicketsModule } from './modules/tickets/tickets.module';
+import { TicketsService } from './modules/tickets/tickets.service';
+import { Ticket } from './modules/tickets/entities/ticket.entity';
 
 @Module({
   imports: [
@@ -36,11 +39,12 @@ import { CategoriesModule } from './modules/categories/categories.module';
     UsersModule,
     AuthModule,
     JwtConfig,
-    TypeOrmModule.forFeature([Service, Category, User]),
+    TypeOrmModule.forFeature([Service, Category, User, Ticket]),
     CategoriesModule,
+    TicketsModule,
   ],
   controllers: [],
-  providers: [WorkerServicesService],
+  providers: [WorkerServicesService, TicketsService],
 })
 export class AppModule implements OnApplicationBootstrap {
   constructor(private readonly workerServiceService: WorkerServicesService) {}

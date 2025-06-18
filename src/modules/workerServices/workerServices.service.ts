@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Service } from './entities/service.entity';
 import { ILike, In, Repository } from 'typeorm';
@@ -6,7 +10,7 @@ import { ServiceDto } from './dtos/service.dto';
 import { Category } from './entities/category.entity';
 import * as data from './data/categories.json';
 import { User } from '../users/entities/users.entity';
-import { FilesService } from '../files/files.service';
+import { TicketsService } from '../tickets/tickets.service';
 
 @Injectable()
 export class WorkerServicesService {
@@ -17,7 +21,7 @@ export class WorkerServicesService {
     private categoryRepository: Repository<Category>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private readonly filesService: FilesService,
+    private readonly ticketsService: TicketsService,
   ) {}
 
   async getAllServices(
@@ -28,21 +32,18 @@ export class WorkerServicesService {
   ) {
     const where: any = {};
 
-    // Si hay categorías, filtra por ellas
     if (category && category.length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       where.category = { id: In(category) };
     }
 
-    // Si hay búsqueda, filtra por título que contenga el string (case-insensitive)
     if (search && search.trim() !== '') {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       where.title = ILike(`%${search}%`);
     }
 
-    // Obtener todos los servicios que cumplen el filtro (sin paginar)
     const [services, total] = await this.servicesRepository.findAndCount({
-      relations: ['category', 'worker', 'work_photos'],
+      relations: ['category', 'worker', 'work_photos', 'ticket'],
       select: {
         worker: {
           id: true,
@@ -73,6 +74,8 @@ export class WorkerServicesService {
   async createService(service: ServiceDto) {
     const { category, worker_id, ...serviceKeys } = service;
 
+    await this.ticketsService.checkServiceTicketLimit(worker_id);
+
     const categoryFound = await this.categoryRepository.findOneBy({
       name: category,
     });
@@ -82,6 +85,8 @@ export class WorkerServicesService {
     const workerFound = await this.userRepository.findOneBy({ id: worker_id });
     if (!workerFound)
       throw new NotFoundException(`Worker ${worker_id} not found`);
+    if (workerFound.role !== 'worker')
+      throw new BadRequestException('Only workers can create services');
 
     const newService = this.servicesRepository.create({
       ...serviceKeys,
@@ -105,6 +110,16 @@ export class WorkerServicesService {
       },
     });
     if (!serviceDB) throw new NotFoundException('Service not found');
+
+    const ticket = await this.ticketsService.createServiceTicket(
+      serviceDB,
+      workerFound,
+    );
+
+    await this.servicesRepository.update(
+      { id: serviceDB.id },
+      { ticket: ticket },
+    );
 
     return serviceDB;
   }
