@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Ticket, TicketStatus, TicketType } from './entities/ticket.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Service } from '../workerServices/entities/service.entity';
 import { User } from '../users/entities/users.entity';
 
@@ -15,6 +15,7 @@ import { User } from '../users/entities/users.entity';
 export class TicketsService {
   constructor(
     @InjectRepository(Ticket) private ticketRepository: Repository<Ticket>,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
   async getTickets(type?: TicketType, status?: TicketStatus) {
@@ -65,6 +66,40 @@ export class TicketsService {
     await this.ticketRepository.save(newTicket);
 
     return newTicket;
+  }
+
+  async createWorkerTicket(id: string) {
+    const userFound = await this.userRepository.findOneBy({ id });
+    if (!userFound) throw new NotFoundException('User not found');
+
+    if (!userFound.user_pic)
+      throw new BadRequestException('El usuario no tiene una foto de perfil');
+
+    const userTickets = await this.ticketRepository.find({
+      where: {
+        type: TicketType.TO_WORKER,
+        user: { id },
+        status: In([TicketStatus.PENDING, TicketStatus.ACCEPTED]),
+      },
+    });
+
+    if (userTickets.length >= 1) {
+      throw new BadRequestException(
+        'El usuario ya tiene un ticket en estado pendiente o aceptado',
+      );
+    }
+
+    const today = new Date().toLocaleDateString('es-AR');
+
+    const newTicket = this.ticketRepository.create({
+      type: TicketType.TO_WORKER,
+      user: userFound,
+      created_at: today,
+    });
+
+    await this.ticketRepository.save(newTicket);
+
+    return { message: 'Ticket created' };
   }
 
   async rejectTicket(id: string) {

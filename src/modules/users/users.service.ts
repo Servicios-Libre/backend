@@ -59,7 +59,10 @@ export class UsersService {
     if (!user) throw new NotFoundException('User not found');
     if (user.role === 'worker')
       throw new BadRequestException('User is already a worker');
-    await this.UserRepository.update({ id }, { role: 'worker' });
+    await this.UserRepository.update(
+      { id },
+      { role: 'worker', availability: true },
+    );
 
     return { message: 'User updated to worker' };
   }
