@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { WorkerServicesService } from './workerServices.service';
 import { ServiceDto } from './dtos/service.dto';
-import { Request } from 'express';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('services')
 export class WorkerServicesController {
@@ -9,7 +11,6 @@ export class WorkerServicesController {
 
   @Get()
   getAllServices(
-    @Req() request: Request,
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('busqueda') search?: string,
@@ -33,6 +34,8 @@ export class WorkerServicesController {
     return this.workerServicesService.getAllCategories();
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('worker')
   @Post('new')
   createService(@Body() service: ServiceDto) {
     return this.workerServicesService.createService(service);

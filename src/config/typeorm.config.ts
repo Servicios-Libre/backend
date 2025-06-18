@@ -3,6 +3,7 @@ import { config } from 'dotenv';
 import { registerAs } from '@nestjs/config';
 
 config({ path: '.env.development.local' });
+config({ path: '.env' });
 
 const dataConfig = {
   type: 'postgres',
@@ -13,7 +14,7 @@ const dataConfig = {
   password: String(process.env.DB_PASSWORD),
   autoLoadEntities: true,
   // dropSchema: true,
-  synchronize: true,
+  synchronize: false,
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/migrations/*{.ts,.js}'],
 };

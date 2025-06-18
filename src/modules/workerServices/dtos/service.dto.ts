@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID, Length } from 'class-validator';
 
 export class ServiceDto {
   /**
@@ -21,6 +21,7 @@ export class ServiceDto {
   */
   @IsNotEmpty()
   @IsString()
+  @Length(5, 50)
   title: string;
 
   /**
@@ -28,5 +29,6 @@ export class ServiceDto {
   */
   @IsNotEmpty()
   @IsString()
+  @Length(5, 300)
   description: string;
 }

@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/users.entity';
 import { Repository } from 'typeorm';
@@ -28,6 +32,11 @@ export class UsersService {
   async UpdateUser(token: string, body: Partial<User>) {
     const payload = ExtractPayload(token);
     const userID = payload.id;
+    const userDB = await this.UserRepository.findOne({
+      where: { id: userID },
+      relations: ['address_id'],
+    });
+    if (!userDB) throw new NotFoundException('User not found');
     if (body.phone)
       await this.UserRepository.update({ id: userID }, { phone: body.phone });
 
@@ -40,8 +49,18 @@ export class UsersService {
     }
 
     await this.AddressRepository.update(
-      { user_id: { id: userID } },
+      { id: userDB?.address_id.id },
       addressActualization,
     );
+  }
+
+  async userToWorker(id: string) {
+    const user: User | null = await this.UserRepository.findOneBy({ id });
+    if (!user) throw new NotFoundException('User not found');
+    if (user.role === 'worker')
+      throw new BadRequestException('User is already a worker');
+    await this.UserRepository.update({ id }, { role: 'worker' });
+
+    return { message: 'User updated to worker' };
   }
 }
