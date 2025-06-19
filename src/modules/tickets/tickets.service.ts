@@ -115,15 +115,23 @@ export class TicketsService {
   }
 
   async acceptTicket(id: string) {
-    const ticket = await this.ticketRepository.findOneBy({ id });
+    const ticket = await this.ticketRepository.findOne({
+      where: { id },
+      relations: {
+        service: { work_photos: true },
+      },
+    });
+
     if (!ticket) throw new NotFoundException('Ticket not found');
     if (ticket.status !== TicketStatus.PENDING)
       throw new BadRequestException('Ticket is not pending');
-
-    await this.ticketRepository.update(
-      { id },
-      { status: TicketStatus.ACCEPTED },
-    );
+    if (ticket.service.work_photos.length === 0)
+      throw new BadRequestException('Service has no photos');
+    if (ticket)
+      await this.ticketRepository.update(
+        { id },
+        { status: TicketStatus.ACCEPTED },
+      );
     return { message: 'Ticket accepted' };
   }
 }

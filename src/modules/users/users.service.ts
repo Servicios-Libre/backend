@@ -21,7 +21,7 @@ export class UsersService {
     const where: any = {};
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (role) where.role = role;
-    const users = await this.UserRepository.find({
+    const [users, total] = await this.UserRepository.findAndCount({
       where: { role },
       select: {
         id: true,
@@ -33,7 +33,10 @@ export class UsersService {
       skip: (page - 1) * limit,
     });
 
-    return users;
+    return {
+      users,
+      total,
+    };
   }
 
   async GetUserById(token: string) {

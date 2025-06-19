@@ -7,6 +7,7 @@ import {
   ParseFilePipe,
   ParseUUIDPipe,
   Post,
+  Put,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -17,7 +18,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
-  @Post('/service/:id')
+  @Put('/service/:id')
   @UseInterceptors(FileInterceptor('image'))
   async uploadWorkPhoto(
     @Param('id', ParseUUIDPipe) id: string,
