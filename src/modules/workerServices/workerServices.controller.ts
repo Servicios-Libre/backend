@@ -2,11 +2,13 @@ import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { WorkerServicesService } from './workerServices.service';
 import { ServiceDto } from './dtos/service.dto';
 import { Request } from 'express';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('services')
 export class WorkerServicesController {
   constructor(private readonly workerServicesService: WorkerServicesService) {}
 
+  @ApiBearerAuth()
   @Get()
   getAllServices(
     @Req() request: Request,
@@ -33,6 +35,7 @@ export class WorkerServicesController {
     return this.workerServicesService.getAllCategories();
   }
 
+  @ApiBearerAuth()
   @Post('new')
   createService(@Body() service: ServiceDto) {
     return this.workerServicesService.createService(service);
