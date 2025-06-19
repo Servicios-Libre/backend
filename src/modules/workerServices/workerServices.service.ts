@@ -54,13 +54,33 @@ export class WorkerServicesService {
         },
       },
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      where,
+      where: { ...where, ticket: { status: 'accepted' } },
       skip: (page - 1) * limit,
       take: limit,
     });
 
     return {
       servicios: services,
+      total,
+    };
+  }
+
+  async getServicesByWorkerId(id: string) {
+    const [services, total] = await this.servicesRepository.findAndCount({
+      where: { worker: { id } },
+      relations: ['ticket'],
+      select: {
+        ticket: {
+          status: true,
+        },
+      },
+    });
+
+    if (total === 0) {
+      throw new NotFoundException('No services found for this worker');
+    }
+    return {
+      services,
       total,
     };
   }
