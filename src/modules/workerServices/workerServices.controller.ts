@@ -32,6 +32,13 @@ export class WorkerServicesController {
     );
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('worker')
+  @Get('worker/:id')
+  getServicesByWorkerId(@Query('id') id: string) {
+    return this.workerServicesService.getServicesByWorkerId(id);
+  }
+
   @Get('categories')
   getAllCategories() {
     return this.workerServicesService.getAllCategories();
