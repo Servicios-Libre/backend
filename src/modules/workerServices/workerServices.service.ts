@@ -54,7 +54,7 @@ export class WorkerServicesService {
         },
       },
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      where,
+      where: { ...where, ticket: { status: 'accepted' } },
       skip: (page - 1) * limit,
       take: limit,
     });

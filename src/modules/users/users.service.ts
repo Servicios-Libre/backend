@@ -8,6 +8,7 @@ import { User } from './entities/users.entity';
 import { Repository } from 'typeorm';
 import { ExtractPayload } from 'src/helpers/extractPayload.token';
 import { Address } from './entities/address.entity';
+import { Role } from './entities/roles.enum';
 
 @Injectable()
 export class UsersService {
@@ -15,6 +16,29 @@ export class UsersService {
     @InjectRepository(User) private UserRepository: Repository<User>,
     @InjectRepository(Address) private AddressRepository: Repository<Address>,
   ) {}
+
+  async getAllUsers(page = 1, limit = 10, role?: Role) {
+    const where: any = {};
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (role) where.role = role;
+    const [users, total] = await this.UserRepository.findAndCount({
+      where: { role },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+      },
+      take: limit,
+      skip: (page - 1) * limit,
+    });
+
+    return {
+      users,
+      total,
+    };
+  }
+
   async GetUserById(token: string) {
     const payload = ExtractPayload(token);
     const user = await this.UserRepository.findOne({
