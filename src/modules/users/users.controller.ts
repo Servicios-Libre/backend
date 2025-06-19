@@ -20,6 +20,8 @@ import { Role } from './entities/roles.enum';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Get()
   getAllUsers(
     @Query('page') page?: number,
