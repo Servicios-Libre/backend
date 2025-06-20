@@ -64,7 +64,6 @@ export class UserDto {
   @IsEmpty()
   role: Role;
 
-
   @IsEmpty()
   premium: boolean;
 
