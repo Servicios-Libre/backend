@@ -45,6 +45,7 @@ export class TicketsService {
       relations: ['user'],
       select: {
         user: {
+          id: true,
           name: true,
           email: true,
         },
