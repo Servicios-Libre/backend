@@ -65,6 +65,26 @@ export class WorkerServicesService {
     };
   }
 
+  async getServicesByWorkerId(id: string) {
+    const [services, total] = await this.servicesRepository.findAndCount({
+      where: { worker: { id } },
+      relations: ['ticket'],
+      select: {
+        ticket: {
+          status: true,
+        },
+      },
+    });
+
+    if (total === 0) {
+      throw new NotFoundException('No services found for this worker');
+    }
+    return {
+      services,
+      total,
+    };
+  }
+
   async getAllCategories() {
     const categories = await this.categoryRepository.find();
     if (!categories) throw new NotFoundException('Categories not found');
