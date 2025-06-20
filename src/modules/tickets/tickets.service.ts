@@ -31,7 +31,13 @@ export class TicketsService {
     if (type === TicketType.SERVICE)
       return await this.ticketRepository.find({
         where,
-        relations: ['service'],
+        relations: ['service', 'user'],
+        select: {
+          user: {
+            name: true,
+            email: true,
+          },
+        },
       });
 
     return await this.ticketRepository.find({ where });
