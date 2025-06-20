@@ -49,17 +49,18 @@ export class AuthService {
       user_id: newUser,
     });
 
-    // await this.UserRepository.update(newUser.id, { address_id: [newAddress] });
-
-    await this.emailService.sendEmail(
-      user.email,
-      'Registro Exitoso',
-      `Felicidades ${user.name} usted fue registrado correctamente en Servicios Libre`,
-    );
-    return this.UserRepository.findOne({
+    const userDB = await this.UserRepository.findOne({
       where: { id: newUser.id },
       relations: { address_id: true },
     });
+
+    await this.emailService.registerEmail(
+      userDB!.email,
+      userDB!.name,
+      userDB!.id,
+    );
+
+    return userDB;
   }
 
   async signin(credentials: CredentialsDto) {

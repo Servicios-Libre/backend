@@ -3,26 +3,29 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { createTransport } from 'nodemailer';
+import { config } from 'dotenv';
+config({ path: './.env.development.local' });
+config({ path: './.env' });
+console.log(process.env.EMAIL_USER);
 
-const emailHelper = async (to, subject, text) => {
+const emailHelper = async (to, subject, text, html) => {
   // Create a transporter
   const transporter = createTransport({
     service: 'gmail',
     auth: {
-      user: 'gmicheloni52@gmail.com',
-      pass: 'spoj oxgc vljd hnho',
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
     },
   });
 
-  // Set up email options
   const mailOptions = {
-    from: 'gmicheloni52@gmail.com',
+    from: process.env.EMAIL_USER,
     to: to,
     subject: subject,
     text: text,
+    html: html,
   };
 
-  // Send the email
   try {
     const info = await transporter.sendMail(mailOptions);
     console.log('Email sent: ' + info.response);
