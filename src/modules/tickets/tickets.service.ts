@@ -10,12 +10,14 @@ import { Ticket, TicketStatus, TicketType } from './entities/ticket.entity';
 import { In, Repository } from 'typeorm';
 import { Service } from '../workerServices/entities/service.entity';
 import { User } from '../users/entities/users.entity';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class TicketsService {
   constructor(
     @InjectRepository(Ticket) private ticketRepository: Repository<Ticket>,
     @InjectRepository(User) private userRepository: Repository<User>,
+    private readonly emailService: EmailService,
   ) {}
 
   async getTickets(type?: TicketType, status?: TicketStatus) {
@@ -98,18 +100,31 @@ export class TicketsService {
     });
 
     await this.ticketRepository.save(newTicket);
-
+    await this.emailService.sendEmail(
+      userFound.email,
+      'Ticket creado exitosamente',
+      `Su ticket con id: ${newTicket.id} fue creado exitosamente, nos pondremos en comunicacion pronto`,
+    );
     return { message: 'Ticket created' };
   }
 
   async rejectTicket(id: string) {
-    const ticket = await this.ticketRepository.findOneBy({ id });
+    const ticket = await this.ticketRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
     if (!ticket) throw new NotFoundException('Ticket not found');
     if (ticket.status !== TicketStatus.PENDING)
       throw new BadRequestException('Ticket is not pending');
     await this.ticketRepository.update(
       { id },
       { status: TicketStatus.REJECTED },
+    );
+    console.log(ticket.user.email);
+    await this.emailService.sendEmail(
+      ticket.user.email,
+      'Ticket Rechazado',
+      `Su ticket con id: ${ticket.id} fue rechazado`,
     );
     return { message: 'Ticket rejected' };
   }
@@ -118,20 +133,27 @@ export class TicketsService {
     const ticket = await this.ticketRepository.findOne({
       where: { id },
       relations: {
-        service: { work_photos: true },
+        user: true,
+        service: {
+          work_photos: true,
+        },
       },
     });
-
     if (!ticket) throw new NotFoundException('Ticket not found');
     if (ticket.status !== TicketStatus.PENDING)
       throw new BadRequestException('Ticket is not pending');
-    if (ticket.service.work_photos.length === 0)
-      throw new BadRequestException('Service has no photos');
+    /* if (ticket.service.work_photos.length === 0)
+      throw new BadRequestException('Service has no photos'); */
     if (ticket)
       await this.ticketRepository.update(
         { id },
         { status: TicketStatus.ACCEPTED },
       );
+    await this.emailService.sendEmail(
+      ticket.user.email,
+      'Ticket Aceptado',
+      `Felicitaciones ${ticket.user.name}. Su ticket con id: ${ticket.id} fue ACEPTADO`,
+    );
     return { message: 'Ticket accepted' };
   }
 }
