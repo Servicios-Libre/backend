@@ -115,10 +115,11 @@ export class TicketsService {
     });
 
     await this.ticketRepository.save(newTicket);
-    await this.emailService.sendEmail(
+    await this.emailService.newTicketEmail(
       userFound.email,
-      'Ticket creado exitosamente',
-      `Su ticket con id: ${newTicket.id} fue creado exitosamente, nos pondremos en comunicacion pronto`,
+      userFound.name,
+      newTicket.id,
+      userFound.user_pic,
     );
     return { message: 'Ticket created' };
   }
@@ -136,10 +137,12 @@ export class TicketsService {
       { status: TicketStatus.REJECTED },
     );
     console.log(ticket.user.email);
-    await this.emailService.sendEmail(
+    await this.emailService.ticketRejectedEmail(
       ticket.user.email,
-      'Ticket Rechazado',
-      `Su ticket con id: ${ticket.id} fue rechazado`,
+      ticket.user.name,
+      ticket.user.user_pic!,
+      ticket.id,
+      ticket.type,
     );
     return { message: 'Ticket rejected' };
   }
@@ -157,20 +160,19 @@ export class TicketsService {
     if (!ticket) throw new NotFoundException('Ticket not found');
     if (ticket.status !== TicketStatus.PENDING)
       throw new BadRequestException('Ticket is not pending');
-    if (
-      ticket.type == TicketType.SERVICE &&
-      ticket.service.work_photos.length === 0
-    )
+    if (ticket.type == TicketType.SERVICE && !ticket.service.work_photos)
       throw new BadRequestException('Service has no photos');
     if (ticket)
       await this.ticketRepository.update(
         { id },
         { status: TicketStatus.ACCEPTED },
       );
-    await this.emailService.sendEmail(
+    await this.emailService.acceptedTicketEmail(
       ticket.user.email,
-      'Ticket Aceptado',
-      `Felicitaciones ${ticket.user.name}. Su ticket con id: ${ticket.id} fue ACEPTADO`,
+      ticket.user.name,
+      ticket.id,
+      ticket.type,
+      ticket.user.user_pic!,
     );
     return { message: 'Ticket accepted' };
   }
