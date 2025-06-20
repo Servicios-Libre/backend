@@ -6,7 +6,7 @@ import { createTransport } from 'nodemailer';
 
 const emailHelper = async (to, subject, text) => {
   // Create a transporter
-  let transporter = createTransport({
+  const transporter = createTransport({
     service: 'gmail',
     auth: {
       user: 'gmicheloni52@gmail.com',
@@ -15,7 +15,7 @@ const emailHelper = async (to, subject, text) => {
   });
 
   // Set up email options
-  let mailOptions = {
+  const mailOptions = {
     from: 'gmicheloni52@gmail.com',
     to: to,
     subject: subject,
@@ -24,7 +24,7 @@ const emailHelper = async (to, subject, text) => {
 
   // Send the email
   try {
-    let info = await transporter.sendMail(mailOptions);
+    const info = await transporter.sendMail(mailOptions);
     console.log('Email sent: ' + info.response);
     return info;
   } catch (error) {

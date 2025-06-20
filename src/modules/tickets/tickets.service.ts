@@ -40,7 +40,16 @@ export class TicketsService {
         },
       });
 
-    return await this.ticketRepository.find({ where });
+    return await this.ticketRepository.find({
+      where,
+      relations: ['user'],
+      select: {
+        user: {
+          name: true,
+          email: true,
+        },
+      },
+    });
   }
 
   async checkServiceTicketLimit(user_id: string) {
