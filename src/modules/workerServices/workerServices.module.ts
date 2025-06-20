@@ -9,12 +9,18 @@ import { FilesService } from '../files/files.service';
 import { WorkPhoto } from './entities/workPhoto.entity';
 import { TicketsService } from '../tickets/tickets.service';
 import { Ticket } from '../tickets/entities/ticket.entity';
+import { EmailService } from '../email/email.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Service, Category, User, WorkPhoto, Ticket]),
   ],
   controllers: [WorkerServicesController],
-  providers: [WorkerServicesService, FilesService, TicketsService],
+  providers: [
+    WorkerServicesService,
+    FilesService,
+    TicketsService,
+    EmailService,
+  ],
 })
 export class WorkerServicesModule {}
