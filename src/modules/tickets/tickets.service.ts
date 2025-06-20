@@ -142,8 +142,8 @@ export class TicketsService {
     if (!ticket) throw new NotFoundException('Ticket not found');
     if (ticket.status !== TicketStatus.PENDING)
       throw new BadRequestException('Ticket is not pending');
-    /* if (ticket.service.work_photos.length === 0)
-      throw new BadRequestException('Service has no photos'); */
+    if (ticket.service.work_photos.length === 0)
+      throw new BadRequestException('Service has no photos');
     if (ticket)
       await this.ticketRepository.update(
         { id },
