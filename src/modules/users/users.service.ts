@@ -99,6 +99,7 @@ export class UsersService {
         services: {
           work_photos: true,
           category: true,
+          ticket: true,
         },
       },
       select: {
