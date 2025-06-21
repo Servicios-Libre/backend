@@ -83,6 +83,13 @@ export class TicketsService {
 
     await this.ticketRepository.save(newTicket);
 
+    await this.emailService.newServiceTicketEmail(
+      worker.email!,
+      worker.name!,
+      newTicket.id,
+      worker.user_pic!,
+      worker.id!,
+    );
     return newTicket;
   }
 
@@ -116,7 +123,7 @@ export class TicketsService {
     });
 
     await this.ticketRepository.save(newTicket);
-    await this.emailService.newTicketEmail(
+    await this.emailService.newWorkerTicketEmail(
       userFound.email,
       userFound.name,
       newTicket.id,
