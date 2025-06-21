@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Solicitud Creada - Servicio Libre</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f5f5f5;">
+        <tr>
+            <td align="center" style="padding: 20px 0;">
+                <!-- Container principal -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="500" style="max-width: 500px; background-color: #fffefe; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #2b7efe 0%, #1c388f 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+                            <h1 style="margin: 0; color: #fffefe; font-size: 24px; font-weight: bold;">
+                                Servicio Libre
+                            </h1>
+                        </td>
+                    </tr>
+                    
+                    <!-- Contenido principal -->
+                    <tr>
+                        <td style="padding: 40px 30px;">
+                            <!-- Foto de perfil del usuario -->
+                            <div style="text-align: center; margin-bottom: 25px;">
+                                <img src="{{fotoPerfilUrl}}" alt="Foto de perfil" width="60" height="60" style="border-radius: 50%; object-fit: cover; background-color: #e0e7ff; border: 2px solid #2b7efe; display: inline-block;">
+                            </div>
+                            
+                            <h2 style="margin: 0 0 20px; color: #1c388f; font-size: 22px; font-weight: bold; text-align: center;">
+                                Solicitud Enviada
+                            </h2>
+                            
+                            <p style="margin: 0 0 25px; color: #666666; font-size: 16px; line-height: 1.5; text-align: center;">
+                                Hola <strong style="color: #1c388f;">{{nombre}}</strong>, tu nueva solicitud para crear el servicio "{{serviceTitle}}" ha sido enviada exitosamente y está pendiente de revisión.
+                            </p>
+                            
+                            <!-- Información del ticket -->
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f8f9ff; border-radius: 6px; margin: 20px 0;">
+                                <tr>
+                                    <td style="padding: 20px; text-align: center;">
+                                        <p style="margin: 0 0 8px; color: #1c388f; font-size: 14px; font-weight: bold;">
+                                            ID de Solicitud
+                                        </p>
+                                        <p style="margin: 0 0 10px; color: #2b7efe; font-size: 18px; font-weight: bold; letter-spacing: 1px;">
+                                            #{{ticketId}}
+                                        </p>
+                                        <p style="margin: 0; color: #666666; font-size: 13px;">
+                                            Estado: <strong style="color: #2b7efe;">PENDIENTE</strong>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <p style="margin: 0 0 25px; color: #666666; font-size: 15px; line-height: 1.5; text-align: center;">
+                                Nuestro equipo administrativo revisará tu solicitud y te notificaremos sobre la decisión.
+                            </p>
+                            
+                            <!-- Botón de acción -->
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <tr>
+                                    <td align="center" style="padding: 10px 0 20px;">
+                                        <a href="{{seguimientoUrl}}" style="display: inline-block; padding: 12px 25px; background: linear-gradient(135deg, #2b7efe 0%, #1c388f 100%); color: #fffefe; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 15px;">
+                                            Seguir Solicitud
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <p style="margin: 0; color: #999999; font-size: 14px; text-align: center;">
+                                Fecha de envío: <strong>{{fechaEnvio}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #1c388f; padding: 20px; text-align: center; border-radius: 0 0 8px 8px;">
+                            <p style="margin: 0; color: #fffefe; font-size: 14px;">
+                                <strong>Servicio Libre</strong>
+                            </p>
+                            <p style="margin: 5px 0 0; color: #fffefe; font-size: 12px; opacity: 0.8;">
+                                <a href="mailto:servicioslibre.pf@gmail.com" style="color: #fffefe; text-decoration: none;">
+                                    servicioslibre.pf@gmail.com
+                                </a>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+                
+                <!-- Texto legal -->
+                <p style="margin: 15px 0 0; color: #999999; font-size: 11px; text-align: center; max-width: 500px;">
+                    Recibirás una notificación cuando tu solicitud sea procesada.
+                </p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

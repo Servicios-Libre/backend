@@ -23,7 +23,33 @@ export class EmailService {
     );
   }
 
-  async newTicketEmail(
+  async newServiceTicketEmail(
+    to: string,
+    name: string,
+    ticket_id: string,
+    user_pic: string,
+    worker_id: string,
+  ) {
+    const html = fs
+      .readFileSync('./src/modules/email/html/new-service-ticket.html', 'utf8')
+      .replace('{{nombre}}', name)
+      .replace('{{ticketId}}', ticket_id)
+      .replace('{{fechaEnvio}}', new Date().toLocaleDateString())
+      .replace('{{fotoPerfilUrl}}', user_pic)
+      .replace(
+        '{{seguimientoUrl}}',
+        'https://frontend-seven-flame-73.vercel.app/worker-profile/' +
+          worker_id,
+      );
+    await emailHelper(
+      to,
+      'Solicitud para tu servicio recibida - Servicio Libre',
+      `Hemos recibido tu solicitud ${name}, tendrás una respuesta pronto`,
+      html,
+    );
+  }
+
+  async newWorkerTicketEmail(
     to: string,
     name: string,
     ticket_id: string,
