@@ -45,12 +45,12 @@ export class UsersService {
       where: { id: payload.id },
       relations: { address_id: true, tickets: true },
     });
-    if (user) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...userClean } = user;
-      return userClean;
-    }
-    return 'Id inexistente';
+
+    if (!user) throw new NotFoundException('User not found');
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...userClean } = user;
+    return userClean;
   }
 
   async UpdateUser(token: string, body: Partial<User>) {
@@ -89,5 +89,48 @@ export class UsersService {
     );
 
     return { message: 'User updated to worker' };
+  }
+
+  async getWorkerById(id: string) {
+    const worker = await this.UserRepository.findOne({
+      where: { id, role: 'worker' },
+      relations: {
+        address_id: true,
+        services: {
+          work_photos: true,
+          category: true,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        rate: true,
+        user_pic: true,
+        premium: true,
+        email: true,
+        phone: true,
+        availability: true,
+        address_id: {
+          id: true,
+          street: true,
+          city: true,
+          state: true,
+          zip_code: true,
+        },
+        services: {
+          id: true,
+          ticket: {
+            status: true,
+          },
+          category: true,
+          title: true,
+          description: true,
+          work_photos: true,
+        },
+      },
+    });
+
+    if (!worker) throw new NotFoundException('Worker not found');
+    return worker;
   }
 }
