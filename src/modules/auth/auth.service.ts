@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { CredentialsDto } from './DTOs/credentials.dto';
 import { Address } from '../users/entities/address.entity';
 import { Role } from '../users/entities/roles.enum';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +16,7 @@ export class AuthService {
     @InjectRepository(User) private UserRepository: Repository<User>,
     @InjectRepository(Address) private AddressRepository: Repository<Address>,
     private readonly jwtService: JwtService,
+    private readonly emailService: EmailService,
   ) {}
 
   async addUser({ confirmPassword, ...user }: UserDto) {
@@ -47,12 +49,18 @@ export class AuthService {
       user_id: newUser,
     });
 
-    // await this.UserRepository.update(newUser.id, { address_id: [newAddress] });
-
-    return this.UserRepository.findOne({
+    const userDB = await this.UserRepository.findOne({
       where: { id: newUser.id },
       relations: { address_id: true },
     });
+
+    await this.emailService.registerEmail(
+      userDB!.email,
+      userDB!.name,
+      userDB!.id,
+    );
+
+    return userDB;
   }
 
   async signin(credentials: CredentialsDto) {

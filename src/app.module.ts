@@ -15,6 +15,8 @@ import { CategoriesModule } from './modules/categories/categories.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
 import { TicketsService } from './modules/tickets/tickets.service';
 import { Ticket } from './modules/tickets/entities/ticket.entity';
+import { EmailModule } from './modules/email/email.module';
+import { EmailService } from './modules/email/email.service';
 
 @Module({
   imports: [
@@ -42,9 +44,10 @@ import { Ticket } from './modules/tickets/entities/ticket.entity';
     TypeOrmModule.forFeature([Service, Category, User, Ticket]),
     CategoriesModule,
     TicketsModule,
+    EmailModule,
   ],
   controllers: [],
-  providers: [WorkerServicesService, TicketsService],
+  providers: [WorkerServicesService, TicketsService, EmailService],
 })
 export class AppModule implements OnApplicationBootstrap {
   constructor(private readonly workerServiceService: WorkerServicesService) {}

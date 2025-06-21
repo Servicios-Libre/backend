@@ -43,7 +43,7 @@ export class UsersService {
     const payload = ExtractPayload(token);
     const user = await this.UserRepository.findOne({
       where: { id: payload.id },
-      relations: { address_id: true },
+      relations: { address_id: true, tickets: true },
     });
     if (user) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

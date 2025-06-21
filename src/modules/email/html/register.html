@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Exitoso - Servicio Libre</title>
+</head>
+
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"
+        style="background-color: #f5f5f5;">
+        <tr>
+            <td align="center" style="padding: 20px 0;">
+                <!-- Container principal -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="500"
+                    style="max-width: 500px; background-color: #fffefe; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+
+                    <!-- Header -->
+                    <tr>
+                        <td
+                            style="background: linear-gradient(135deg, #2b7efe 0%, #1c388f 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+                            <h1 style="margin: 0; color: #fffefe; font-size: 24px; font-weight: bold;">
+                                Servicio Libre
+                            </h1>
+                        </td>
+                    </tr>
+
+                    <!-- Contenido principal -->
+                    <tr>
+                        <td style="padding: 40px 30px;">
+                            <!-- Icono de éxito -->
+                            <div style="text-align: center; margin-bottom: 25px;">
+                                <div
+                                    style="width: 60px; height: 60px; background-color: #2b7efe; border-radius: 50%; margin: 0 auto; position: relative; display: inline-block;">
+                                    <div
+                                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%) rotate(-45deg); width: 24px; height: 12px; border-left: 3px solid #fffefe; border-bottom: 3px solid #fffefe;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h2
+                                style="margin: 0 0 20px; color: #1c388f; font-size: 22px; font-weight: bold; text-align: center;">
+                                ¡Registro Exitoso!
+                            </h2>
+
+                            <p
+                                style="margin: 0 0 25px; color: #666666; font-size: 16px; line-height: 1.5; text-align: center;">
+                                Hola <strong style="color: #1c388f;">{{nombre}}</strong>, tu cuenta en Servicio Libre ha
+                                sido creada exitosamente.
+                            </p>
+
+                            <!-- Botón de acción -->
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <tr>
+                                    <td align="center" style="padding: 10px 0 20px;">
+                                        <a href="{{loginUrl}}"
+                                            style="display: inline-block; padding: 12px 25px; background: linear-gradient(135deg, #2b7efe 0%, #1c388f 100%); color: #fffefe; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 15px;">
+                                            Iniciar Sesión
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="margin: 0; color: #999999; font-size: 14px; text-align: center;">
+                                Email: <strong>{{email}}</strong>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td
+                            style="background-color: #1c388f; padding: 20px; text-align: center; border-radius: 0 0 8px 8px;">
+                            <p style="margin: 0; color: #fffefe; font-size: 14px;">
+                                <strong>Servicio Libre</strong>
+                            </p>
+                            <p style="margin: 5px 0 0; color: #fffefe; font-size: 12px; opacity: 0.8;">
+                                <a href="mailto:servicioslibre.pf@gmail.com"
+                                    style="color: #fffefe; text-decoration: none;">
+                                    servicioslibre.pf@gmail.com
+                                </a>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Texto legal -->
+                <p style="margin: 15px 0 0; color: #999999; font-size: 11px; text-align: center; max-width: 500px;">
+                    Este correo fue enviado automáticamente. Si no creaste esta cuenta, ignora este mensaje.
+                </p>
+            </td>
+        </tr>
+    </table>
+</body>
