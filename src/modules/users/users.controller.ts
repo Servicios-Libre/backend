@@ -38,6 +38,11 @@ export class UsersController {
     return this.usersService.GetUserById(token);
   }
 
+  @Get('worker/:id')
+  getWorkerById(@Param('id', ParseUUIDPipe) id: string) {
+    return this.usersService.getWorkerById(id);
+  }
+
   @Put('update')
   UpdateUser(
     @Headers('authorization') token: string,

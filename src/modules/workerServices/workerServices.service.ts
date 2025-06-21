@@ -11,6 +11,7 @@ import { Category } from './entities/category.entity';
 import * as data from './data/categories.json';
 import { User } from '../users/entities/users.entity';
 import { TicketsService } from '../tickets/tickets.service';
+import { TicketStatus } from '../tickets/entities/ticket.entity';
 
 @Injectable()
 export class WorkerServicesService {
@@ -65,7 +66,7 @@ export class WorkerServicesService {
     };
   }
 
-  async getServicesByWorkerId(id: string) {
+  async getAllServicesByWorkerId(id: string) {
     const [services, total] = await this.servicesRepository.findAndCount({
       where: { worker: { id } },
       relations: ['ticket'],
@@ -82,6 +83,27 @@ export class WorkerServicesService {
     return {
       services,
       total,
+    };
+  }
+
+  async getServicesByWorkerId(id: string) {
+    const services = await this.servicesRepository.find({
+      where: { worker: { id } },
+      relations: ['ticket'],
+      select: {
+        ticket: {
+          status: true,
+        },
+      },
+    });
+
+    const cleanServices = services.filter(
+      (service) => service.ticket.status === TicketStatus.ACCEPTED,
+    );
+
+    return {
+      services: cleanServices,
+      total: cleanServices.length,
     };
   }
 

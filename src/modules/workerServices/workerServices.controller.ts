@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { WorkerServicesService } from './workerServices.service';
 import { ServiceDto } from './dtos/service.dto';
 import { Request } from 'express';
@@ -32,10 +40,16 @@ export class WorkerServicesController {
     );
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('worker')
+  @Roles('worker', 'admin')
+  @Get('worker/all/:id')
+  getAllServicesByWorkerId(@Param('id') id: string) {
+    return this.workerServicesService.getAllServicesByWorkerId(id);
+  }
+
   @Get('worker/:id')
-  getServicesByWorkerId(@Query('id') id: string) {
+  getServicesByWorkerId(@Param('id') id: string) {
     return this.workerServicesService.getServicesByWorkerId(id);
   }
 
