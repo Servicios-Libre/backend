@@ -17,6 +17,7 @@ import { TicketsService } from './modules/tickets/tickets.service';
 import { Ticket } from './modules/tickets/entities/ticket.entity';
 import { EmailModule } from './modules/email/email.module';
 import { EmailService } from './modules/email/email.service';
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { EmailService } from './modules/email/email.service';
     CategoriesModule,
     TicketsModule,
     EmailModule,
+    ChatModule,
   ],
   controllers: [],
   providers: [WorkerServicesService, TicketsService, EmailService],
