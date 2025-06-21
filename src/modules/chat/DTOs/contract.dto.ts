@@ -1,5 +1,4 @@
 import {
-  IsDate,
   IsEmpty,
   IsNotEmpty,
   IsNumber,
@@ -20,9 +19,8 @@ export class ContractDto {
   @IsString()
   description: string;
 
-  @IsNotEmpty()
-  @IsDate()
-  startDate: Date;
+  @IsEmpty()
+  startDate?: Date;
 
   @IsEmpty()
   endDate?: Date;
