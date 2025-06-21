@@ -46,7 +46,8 @@ export class ChatService {
 
   async createContract(contract: ContractDto) {
     const status = StatusContract.pending;
-    const contractToSave = { ...contract, status };
+    const startDate = new Date();
+    const contractToSave = { ...contract, status, startDate };
     return await this.ContractRepository.save(contractToSave);
   }
 
