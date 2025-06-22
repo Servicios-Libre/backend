@@ -51,31 +51,19 @@ export class FilesService {
       throw new Error('Service not found');
     }
 
-    const url: string[] = [];
-    if (files && files.length > 0) {
-      await Promise.all(
-        files.map(async (file) => {
-          const createUrl = await this.uploadCloudinary(file);
-          url.push(createUrl);
-        }),
-      );
-    }
-    if (!url) {
-      throw new Error('Images upload failed');
-    }
-
-    await Promise.all(
-      url.map(async (url) => {
-        const newWorkPhoto = this.workPhotoRepository.create({
-          photo_url: url,
-        });
-        await this.workPhotoRepository.save(newWorkPhoto);
-        service?.work_photos.push(newWorkPhoto);
-      }),
+    const urls = await Promise.all(
+      files.map((file) => this.uploadCloudinary(file)),
     );
+
+    const photoEntities = urls.map((url) =>
+      this.workPhotoRepository.create({ photo_url: url }),
+    );
+
+    await this.workPhotoRepository.save(photoEntities);
+    service.work_photos.push(...photoEntities);
     await this.serviceRepository.save(service);
 
-    return { message: 'Image uploaded successfully' };
+    return { message: 'Images uploaded successfully' };
   }
 
   async uploadUserPic(file: Express.Multer.File, token: string) {
