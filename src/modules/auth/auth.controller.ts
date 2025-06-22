@@ -17,7 +17,7 @@ export class AuthController {
     return this.authService.signin(credentials);
   }
 
-  @Post('gooogle')
+  @Post('google')
   GoogleSignIn(@Body() credentials: UpdateImageDto) {
     return this.authService.googleSignIn(credentials);
   }
