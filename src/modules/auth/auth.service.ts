@@ -87,6 +87,6 @@ export class AuthService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { Image, ...credentialsWithoutImage } = credentials;
     const token = this.signin(credentialsWithoutImage);
-    return { token };
+    return token;
   }
 }
