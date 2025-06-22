@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserDto } from '../users/DTOs/user.dto';
 import * as bcrypt from 'bcrypt';
-import { CredentialsDto } from './DTOs/credentials.dto';
+import { CredentialsDto, UpdateImageDto } from './DTOs/credentials.dto';
 import { Address } from '../users/entities/address.entity';
 import { Role } from '../users/entities/roles.enum';
 import { EmailService } from '../email/email.service';
@@ -81,6 +81,12 @@ export class AuthService {
       name: confirmUser.name,
     };
     const token = this.jwtService.sign(payload);
+    return { token };
+  }
+  googleSignIn(credentials: UpdateImageDto) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { Image, ...credentialsWithoutImage } = credentials;
+    const token = this.signin(credentialsWithoutImage);
     return { token };
   }
 }
