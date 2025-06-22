@@ -5,16 +5,14 @@ import {
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
-  ParseFilePipeBuilder,
   ParseUUIDPipe,
   Post,
-  Put,
   UploadedFile,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesService } from './files.service';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiBearerAuth()
@@ -22,19 +20,17 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
-  @Put('/service/:id')
-  @UseInterceptors(FileInterceptor('image'))
-  async uploadWorkPhoto(
+  @Post('/service/:id')
+  @UseInterceptors(FilesInterceptor('images'))
+  async uploadWorkPhotos(
     @Param('id', ParseUUIDPipe) id: string,
     @UploadedFiles(
-      new ParseFilePipeBuilder()
-        .addValidator(
-          new MaxFileSizeValidator({ maxSize: 2 * 1024 * 1024 }), // 2MB
-        )
-        .addValidator(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 2 * 1024 * 1024 }),
           new FileTypeValidator({ fileType: /(jpeg|jpg|png|webp)$/ }),
-        )
-        .build({ fileIsRequired: true }),
+        ],
+      }),
     )
     files: Express.Multer.File[],
   ) {
@@ -48,13 +44,8 @@ export class FilesController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({
-            maxSize: 2000000,
-            message: 'El archivo debe ser menor a 2MB',
-          }),
-          new FileTypeValidator({
-            fileType: /(jpeg|jpg|png|webp)$/,
-          }),
+          new MaxFileSizeValidator({ maxSize: 2 * 1024 * 1024 }),
+          new FileTypeValidator({ fileType: /(jpeg|jpg|png|webp)$/ }),
         ],
       }),
     )
