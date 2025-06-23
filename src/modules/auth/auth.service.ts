@@ -101,10 +101,10 @@ export class AuthService {
 
       const address = this.AddressRepository.create({
         street: 'Por defecto',
+        user_id: newUser,
       });
 
       newUser.address_id = address;
-      address.user_id = newUser;
 
       await this.UserRepository.save(newUser);
       await this.AddressRepository.save(address);
