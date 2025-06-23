@@ -98,10 +98,14 @@ export class AuthService {
         user_pic: Image,
         created_at: new Date(),
       });
+
       const address = this.AddressRepository.create({
         street: 'Por defecto',
-        user_id: { id: newUser.id },
       });
+
+      newUser.address_id = address;
+      address.user_id = newUser;
+
       await this.UserRepository.save(newUser);
       await this.AddressRepository.save(address);
 
