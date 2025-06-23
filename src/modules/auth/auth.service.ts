@@ -83,10 +83,23 @@ export class AuthService {
     const token = this.jwtService.sign(payload);
     return { token };
   }
-  googleSignIn(credentials: UpdateImageDto) {
+  async googleSignIn(credentials: UpdateImageDto) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { Image, ...credentialsWithoutImage } = credentials;
-    const token = this.signin(credentialsWithoutImage);
-    return token;
+    const { Image, password, email } = credentials;
+    const confirmUser = await this.UserRepository.findOneBy({
+      email,
+    });
+    if (!confirmUser) throw new BadRequestException('Credenciales incorrectas');
+    if (password !== 'Google@Auth')
+      throw new BadRequestException('Credenciales incorrectas');
+
+    const payload = {
+      id: confirmUser.id,
+      email: confirmUser.email,
+      role: confirmUser.role,
+      name: confirmUser.name,
+    };
+    const token = this.jwtService.sign(payload);
+    return { token };
   }
 }
