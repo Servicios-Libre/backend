@@ -89,7 +89,6 @@ export class AuthService {
     const confirmUser = await this.UserRepository.findOneBy({ email });
 
     if (!confirmUser) {
-      // 1. Guarda el usuario primero (sin address)
       const newUser = await this.UserRepository.save({
         name: credentials.name,
         email,
@@ -99,13 +98,10 @@ export class AuthService {
         created_at: new Date(),
       });
 
-      // 2. Guarda la dirección con el usuario ya creado
       const address = await this.AddressRepository.save({
-        street: 'Por defecto',
         user_id: newUser,
       });
 
-      // 3. Actualiza el usuario para asignarle la dirección
       newUser.address_id = address;
       await this.UserRepository.save(newUser);
 
