@@ -93,6 +93,7 @@ export class AuthService {
         name: credentials.name,
         email,
         password,
+        role: Role.user,
         user_pic: Image,
         created_at: new Date(),
       });
