@@ -83,6 +83,7 @@ export class AuthService {
     const token = this.jwtService.sign(payload);
     return { token };
   }
+
   async googleSignIn(credentials: UpdateImageDto) {
     const { Image, password, email } = credentials;
     const confirmUser = await this.UserRepository.findOneBy({
@@ -98,6 +99,7 @@ export class AuthService {
         created_at: new Date(),
       });
       const address = this.AddressRepository.create({
+        street: 'Por defecto',
         user_id: { id: newUser.id },
       });
       await this.UserRepository.save(newUser);
