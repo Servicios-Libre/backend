@@ -86,11 +86,11 @@ export class AuthService {
 
   async googleSignIn(credentials: UpdateImageDto) {
     const { Image, password, email } = credentials;
-    const confirmUser = await this.UserRepository.findOneBy({
-      email,
-    });
+    const confirmUser = await this.UserRepository.findOneBy({ email });
+
     if (!confirmUser) {
-      const newUser = this.UserRepository.create({
+      // 1. Guarda el usuario primero (sin address)
+      const newUser = await this.UserRepository.save({
         name: credentials.name,
         email,
         password,
@@ -99,15 +99,15 @@ export class AuthService {
         created_at: new Date(),
       });
 
-      const address = this.AddressRepository.create({
+      // 2. Guarda la dirección con el usuario ya creado
+      const address = await this.AddressRepository.save({
         street: 'Por defecto',
         user_id: newUser,
       });
 
+      // 3. Actualiza el usuario para asignarle la dirección
       newUser.address_id = address;
-
       await this.UserRepository.save(newUser);
-      await this.AddressRepository.save(address);
 
       const payload = {
         id: newUser.id,
