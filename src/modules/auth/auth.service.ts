@@ -84,13 +84,36 @@ export class AuthService {
     return { token };
   }
   async googleSignIn(credentials: UpdateImageDto) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { Image, password, email } = credentials;
     const confirmUser = await this.UserRepository.findOneBy({
       email,
     });
-    if (!confirmUser) throw new BadRequestException('Credenciales incorrectas');
-    if (password !== 'Google@Auth')
+    if (!confirmUser) {
+      const newUser = this.UserRepository.create({
+        name: credentials.name,
+        email,
+        password,
+        user_pic: Image,
+        created_at: new Date(),
+      });
+      const address = this.AddressRepository.create({
+        user_id: { id: newUser.id },
+      });
+      await this.UserRepository.save(newUser);
+      await this.AddressRepository.save(address);
+
+      const payload = {
+        id: newUser.id,
+        email: newUser.email,
+        role: newUser.role,
+        name: newUser.name,
+      };
+      const token = this.jwtService.sign(payload);
+
+      return { token };
+    }
+
+    if (confirmUser && password !== 'Google@Auth')
       throw new BadRequestException('Credenciales incorrectas');
 
     const payload = {
