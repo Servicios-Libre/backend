@@ -87,9 +87,21 @@ export class WorkerServicesService {
   }
 
   async getServicesByWorkerId(id: string) {
+    const worker = await this.userRepository.findOne({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        user_pic: true,
+      },
+    });
+
+    if (!worker) throw new NotFoundException('Trabajador no encontrado');
+
     const services = await this.servicesRepository.find({
       where: { worker: { id } },
-      relations: ['ticket'],
+      relations: ['ticket', 'category', 'work_photos'],
       select: {
         ticket: {
           status: true,
@@ -102,6 +114,7 @@ export class WorkerServicesService {
     );
 
     return {
+      ...worker, // devuelve directamente { id, name, email, user_pic }
       services: cleanServices,
       total: cleanServices.length,
     };
