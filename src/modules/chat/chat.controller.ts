@@ -28,6 +28,7 @@ export class ChatController {
   getConversation(
     @Body() { userID, otherUserID }: { userID: string; otherUserID: string },
   ) {
+    console.log('userID', userID, 'otherUserID', otherUserID);
     // @Query('user1', ParseUUIDPipe) user1: string,
     // @Query('user2', ParseUUIDPipe) user2: string,
     return this.chatService.getConversation(userID, otherUserID);
