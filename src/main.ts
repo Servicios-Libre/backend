@@ -27,6 +27,7 @@ async function bootstrap() {
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   });
+
   await app.listen(process.env.PORT ?? 8080);
 }
 bootstrap();
