@@ -189,6 +189,7 @@ export class WorkerServicesService {
     if (!service) throw new NotFoundException('Service not found');
 
     // validación: el servicio debe estar aceptado
+    console.log(service.ticket.status);
     if (!service.ticket || service.ticket.status !== TicketStatus.ACCEPTED) {
       throw new BadRequestException('Only accepted services can be edited');
     }
