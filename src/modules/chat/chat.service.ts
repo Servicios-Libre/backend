@@ -25,15 +25,21 @@ export class ChatService {
     // } catch {
     // throw new BadRequestException('messages not found');
     try {
+      console.log('entro al try');
+
       const chat = await this.chatRepository.save({
         user1,
         user2,
         message: 'No messages found',
         timestamp: new Date(),
       });
+      console.log('chat', chat);
+
       const id = chat.id;
+      console.log('id', id);
       return { chatId: id };
     } catch {
+      console.log('entro al catch');
       throw new BadRequestException('messages not found');
     }
   }
