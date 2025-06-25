@@ -28,8 +28,8 @@ export class ChatService {
       console.log('entro al try');
 
       const chat = await this.chatRepository.save({
-        user1,
-        user2,
+        senderId: user1,
+        receiverId: user2,
         message: 'No messages found',
         timestamp: new Date(),
       });
