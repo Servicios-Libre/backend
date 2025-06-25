@@ -24,13 +24,14 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get('start')
+  @Post('start')
   getConversation(
-    @Body() { userID, otherUserID }: { userID: string; otherUserID: string },
+    @Body() { userId, otherUserId }: { userId: string; otherUserId: string },
   ) {
+    console.log('userID', userId, 'otherUserID', otherUserId);
     // @Query('user1', ParseUUIDPipe) user1: string,
     // @Query('user2', ParseUUIDPipe) user2: string,
-    return this.chatService.getConversation(userID, otherUserID);
+    return this.chatService.getConversation(userId, otherUserId);
   }
 
   @UseGuards(JwtAuthGuard)
