@@ -1,5 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Message } from './message.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Chat {
@@ -7,11 +6,14 @@ export class Chat {
   id: string;
 
   @Column()
-  user1: string;
+  senderId: string;
 
   @Column()
-  user2: string;
+  receiverId: string;
 
-  @OneToMany(() => Message, (message) => message.chat)
-  messages: Message[];
+  @Column({ type: 'text' })
+  message: string;
+
+  @Column()
+  timestamp: Date;
 }

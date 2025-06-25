@@ -2,55 +2,61 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
 import { Repository } from 'typeorm';
+import { Message } from './DTOs/message.dto';
 import { Contract } from './entities/contract.entity';
 import { ContractDto } from './DTOs/contract.dto';
 import { StatusContract } from './entities/statusContract.enum';
-import { Message } from './entities/message.entity';
 
 @Injectable()
 export class ChatService {
   constructor(
     @InjectRepository(Chat) private chatRepository: Repository<Chat>,
-    @InjectRepository(Message) private messageRepository: Repository<Message>,
     @InjectRepository(Contract)
     private ContractRepository: Repository<Contract>,
   ) {}
   async getConversation(user1: string, user2: string) {
+    // try {
+    //   return await this.chatRepository.findOne({
+    //     where: [
+    //       { senderId: user1, receiverId: user2 },
+    //       // { senderId: user2, receiverId: user1 },
+    //     ],
+    //   });
+    // } catch {
+    // throw new BadRequestException('messages not found');
     try {
-      const chat = await this.chatRepository.findOneOrFail({
-        where: [
-          { user1, user2 },
-          { user1: user2, user2: user1 },
-        ],
-      });
-      return { chatId: chat.id };
-    } catch {
+      console.log('entro al try');
+
       const chat = await this.chatRepository.save({
-        user1,
-        user2,
+        senderId: user1,
+        receiverId: user2,
+        message: 'No messages found',
+        timestamp: new Date(),
       });
+      console.log('chat', chat);
+
       const id = chat.id;
       return { chatId: id };
+    } catch {
+      console.log('entro al catch');
+      throw new BadRequestException('messages not found');
     }
   }
+<<<<<<< main
+=======
 
   async getMessages(id: string) {
     return await this.messageRepository.find({
       where: { chat: { id } },
     });
   }
+>>>>>>> dev
 
-  async sendMessage(message: Message, chatId: string) {
+  async sendMessage(message: Message) {
     const timestamp = new Date();
-    const chat = await this.chatRepository.findOne({
-      where: { id: chatId },
-    });
-    if (!chat) {
-      throw new BadRequestException('Chat not found');
-    }
-    message.chat = chat;
     const messageToSave = { timestamp, ...message };
-    return await this.messageRepository.save(messageToSave);
+    await this.chatRepository.save(messageToSave);
+    return 'Message create successfully';
   }
 
   async getContract(worker: string, client: string) {
