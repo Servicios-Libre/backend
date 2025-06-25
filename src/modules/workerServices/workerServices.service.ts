@@ -45,15 +45,15 @@ export class WorkerServicesService {
 
     const [services, total] = await this.servicesRepository.findAndCount({
       relations: ['category', 'worker', 'work_photos', 'ticket'],
-      select: {
-        worker: {
-          id: true,
-          name: true,
-          email: true,
-          user_pic: true,
-          premium: true,
-        },
-      },
+      // select: {
+      //   worker: {
+      //     id: true,
+      //     name: true,
+      //     email: true,
+      //     user_pic: true,
+      //     premium: true,
+      //   },
+      // },
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       where: { ...where, ticket: { status: 'accepted' } },
       skip: (page - 1) * limit,
