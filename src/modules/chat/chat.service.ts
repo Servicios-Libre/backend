@@ -30,10 +30,10 @@ export class ChatService {
         user2,
       });
       const id = chat.id;
-      console.log('id', id);
       return { chatId: id };
     }
   }
+
   async getMessages(id: string) {
     return await this.messageRepository.find({
       where: { chat: { id } },
