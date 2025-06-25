@@ -183,7 +183,7 @@ export class WorkerServicesService {
   async editService(serviceId: string, dto: EditServiceDto) {
     const service = await this.servicesRepository.findOne({
       where: { id: serviceId },
-      relations: ['worker'],
+      relations: ['worker', 'ticket'],
     });
 
     if (!service) throw new NotFoundException('Service not found');
