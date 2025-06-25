@@ -15,15 +15,16 @@ export class ChatService {
     private ContractRepository: Repository<Contract>,
   ) {}
   async getConversation(user1: string, user2: string) {
+    // try {
+    //   return await this.chatRepository.findOne({
+    //     where: [
+    //       { senderId: user1, receiverId: user2 },
+    //       // { senderId: user2, receiverId: user1 },
+    //     ],
+    //   });
+    // } catch {
+    // throw new BadRequestException('messages not found');
     try {
-      return await this.chatRepository.findOne({
-        where: [
-          { senderId: user1, receiverId: user2 },
-          // { senderId: user2, receiverId: user1 },
-        ],
-      });
-    } catch {
-      // throw new BadRequestException('messages not found');
       const chat = await this.chatRepository.save({
         user1,
         user2,
@@ -32,6 +33,8 @@ export class ChatService {
       });
       const id = chat.id;
       return { chatId: id };
+    } catch {
+      throw new BadRequestException('messages not found');
     }
   }
 
