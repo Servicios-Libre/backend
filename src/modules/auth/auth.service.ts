@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserDto } from '../users/DTOs/user.dto';
 import * as bcrypt from 'bcrypt';
-import { CredentialsDto } from './DTOs/credentials.dto';
+import { CredentialsDto, UpdateImageDto } from './DTOs/credentials.dto';
 import { Address } from '../users/entities/address.entity';
 import { Role } from '../users/entities/roles.enum';
 import { EmailService } from '../email/email.service';
@@ -74,6 +74,51 @@ export class AuthService {
     );
     if (!confirmation)
       throw new BadRequestException('Credenciales incorrectas');
+    const payload = {
+      id: confirmUser.id,
+      email: confirmUser.email,
+      role: confirmUser.role,
+      name: confirmUser.name,
+    };
+    const token = this.jwtService.sign(payload);
+    return { token };
+  }
+
+  async googleSignIn(credentials: UpdateImageDto) {
+    const { Image, password, email } = credentials;
+    const confirmUser = await this.UserRepository.findOneBy({ email });
+
+    if (!confirmUser) {
+      const newUser = await this.UserRepository.save({
+        name: credentials.name,
+        email,
+        password,
+        role: Role.user,
+        user_pic: Image,
+        created_at: new Date(),
+      });
+
+      const address = await this.AddressRepository.save({
+        user_id: newUser,
+      });
+
+      newUser.address_id = address;
+      await this.UserRepository.save(newUser);
+
+      const payload = {
+        id: newUser.id,
+        email: newUser.email,
+        role: newUser.role,
+        name: newUser.name,
+      };
+      const token = this.jwtService.sign(payload);
+
+      return { token };
+    }
+
+    if (confirmUser && password !== 'Google@Auth')
+      throw new BadRequestException('Credenciales incorrectas');
+
     const payload = {
       id: confirmUser.id,
       email: confirmUser.email,
