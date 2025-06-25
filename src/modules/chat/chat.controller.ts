@@ -24,7 +24,7 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get('start')
+  @Post('start')
   getConversation(
     @Body() { userID, otherUserID }: { userID: string; otherUserID: string },
   ) {
