@@ -12,6 +12,7 @@ import * as data from './data/categories.json';
 import { User } from '../users/entities/users.entity';
 import { TicketsService } from '../tickets/tickets.service';
 import { TicketStatus } from '../tickets/entities/ticket.entity';
+import { EditServiceDto } from './dtos/edit-service.dto';
 
 @Injectable()
 export class WorkerServicesService {
@@ -45,15 +46,15 @@ export class WorkerServicesService {
 
     const [services, total] = await this.servicesRepository.findAndCount({
       relations: ['category', 'worker', 'work_photos', 'ticket'],
-      select: {
-        worker: {
-          id: true,
-          name: true,
-          email: true,
-          user_pic: true,
-          premium: true,
-        },
-      },
+      // select: {
+      //   worker: {
+      //     id: true,
+      //     name: true,
+      //     email: true,
+      //     user_pic: true,
+      //     premium: true,
+      //   },
+      // },
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       where: { ...where, ticket: { status: 'accepted' } },
       skip: (page - 1) * limit,
@@ -87,9 +88,21 @@ export class WorkerServicesService {
   }
 
   async getServicesByWorkerId(id: string) {
+    const worker = await this.userRepository.findOne({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        user_pic: true,
+      },
+    });
+
+    if (!worker) throw new NotFoundException('Trabajador no encontrado');
+
     const services = await this.servicesRepository.find({
       where: { worker: { id } },
-      relations: ['ticket'],
+      relations: ['ticket', 'category', 'work_photos'],
       select: {
         ticket: {
           status: true,
@@ -102,6 +115,7 @@ export class WorkerServicesService {
     );
 
     return {
+      ...worker, // devuelve directamente { id, name, email, user_pic }
       services: cleanServices,
       total: cleanServices.length,
     };
@@ -164,6 +178,32 @@ export class WorkerServicesService {
     );
 
     return serviceDB;
+  }
+
+  async editService(serviceId: string, dto: EditServiceDto) {
+    const service = await this.servicesRepository.findOne({
+      where: { id: serviceId },
+      relations: ['worker', 'ticket'],
+    });
+
+    if (!service) throw new NotFoundException('Service not found');
+
+    // validación: el servicio debe estar aceptado
+    console.log(service.ticket.status);
+    if (!service.ticket || service.ticket.status !== TicketStatus.ACCEPTED) {
+      throw new BadRequestException('Only accepted services can be edited');
+    }
+
+    // Actualizá solo si hay cambios
+    if (dto.title) service.title = dto.title;
+    if (dto.description) service.description = dto.description;
+
+    await this.servicesRepository.save(service);
+
+    return {
+      message: 'Service updated successfully',
+      service,
+    };
   }
 
   async seedCategories() {

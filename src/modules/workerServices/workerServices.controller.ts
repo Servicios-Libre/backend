@@ -6,10 +6,11 @@ import {
   Post,
   Query,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { WorkerServicesService } from './workerServices.service';
 import { ServiceDto } from './dtos/service.dto';
-import { Request } from 'express';
+import { EditServiceDto } from './dtos/edit-service.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -64,5 +65,13 @@ export class WorkerServicesController {
   @Post('new')
   createService(@Body() service: ServiceDto) {
     return this.workerServicesService.createService(service);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('worker')
+  @Put('edit/:id')
+  editService(@Param('id') id: string, @Body() body: EditServiceDto) {
+    return this.workerServicesService.editService(id, body);
   }
 }
