@@ -25,9 +25,7 @@ export class ChatController {
 
   @UseGuards(JwtAuthGuard)
   @Post('start')
-  getConversation(
-    @Body() { userID, otherUserID }: { userID: string; otherUserID: string },
-  ) {
+  getConversation(@Body() userID: string, @Body() otherUserID: string) {
     console.log('userID', userID, 'otherUserID', otherUserID);
     // @Query('user1', ParseUUIDPipe) user1: string,
     // @Query('user2', ParseUUIDPipe) user2: string,
