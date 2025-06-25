@@ -36,12 +36,16 @@ export class ChatService {
       console.log('chat', chat);
 
       const id = chat.id;
-      console.log('id', id);
       return { chatId: id };
     } catch {
       console.log('entro al catch');
       throw new BadRequestException('messages not found');
     }
+  }
+  async getMessages(id: string) {
+    return await this.messageRepository.find({
+      where: { chat: { id } },
+    });
   }
 
   async sendMessage(message: Message) {
