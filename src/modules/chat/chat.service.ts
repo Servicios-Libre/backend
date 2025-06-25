@@ -2,36 +2,55 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
 import { Repository } from 'typeorm';
-import { Message } from './DTOs/message.dto';
 import { Contract } from './entities/contract.entity';
 import { ContractDto } from './DTOs/contract.dto';
 import { StatusContract } from './entities/statusContract.enum';
+import { Message } from './entities/message.entity';
 
 @Injectable()
 export class ChatService {
   constructor(
     @InjectRepository(Chat) private chatRepository: Repository<Chat>,
+    @InjectRepository(Message) private messageRepository: Repository<Message>,
     @InjectRepository(Contract)
     private ContractRepository: Repository<Contract>,
   ) {}
   async getConversation(user1: string, user2: string) {
     try {
-      return await this.chatRepository.find({
+      const chat = await this.chatRepository.findOneOrFail({
         where: [
-          { senderId: user1, receiverId: user2 },
-          { senderId: user2, receiverId: user1 },
+          { user1, user2 },
+          { user1: user2, user2: user1 },
         ],
       });
+      return { chatId: chat.id };
     } catch {
-      throw new BadRequestException('messages not found');
+      const chat = await this.chatRepository.save({
+        user1,
+        user2,
+      });
+      const id = chat.id;
+      return { chatId: id };
     }
   }
 
-  async sendMessage(message: Message) {
+  async getMessages(id: string) {
+    return await this.messageRepository.find({
+      where: { chat: { id } },
+    });
+  }
+
+  async sendMessage(message: Message, chatId: string) {
     const timestamp = new Date();
+    const chat = await this.chatRepository.findOne({
+      where: { id: chatId },
+    });
+    if (!chat) {
+      throw new BadRequestException('Chat not found');
+    }
+    message.chat = chat;
     const messageToSave = { timestamp, ...message };
-    await this.chatRepository.save(messageToSave);
-    return 'Message create successfully';
+    return await this.messageRepository.save(messageToSave);
   }
 
   async getContract(worker: string, client: string) {
