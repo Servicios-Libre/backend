@@ -10,28 +10,35 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
-import { Message } from './DTOs/message.dto';
 import { ContractDto } from './DTOs/contract.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from '../users/entities/roles.enum';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { Message } from './entities/message.entity';
+import { ChatGateway } from './chat.gateway';
 
 @ApiBearerAuth()
 @Controller('api/chat')
 export class ChatController {
-  constructor(private readonly chatService: ChatService) {}
+  constructor(
+    private readonly chatService: ChatService,
+    private readonly chatGateway: ChatGateway,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Post('start')
   getConversation(
     @Body() { userId, otherUserId }: { userId: string; otherUserId: string },
   ) {
-    console.log('userID', userId, 'otherUserID', otherUserId);
-    // @Query('user1', ParseUUIDPipe) user1: string,
-    // @Query('user2', ParseUUIDPipe) user2: string,
     return this.chatService.getConversation(userId, otherUserId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/messages')
+  getMessages(@Param('id', ParseUUIDPipe) id: string) {
+    return this.chatService.getMessages(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -44,9 +51,14 @@ export class ChatController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('messages')
-  sendMessage(@Body() message: Message) {
-    return this.chatService.sendMessage(message);
+  @Post(':id/messages')
+  async sendMessage(
+    @Body() message: Message,
+    @Param('id', ParseUUIDPipe) chatId: string,
+  ) {
+    const newMessage = await this.chatService.sendMessage(message, chatId);
+    this.chatGateway.emitNewMessage(newMessage);
+    return newMessage;
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
