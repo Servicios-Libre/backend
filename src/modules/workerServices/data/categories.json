@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Agricultura",
+    "icon": "tractor"
+  },
+  {
+    "name": "Ventas",
+    "icon": "bullhorn"
+  },
+  {
+    "name": "Desarrollo web",
+    "icon": "laptop-code"
+  },
+  {
+    "name": "Fitness",
+    "icon": "dumbbell"
+  },
+  {
+    "name": "Marketing digital",
+    "icon": "handshake"
+  },
+  {
+    "name": "Salud",
+    "icon": "user-nurse"
+  },
+  {
+    "name": "Desarrollo personal",
+    "icon": "chalkboard-teacher"
+  },
+  {
+    "name": "Estética",
+    "icon": "face-smile"
+  },
+  {
+    "name": "Reparación",
+    "icon": "screwdriver-wrench"
+  }
+]
