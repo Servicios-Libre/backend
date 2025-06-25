@@ -5,10 +5,8 @@ import {
   ConnectedSocket,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  WebSocketServer,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { Message } from './entities/message.entity';
+import { Socket } from 'socket.io';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -27,19 +25,5 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     console.log(`Mensaje recibido: ${message}`);
     client.emit('respuesta', `Servidor recibió: ${message}`);
-  }
-
-  @WebSocketServer()
-  server: Server;
-
-  emitNewMessage(message: Message) {
-    const chatRoom = `chat_${message.chat.id}`;
-    this.server.to(chatRoom).emit('newMessage', {
-      id: message.id,
-      content: message.content,
-      chatId: message.chat.id,
-      sender: message.senderId,
-      createdAt: message.timestamp,
-    });
   }
 }
