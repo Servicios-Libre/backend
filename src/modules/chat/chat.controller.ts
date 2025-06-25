@@ -24,7 +24,7 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get('messages')
+  @Get('start')
   getConversation(
     @Query('user1', ParseUUIDPipe) user1: string,
     @Query('user2', ParseUUIDPipe) user2: string,
