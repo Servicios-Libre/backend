@@ -12,6 +12,8 @@ import { Message } from './entities/message.entity';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  @WebSocketServer()
+  server: Server;
   handleConnection(client: Socket) {
     console.log(`Cliente conectado: ${client.id}`);
   }
@@ -40,11 +42,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.emit('joinedChat', chatId);
   }
 
-  @WebSocketServer()
-  server: Server;
-
   emitNewMessage(message: Message) {
     const chatRoom = `chat_${message.chat.id}`;
+    console.log('Emitiendo newMessage a sala:', chatRoom);
     this.server.to(chatRoom).emit('newMessage', {
       id: message.id,
       content: message.message,
