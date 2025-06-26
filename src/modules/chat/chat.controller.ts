@@ -66,7 +66,7 @@ export class ChatController {
     @Param('id', ParseUUIDPipe) chatId: string,
   ) {
     const newMessage = await this.chatService.sendMessage(message, chatId);
-    this.chatGateway.emitNewMessage(newMessage);
+    if (newMessage) this.chatGateway.emitNewMessage(newMessage);
     return newMessage;
   }
 
