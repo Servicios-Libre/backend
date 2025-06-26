@@ -33,13 +33,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('joinChat')
   async handleJoinChat(
-    @MessageBody() chatId: string,
+    @MessageBody() { chatRoom },
     @ConnectedSocket() client: Socket,
   ) {
-    const room = `chat_${chatId}`;
+    const room = `${chatRoom}`;
     await client.join(room);
     console.log(`Socket ${client.id} unido a sala ${room}`);
-    client.emit('joinedChat', chatId);
+    client.emit('joinedChat', chatRoom);
   }
 
   emitNewMessage(message: Message) {
