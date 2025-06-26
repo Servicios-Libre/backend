@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   FileTypeValidator,
   Headers,
   MaxFileSizeValidator,
@@ -7,19 +8,26 @@ import {
   ParseFilePipe,
   ParseUUIDPipe,
   Post,
+  Query,
   UploadedFile,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @ApiBearerAuth()
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('worker')
   @Post('/service/:id')
   @UseInterceptors(FilesInterceptor('images'))
   async uploadWorkPhotos(
@@ -35,6 +43,16 @@ export class FilesController {
     files: Express.Multer.File[],
   ) {
     return this.filesService.uploadWorkPhoto(files, id);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('worker')
+  @Delete('/service/:id')
+  deleteWorkPhotos(
+    @Param('id', ParseUUIDPipe) service_id: string,
+    @Query('workPhoto_id', ParseUUIDPipe) workPhoto_id: string,
+  ) {
+    return this.filesService.deleteWorkPhoto(service_id, workPhoto_id);
   }
 
   @Post('user')
