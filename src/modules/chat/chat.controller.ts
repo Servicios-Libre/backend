@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   Param,
   ParseUUIDPipe,
   Post,
@@ -18,6 +19,7 @@ import { Role } from '../users/entities/roles.enum';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './DTOs/message.dto';
+import { ExtractPayload } from 'src/helpers/extractPayload.token';
 
 @ApiBearerAuth()
 @Controller('api/chat')
@@ -39,6 +41,13 @@ export class ChatController {
   @Get(':id/messages')
   getMessages(@Param('id', ParseUUIDPipe) id: string) {
     return this.chatService.getMessages(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('inbox')
+  getInbox(@Headers('authorization') authorization: string) {
+    const payload = ExtractPayload(authorization);
+    return this.chatService.getInbox(payload.id);
   }
 
   @UseGuards(JwtAuthGuard)

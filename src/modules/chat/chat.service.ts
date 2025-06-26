@@ -101,4 +101,13 @@ export class ChatService {
       throw new BadRequestException('Contract not exist');
     }
   }
+
+  async getInbox(id: string) {
+    const chats = await this.chatRepository.find({
+      where: [{ user1: id }, { user2: id }],
+    });
+    if (!chats || chats.length === 0)
+      throw new BadRequestException('No chats found');
+    return chats;
+  }
 }
