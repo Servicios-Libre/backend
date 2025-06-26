@@ -29,6 +29,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.emit('respuesta', `Servidor recibió: ${message}`);
   }
 
+  @SubscribeMessage('joinChat')
+  async handleJoinChat(
+    @MessageBody() chatId: number,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const room = `chat_${chatId}`;
+    await client.join(room);
+    console.log(`Socket ${client.id} unido a sala ${room}`);
+    client.emit('joinedChat', chatId);
+  }
+
   @WebSocketServer()
   server: Server;
 
