@@ -50,7 +50,11 @@ export class ChatService {
     }
     message.chat = chat;
     console.log(message);
-    return await this.messageRepository.save(message);
+    const newMessage = await this.messageRepository.save(message);
+    return await this.messageRepository.findOne({
+      where: { id: newMessage.id },
+      relations: { chat: true },
+    });
   }
 
   async getContract(worker: string, client: string) {
