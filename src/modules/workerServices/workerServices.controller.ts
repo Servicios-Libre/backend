@@ -7,6 +7,8 @@ import {
   Query,
   UseGuards,
   Put,
+  Delete,
+  Headers,
 } from '@nestjs/common';
 import { WorkerServicesService } from './workerServices.service';
 import { ServiceDto } from './dtos/service.dto';
@@ -73,5 +75,16 @@ export class WorkerServicesController {
   @Put('edit/:id')
   editService(@Param('id') id: string, @Body() body: EditServiceDto) {
     return this.workerServicesService.editService(id, body);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('worker')
+  @Delete('delete/:id')
+  deleteService(
+    @Param('id') id: string,
+    @Headers('authorization') token: string,
+  ) {
+    return this.workerServicesService.deleteService(id, token);
   }
 }
