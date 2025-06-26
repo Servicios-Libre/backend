@@ -49,7 +49,9 @@ export class ChatService {
       throw new BadRequestException('Chat not found');
     }
     message.chat = chat;
+    console.log(message);
     const messageToSave = { timestamp, ...message };
+    console.log(messageToSave);
     return await this.messageRepository.save(messageToSave);
   }
 
