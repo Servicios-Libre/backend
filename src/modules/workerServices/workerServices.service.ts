@@ -13,6 +13,8 @@ import { User } from '../users/entities/users.entity';
 import { TicketsService } from '../tickets/tickets.service';
 import { TicketStatus } from '../tickets/entities/ticket.entity';
 import { EditServiceDto } from './dtos/edit-service.dto';
+import { Payload } from '../auth/types/payload.type';
+import { ExtractPayload } from 'src/helpers/extractPayload.token';
 
 @Injectable()
 export class WorkerServicesService {
@@ -204,6 +206,28 @@ export class WorkerServicesService {
       message: 'Service updated successfully',
       service,
     };
+  }
+
+  async deleteService(id: string, token: string) {
+    const payload: Omit<Payload, 'name'> = ExtractPayload(token);
+
+    if (!payload) throw new BadRequestException('Invalid token');
+
+    const service = await this.servicesRepository.findOne({
+      where: { id },
+      relations: ['worker', 'ticket'],
+    });
+
+    if (!service) throw new NotFoundException('Service not found');
+    if (service.worker.id !== payload.id) {
+      throw new BadRequestException(
+        'Only the owner of the service can delete it',
+      );
+    }
+
+    await this.servicesRepository.delete(id);
+
+    return { message: 'Service deleted succesfully' };
   }
 
   async seedCategories() {

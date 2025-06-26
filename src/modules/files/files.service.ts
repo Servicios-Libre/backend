@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UploadApiResponse, v2 } from 'cloudinary';
 import * as toStream from 'buffer-to-stream';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -79,5 +79,25 @@ export class FilesService {
     userFound.user_pic = url;
     await this.userRepository.save(userFound);
     return { message: 'Image uploaded successfully' };
+  }
+
+  async deleteWorkPhoto(service_id: string, workPhoto_id: string) {
+    const service = await this.serviceRepository.findOne({
+      where: { id: service_id },
+      relations: ['work_photos'],
+    });
+    if (!service) {
+      throw new Error('Service not found');
+    }
+
+    const photosNumber = service.work_photos.length;
+    service.work_photos = service.work_photos.filter((work_photo) => {
+      return work_photo.id !== workPhoto_id;
+    });
+
+    if (service.work_photos.length === photosNumber)
+      throw new NotFoundException('Work Photo not found');
+    await this.serviceRepository.save(service);
+    return { message: 'Image deleted successfully' };
   }
 }

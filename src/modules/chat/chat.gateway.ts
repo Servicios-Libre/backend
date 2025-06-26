@@ -36,7 +36,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const chatRoom = `chat_${message.chat.id}`;
     this.server.to(chatRoom).emit('newMessage', {
       id: message.id,
-      content: message.content,
+      content: message.message,
       chatId: message.chat.id,
       sender: message.senderId,
       createdAt: message.timestamp,

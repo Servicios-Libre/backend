@@ -10,13 +10,13 @@ import { Chat } from './chat.entity';
 @Entity()
 export class Message {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id?: string;
 
   @Column()
   senderId: string;
 
   @Column({ type: 'text' })
-  content: string;
+  message: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   timestamp?: Date;

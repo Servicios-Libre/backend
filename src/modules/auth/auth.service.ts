@@ -9,6 +9,7 @@ import { CredentialsDto, UpdateImageDto } from './DTOs/credentials.dto';
 import { Address } from '../users/entities/address.entity';
 import { Role } from '../users/entities/roles.enum';
 import { EmailService } from '../email/email.service';
+import { Payload } from './types/payload.type';
 
 @Injectable()
 export class AuthService {
@@ -74,7 +75,8 @@ export class AuthService {
     );
     if (!confirmation)
       throw new BadRequestException('Credenciales incorrectas');
-    const payload = {
+
+    const payload: Payload = {
       id: confirmUser.id,
       email: confirmUser.email,
       role: confirmUser.role,
