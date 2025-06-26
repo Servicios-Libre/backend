@@ -6,6 +6,7 @@ import { Contract } from './entities/contract.entity';
 import { ContractDto } from './DTOs/contract.dto';
 import { StatusContract } from './entities/statusContract.enum';
 import { Message } from './entities/message.entity';
+import { MessageDto } from './DTOs/message.dto';
 
 @Injectable()
 export class ChatService {
@@ -40,8 +41,7 @@ export class ChatService {
     });
   }
 
-  async sendMessage(message: Message, chatId: string) {
-    const timestamp = new Date();
+  async sendMessage(message: MessageDto, chatId: string) {
     const chat = await this.chatRepository.findOne({
       where: { id: chatId },
     });
@@ -50,9 +50,7 @@ export class ChatService {
     }
     message.chat = chat;
     console.log(message);
-    const messageToSave = { timestamp, ...message };
-    console.log(messageToSave);
-    return await this.messageRepository.save(messageToSave);
+    return await this.messageRepository.save(message);
   }
 
   async getContract(worker: string, client: string) {

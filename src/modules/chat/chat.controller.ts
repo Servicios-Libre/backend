@@ -16,8 +16,8 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from '../users/entities/roles.enum';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { Message } from './entities/message.entity';
 import { ChatGateway } from './chat.gateway';
+import { MessageDto } from './DTOs/message.dto';
 
 @ApiBearerAuth()
 @Controller('api/chat')
@@ -53,7 +53,7 @@ export class ChatController {
   @UseGuards(JwtAuthGuard)
   @Post(':id/messages')
   async sendMessage(
-    @Body() message: Message,
+    @Body() message: MessageDto,
     @Param('id', ParseUUIDPipe) chatId: string,
   ) {
     const newMessage = await this.chatService.sendMessage(message, chatId);
