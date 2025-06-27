@@ -8,7 +8,9 @@ export class WorkPhoto {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Service, (service: Service) => service.work_photos)
+  @ManyToOne(() => Service, (service: Service) => service.work_photos, {
+    onDelete: 'CASCADE',
+  })
   service: Service;
 
   @Column({
