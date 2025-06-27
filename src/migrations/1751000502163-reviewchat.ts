@@ -6,7 +6,6 @@ export class Reviewchat1751000502163 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "REVIEWS" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "description" text NOT NULL, "rate" integer NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT '"2025-06-27T05:01:45.512Z"', "authorId" uuid, "workerId" uuid, CONSTRAINT "PK_fc038fca61fa79fc6d4fb1f9e51" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "message" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "senderId" character varying NOT NULL, "message" text NOT NULL, "timestamp" TIMESTAMP NOT NULL DEFAULT now(), "chatId" uuid, CONSTRAINT "PK_ba01f0a3e0123651915008bc578" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`ALTER TABLE "chat" DROP COLUMN "message"`);
         await queryRunner.query(`ALTER TABLE "chat" DROP COLUMN "timestamp"`);
         await queryRunner.query(`ALTER TABLE "chat" ADD "otherUserId" uuid`);
         await queryRunner.query(`ALTER TABLE "chat" ADD "userId" uuid`);
@@ -30,7 +29,6 @@ export class Reviewchat1751000502163 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "chat" DROP COLUMN "userId"`);
         await queryRunner.query(`ALTER TABLE "chat" DROP COLUMN "otherUserId"`);
         await queryRunner.query(`ALTER TABLE "chat" ADD "timestamp" TIMESTAMP NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "chat" ADD "message" text NOT NULL`);
         await queryRunner.query(`DROP TABLE "message"`);
         await queryRunner.query(`DROP TABLE "REVIEWS"`);
     }
