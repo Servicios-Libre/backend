@@ -92,7 +92,7 @@ export class AuthService {
   }
 
   async googleSignIn(credentials: UpdateImageDto) {
-    const { email, password, name, Image } = credentials;
+    const { email, password, name, image } = credentials;
 
     let user = await this.UserRepository.findOne({
       where: { email },
@@ -107,7 +107,7 @@ export class AuthService {
         email,
         password: hashedPassword,
         role: Role.user,
-        user_pic: Image,
+        user_pic: image,
         created_at: new Date(),
       });
 
