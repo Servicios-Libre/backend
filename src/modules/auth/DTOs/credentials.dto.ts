@@ -32,5 +32,5 @@ export class UpdateImageDto {
 
   @IsOptional()
   @IsString()
-  Image?: string;
+  image?: string;
 }
