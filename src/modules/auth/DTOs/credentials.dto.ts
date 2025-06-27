@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 
 /**
  * Para login manual con email + password
@@ -8,7 +8,6 @@ export class CredentialsDto {
   email: string;
 
   @IsString()
-  @MinLength(6)
   password: string;
 }
 
@@ -17,15 +16,10 @@ export class CredentialsDto {
  * - Email
  * - Name
  * - Imagen (opcional)
- * - Password simbólica "Google@Auth"
  */
 export class UpdateImageDto {
   @IsEmail()
   email: string;
-
-  @IsString()
-  @MinLength(6)
-  password: string;
 
   @IsString()
   name: string;
