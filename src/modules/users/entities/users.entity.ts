@@ -64,7 +64,6 @@ export class User {
   @OneToMany(() => Ticket, (ticket) => ticket.user)
   tickets: Ticket[];
 
-
   @OneToMany(() => Review, (review) => review.author)
   created_reviews: Review[];
 
