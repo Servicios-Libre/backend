@@ -1,16 +1,25 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Message } from './message.entity';
+import { User } from 'src/modules/users/entities/users.entity';
 
 @Entity()
 export class Chat {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  user1: string;
+  @ManyToOne(() => User, (user) => user.chatOtherUser)
+  @JoinColumn()
+  otherUser: string;
 
-  @Column()
-  user2: string;
+  @ManyToOne(() => User, (user) => user.chatUser)
+  @JoinColumn()
+  user: string;
 
   @OneToMany(() => Message, (message) => message.chat)
   messages: Message[];
