@@ -21,13 +21,18 @@ export class ChatService {
   async getConversation(userId: string, otherUserId: string) {
     try {
       const chat = await this.chatRepository.findOneOrFail({
-        where: [{ user: userId, otherUser: otherUserId }],
+        where: [{ user: { id: userId }, otherUser: { id: otherUserId } }],
       });
       return { chatId: chat.id };
     } catch {
+      const user = await this.userRepository.findOneBy({ id: userId });
+      const otherUser = await this.userRepository.findOneBy({
+        id: otherUserId,
+      });
+      if (!user || !otherUser) throw new BadRequestException('Users not found');
       const chat = await this.chatRepository.save({
-        user: userId,
-        otherUser: otherUserId,
+        user,
+        otherUser,
       });
       const id = chat.id;
       return { chatId: id };
@@ -42,8 +47,10 @@ export class ChatService {
     if (!chat) {
       throw new BadRequestException('Chat not found');
     }
-    const user1 = await this.userRepository.findOneBy({ id: chat.user });
-    const user2 = await this.userRepository.findOneBy({ id: chat.otherUser });
+    const user1 = await this.userRepository.findOneBy({ id: chat.user.id });
+    const user2 = await this.userRepository.findOneBy({
+      id: chat.otherUser.id,
+    });
     return { messages, user1, user2 };
   }
 
