@@ -115,7 +115,7 @@ export class ChatService {
 
   async getInbox(id: string) {
     const chats = await this.chatRepository.find({
-      where: [{ user: id }, { otherUser: id }],
+      where: [{ user: { id } }, { otherUser: { id } }],
       relations: ['user', 'otherUser'],
     });
     if (!chats || chats.length === 0)
