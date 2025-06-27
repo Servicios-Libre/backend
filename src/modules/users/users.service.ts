@@ -23,12 +23,6 @@ export class UsersService {
     if (role) where.role = role;
     const [users, total] = await this.UserRepository.findAndCount({
       where: { role },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-      },
       take: limit,
       skip: (page - 1) * limit,
     });
