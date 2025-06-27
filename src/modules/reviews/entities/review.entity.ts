@@ -1,5 +1,11 @@
 import { User } from 'src/modules/users/entities/users.entity';
-import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({
   name: 'REVIEWS',
@@ -8,11 +14,11 @@ export class Review {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToMany(() => User, (user) => user.createdReviews)
+  @ManyToOne(() => User, (user) => user.created_reviews)
   @JoinColumn()
   author: User;
 
-  @OneToMany(() => User, (user) => user.workerReviews)
+  @ManyToOne(() => User, (user) => user.received_reviews)
   @JoinColumn()
   worker: User;
 

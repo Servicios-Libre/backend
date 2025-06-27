@@ -9,6 +9,7 @@ import {
 import { Address } from './address.entity';
 import { Service } from 'src/modules/workerServices/entities/service.entity';
 import { Ticket } from 'src/modules/tickets/entities/ticket.entity';
+import { Review } from 'src/modules/reviews/entities/review.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -60,4 +61,10 @@ export class User {
 
   @OneToMany(() => Ticket, (ticket) => ticket.user)
   tickets: Ticket[];
+
+  @OneToMany(() => Review, (review) => review.author)
+  created_reviews: Review[];
+
+  @OneToMany(() => Review, (review) => review.worker)
+  received_reviews: Review[];
 }
