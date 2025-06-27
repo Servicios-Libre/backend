@@ -226,7 +226,6 @@ export class WorkerServicesService {
     }
 
     await this.servicesRepository.delete(id);
-
     return { message: 'Service deleted succesfully' };
   }
 
