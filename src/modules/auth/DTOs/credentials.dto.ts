@@ -1,12 +1,36 @@
-import { PickType } from '@nestjs/swagger';
-import { IsOptional } from 'class-validator';
-import { UserDto } from 'src/modules/users/DTOs/user.dto';
+import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
 
-export class CredentialsDto extends PickType(UserDto, ['email', 'password']) {}
+/**
+ * Para login manual con email + password
+ */
+export class CredentialsDto {
+  @IsEmail()
+  email: string;
 
-export class UpdateImageDto extends CredentialsDto {
-  @IsOptional()
-  Image?: string;
+  @IsString()
+  @MinLength(6)
+  password: string;
+}
 
+/**
+ * Para login con Google. Incluye:
+ * - Email
+ * - Name
+ * - Imagen (opcional)
+ * - Password simbólica "Google@Auth"
+ */
+export class UpdateImageDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @MinLength(6)
+  password: string;
+
+  @IsString()
   name: string;
+
+  @IsOptional()
+  @IsString()
+  image?: string;
 }
