@@ -42,7 +42,10 @@ export class ChatService {
     const messages = await this.messageRepository.find({
       where: { chat: { id } },
     });
-    const chat = await this.chatRepository.findOneBy({ id });
+    const chat = await this.chatRepository.findOne({
+      where: { id },
+      relations: ['user', 'otherUser'],
+    });
     if (!chat) {
       throw new BadRequestException('Chat not found');
     }
