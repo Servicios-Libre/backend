@@ -64,15 +64,16 @@ export class User {
   @OneToMany(() => Ticket, (ticket) => ticket.user)
   tickets: Ticket[];
 
+
   @OneToMany(() => Review, (review) => review.author)
   created_reviews: Review[];
 
   @OneToMany(() => Review, (review) => review.worker)
   received_reviews: Review[];
 
-  @OneToMany(() => Chat, (chat: Chat) => chat.user)
+  @OneToMany(() => Chat, (chat) => chat.user)
   chatUser: Chat[];
 
-  @OneToMany(() => Chat, (chat: Chat) => chat.otherUser)
+  @OneToMany(() => Chat, (chat) => chat.otherUser)
   chatOtherUser: Chat[];
 }
