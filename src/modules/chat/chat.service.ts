@@ -7,6 +7,7 @@ import { ContractDto } from './DTOs/contract.dto';
 import { StatusContract } from './entities/statusContract.enum';
 import { Message } from './entities/message.entity';
 import { MessageDto } from './DTOs/message.dto';
+import { User } from '../users/entities/users.entity';
 
 @Injectable()
 export class ChatService {
@@ -15,6 +16,7 @@ export class ChatService {
     @InjectRepository(Message) private messageRepository: Repository<Message>,
     @InjectRepository(Contract)
     private ContractRepository: Repository<Contract>,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
   async getConversation(user1: string, user2: string) {
     try {
@@ -36,9 +38,16 @@ export class ChatService {
   }
 
   async getMessages(id: string) {
-    return await this.messageRepository.find({
+    const messages = await this.messageRepository.find({
       where: { chat: { id } },
     });
+    const chat = await this.chatRepository.findOneBy({ id });
+    if (!chat) {
+      throw new BadRequestException('Chat not found');
+    }
+    const user1 = await this.userRepository.findOneBy({ id: chat.user1 });
+    const user2 = await this.userRepository.findOneBy({ id: chat.user2 });
+    return { messages, user1, user2 };
   }
 
   async sendMessage(message: MessageDto, chatId: string) {
