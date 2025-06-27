@@ -25,15 +25,14 @@ export class AuthService {
       email: user.email,
     });
     if (confirmUser) throw new BadRequestException('El usuario ya existe');
-
     if (user.password !== confirmPassword)
       throw new BadRequestException('Las contraseñas no coinciden');
 
-    const hashedPassword = await bcrypt.hash(user.password, 10);
+    const hashedPassword: string = await bcrypt.hash(user.password, 10);
 
     const { street, city, state, zip_code, house_number, ...userCreate } = user;
 
-    const newUser = await this.UserRepository.save({
+    const savedUser = await this.UserRepository.save({
       ...userCreate,
       password: hashedPassword,
       created_at: new Date(),
@@ -48,11 +47,11 @@ export class AuthService {
       state,
       zip_code,
       house_number,
-      user_id: newUser,
+      user_id: savedUser,
     });
 
     const userDB = await this.UserRepository.findOne({
-      where: { id: newUser.id },
+      where: { id: savedUser.id },
       relations: { address_id: true },
     });
 
@@ -91,43 +90,44 @@ export class AuthService {
     return { token };
   }
 
-  async googleSignIn(credentials: UpdateImageDto) {
-    const { email, password, name, Image } = credentials;
+  async googleSignIn(credentials: Omit<UpdateImageDto, 'password'>) {
+    const { email, name, image } = credentials;
+    const confirmUser = await this.UserRepository.findOneBy({ email });
 
-    let user = await this.UserRepository.findOne({
-      where: { email },
-      relations: ['address_id'],
-    });
-
-    if (!user) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      user = await this.UserRepository.save({
+    if (!confirmUser) {
+      const newUser = await this.UserRepository.save({
         name,
         email,
-        password: hashedPassword,
+        password: 'Google@Auth', // solo como dummy
         role: Role.user,
-        user_pic: Image,
+        user_pic: image,
         created_at: new Date(),
       });
 
       const address = await this.AddressRepository.save({
-        user_id: user,
+        user_id: newUser,
       });
 
-      user.address_id = address;
-      await this.UserRepository.save(user);
+      newUser.address_id = address;
+      await this.UserRepository.save(newUser);
+
+      const payload = {
+        id: newUser.id,
+        email: newUser.email,
+        role: newUser.role,
+        name: newUser.name,
+      };
+
+      const token = this.jwtService.sign(payload);
+      return { token };
     }
 
-    if (password !== 'Google@Auth') {
-      throw new BadRequestException('Credenciales incorrectas');
-    }
-
-    const payload: Payload = {
-      id: user.id,
-      email: user.email,
-      role: user.role,
-      name: user.name,
+    // Usuario ya existe, generar token igual
+    const payload = {
+      id: confirmUser.id,
+      email: confirmUser.email,
+      role: confirmUser.role,
+      name: confirmUser.name,
     };
 
     const token = this.jwtService.sign(payload);
