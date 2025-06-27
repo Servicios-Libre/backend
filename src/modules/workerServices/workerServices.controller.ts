@@ -9,6 +9,7 @@ import {
   Put,
   Delete,
   Headers,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { WorkerServicesService } from './workerServices.service';
 import { ServiceDto } from './dtos/service.dto';
@@ -82,7 +83,7 @@ export class WorkerServicesController {
   @Roles('worker')
   @Delete('delete/:id')
   deleteService(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Headers('authorization') token: string,
   ) {
     return this.workerServicesService.deleteService(id, token);

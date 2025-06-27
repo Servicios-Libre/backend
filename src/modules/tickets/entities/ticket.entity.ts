@@ -50,7 +50,9 @@ export class Ticket {
   @JoinColumn()
   user: User;
 
-  @OneToOne(() => Service, (service: Service) => service.ticket)
+  @OneToOne(() => Service, (service: Service) => service.ticket, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   service: Service;
 }
