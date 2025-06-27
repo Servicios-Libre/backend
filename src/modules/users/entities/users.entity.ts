@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import {
   Column,
   Entity,
@@ -35,7 +36,7 @@ export class User {
   @Column()
   created_at: Date;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'float' })
   rate?: number;
 
   @Column({ nullable: true })
@@ -68,9 +69,10 @@ export class User {
 
   @OneToMany(() => Review, (review) => review.worker)
   received_reviews: Review[];
-  @OneToMany(() => Chat, (chat) => chat.user)
+
+  @OneToMany(() => Chat, (chat: Chat) => chat.user)
   chatUser: Chat[];
 
-  @OneToMany(() => Chat, (chat) => chat.otherUser)
+  @OneToMany(() => Chat, (chat: Chat) => chat.otherUser)
   chatOtherUser: Chat[];
 }

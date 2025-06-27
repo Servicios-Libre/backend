@@ -18,7 +18,7 @@ import { Payload } from '../auth/types/payload.type';
 export class ReviewsService {
   constructor(
     @InjectRepository(Review) private reviewRepository: Repository<Review>,
-    @InjectRepository(Review) private userRepository: Repository<User>,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
   async getWorkerReviews(
