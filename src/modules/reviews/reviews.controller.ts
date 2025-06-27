@@ -7,9 +7,13 @@ import {
   ParseUUIDPipe,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { ReviewDto } from './dtos/review.dto';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -25,6 +29,8 @@ export class ReviewsController {
     return this.reviewsService.getWorkerReviews(worker_id, page, limit, sort);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('user')
   @Post('/new/:id')
   createReview(
     @Param('id', ParseUUIDPipe) worker_id: string,
