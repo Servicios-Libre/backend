@@ -15,11 +15,11 @@ export class Chat {
 
   @ManyToOne(() => User, (user) => user.chatOtherUser)
   @JoinColumn()
-  otherUser: string;
+  otherUser: User;
 
   @ManyToOne(() => User, (user) => user.chatUser)
   @JoinColumn()
-  user: string;
+  user: User;
 
   @OneToMany(() => Message, (message) => message.chat)
   messages: Message[];
