@@ -25,14 +25,15 @@ export class AuthService {
       email: user.email,
     });
     if (confirmUser) throw new BadRequestException('El usuario ya existe');
+
     if (user.password !== confirmPassword)
-      throw new BadRequestException('las contraseñas no coinciden');
-    const hashedPassword: string = await bcrypt.hash(user.password, 10);
+      throw new BadRequestException('Las contraseñas no coinciden');
+
+    const hashedPassword = await bcrypt.hash(user.password, 10);
 
     const { street, city, state, zip_code, house_number, ...userCreate } = user;
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...newUser } = await this.UserRepository.save({
+    const newUser = await this.UserRepository.save({
       ...userCreate,
       password: hashedPassword,
       created_at: new Date(),
@@ -55,11 +56,13 @@ export class AuthService {
       relations: { address_id: true },
     });
 
-    await this.emailService.registerEmail(
-      userDB!.email,
-      userDB!.name,
-      userDB!.id,
-    );
+    if (!userDB) {
+      throw new BadRequestException(
+        'Error al recuperar el usuario recién creado',
+      );
+    }
+
+    await this.emailService.registerEmail(userDB.email, userDB.name, userDB.id);
 
     return userDB;
   }
@@ -69,6 +72,7 @@ export class AuthService {
       email: credentials.email,
     });
     if (!confirmUser) throw new BadRequestException('Credenciales incorrectas');
+
     const confirmation = await bcrypt.compare(
       credentials.password,
       confirmUser.password,
@@ -82,51 +86,50 @@ export class AuthService {
       role: confirmUser.role,
       name: confirmUser.name,
     };
+
     const token = this.jwtService.sign(payload);
     return { token };
   }
 
   async googleSignIn(credentials: UpdateImageDto) {
-    const { Image, password, email } = credentials;
-    const confirmUser = await this.UserRepository.findOneBy({ email });
+    const { email, password, name, Image } = credentials;
 
-    if (!confirmUser) {
-      const newUser = await this.UserRepository.save({
-        name: credentials.name,
+    let user = await this.UserRepository.findOne({
+      where: { email },
+      relations: ['address_id'],
+    });
+
+    if (!user) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      user = await this.UserRepository.save({
+        name,
         email,
-        password,
+        password: hashedPassword,
         role: Role.user,
         user_pic: Image,
         created_at: new Date(),
       });
 
       const address = await this.AddressRepository.save({
-        user_id: newUser,
+        user_id: user,
       });
 
-      newUser.address_id = address;
-      await this.UserRepository.save(newUser);
-
-      const payload = {
-        id: newUser.id,
-        email: newUser.email,
-        role: newUser.role,
-        name: newUser.name,
-      };
-      const token = this.jwtService.sign(payload);
-
-      return { token };
+      user.address_id = address;
+      await this.UserRepository.save(user);
     }
 
-    if (confirmUser && password !== 'Google@Auth')
+    if (password !== 'Google@Auth') {
       throw new BadRequestException('Credenciales incorrectas');
+    }
 
-    const payload = {
-      id: confirmUser.id,
-      email: confirmUser.email,
-      role: confirmUser.role,
-      name: confirmUser.name,
+    const payload: Payload = {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      name: user.name,
     };
+
     const token = this.jwtService.sign(payload);
     return { token };
   }
