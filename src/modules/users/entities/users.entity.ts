@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import {
   Column,
   Entity,
@@ -9,6 +10,7 @@ import {
 import { Address } from './address.entity';
 import { Service } from 'src/modules/workerServices/entities/service.entity';
 import { Ticket } from 'src/modules/tickets/entities/ticket.entity';
+import { Review } from 'src/modules/reviews/entities/review.entity';
 import { Chat } from 'src/modules/chat/entities/chat.entity';
 
 @Entity({ name: 'users' })
@@ -34,7 +36,7 @@ export class User {
   @Column()
   created_at: Date;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'float' })
   rate?: number;
 
   @Column({ nullable: true })
@@ -61,6 +63,13 @@ export class User {
 
   @OneToMany(() => Ticket, (ticket) => ticket.user)
   tickets: Ticket[];
+
+
+  @OneToMany(() => Review, (review) => review.author)
+  created_reviews: Review[];
+
+  @OneToMany(() => Review, (review) => review.worker)
+  received_reviews: Review[];
 
   @OneToMany(() => Chat, (chat) => chat.user)
   chatUser: Chat[];
