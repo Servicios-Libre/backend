@@ -18,19 +18,16 @@ export class ChatService {
     private ContractRepository: Repository<Contract>,
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
-  async getConversation(user1: string, user2: string) {
+  async getConversation(userId: string, otherUserId: string) {
     try {
       const chat = await this.chatRepository.findOneOrFail({
-        where: [
-          { user1, user2 },
-          { user1: user2, user2: user1 },
-        ],
+        where: [{ user: userId, otherUser: otherUserId }],
       });
       return { chatId: chat.id };
     } catch {
       const chat = await this.chatRepository.save({
-        user1,
-        user2,
+        user: userId,
+        otherUser: otherUserId,
       });
       const id = chat.id;
       return { chatId: id };
@@ -45,8 +42,8 @@ export class ChatService {
     if (!chat) {
       throw new BadRequestException('Chat not found');
     }
-    const user1 = await this.userRepository.findOneBy({ id: chat.user1 });
-    const user2 = await this.userRepository.findOneBy({ id: chat.user2 });
+    const user1 = await this.userRepository.findOneBy({ id: chat.user });
+    const user2 = await this.userRepository.findOneBy({ id: chat.otherUser });
     return { messages, user1, user2 };
   }
 
@@ -118,7 +115,8 @@ export class ChatService {
 
   async getInbox(id: string) {
     const chats = await this.chatRepository.find({
-      where: [{ user1: id }, { user2: id }],
+      where: [{ user: id }, { otherUser: id }],
+      relations: ['user', 'otherUser'],
     });
     if (!chats || chats.length === 0)
       throw new BadRequestException('No chats found');
