@@ -38,7 +38,6 @@ export class ChatService {
       return { chatId: id };
     }
   }
-
   async getMessages(id: string) {
     const messages = await this.messageRepository.find({
       where: { chat: { id } },
