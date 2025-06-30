@@ -155,6 +155,10 @@ export class ChatService {
               )
             : null;
 
+        if (!chat.user || !chat.otherUser) {
+          return null;
+        }
+
         const otherUser = chat.user.id === userId ? chat.otherUser : chat.user;
 
         return {
@@ -165,10 +169,13 @@ export class ChatService {
             ? {
                 message: lastMessage.message,
                 timestamp: lastMessage.timestamp,
+                isRead: lastMessage.isRead,
+                senderId: lastMessage.senderId,
               }
             : null,
         };
       })
+      .filter((chat) => chat !== null)
       .sort((a, b) => {
         const timeA = a.lastMessage ? a.lastMessage.timestamp!.getTime() : 0;
         const timeB = b.lastMessage ? b.lastMessage.timestamp!.getTime() : 0;
