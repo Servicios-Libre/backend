@@ -21,6 +21,9 @@ export class Message {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   timestamp?: Date;
 
+  @Column({ default: false })
+  isRead: boolean;
+
   @ManyToOne(() => Chat, (chat) => chat.messages)
   @JoinColumn()
   chat: Chat;

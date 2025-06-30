@@ -18,6 +18,7 @@ export class ChatService {
     private ContractRepository: Repository<Contract>,
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
+
   async getConversation(userId: string, otherUserId: string) {
     try {
       const chat = await this.chatRepository.findOneOrFail({
@@ -29,43 +30,54 @@ export class ChatService {
       const otherUser = await this.userRepository.findOneBy({
         id: otherUserId,
       });
-      if (!user || !otherUser) throw new BadRequestException('Users not found');
-      const chat = await this.chatRepository.save({
-        user,
-        otherUser,
-      });
-      const id = chat.id;
-      return { chatId: id };
+
+      if (!user || !otherUser) {
+        throw new BadRequestException('Users not found');
+      }
+
+      const chat = await this.chatRepository.save({ user, otherUser });
+      return { chatId: chat.id };
     }
   }
+
   async getMessages(id: string) {
     const messages = await this.messageRepository.find({
       where: { chat: { id } },
     });
+
     const chat = await this.chatRepository.findOne({
       where: { id },
       relations: ['user', 'otherUser'],
     });
+
     if (!chat) {
       throw new BadRequestException('Chat not found');
     }
+
     const user1 = await this.userRepository.findOneBy({ id: chat.user.id });
     const user2 = await this.userRepository.findOneBy({
       id: chat.otherUser.id,
     });
+
     return { messages, user1, user2 };
   }
 
   async sendMessage(message: MessageDto, chatId: string) {
-    const chat = await this.chatRepository.findOne({
-      where: { id: chatId },
-    });
+    const chat = await this.chatRepository.findOne({ where: { id: chatId } });
     if (!chat) {
       throw new BadRequestException('Chat not found');
     }
-    message.chat = chat;
-    console.log(message);
-    const newMessage = await this.messageRepository.save(message);
+
+    const messageToSave: Partial<Message> = {
+      senderId: message.senderId,
+      message: message.message,
+      timestamp: new Date(message.timestamp),
+      isRead: false,
+      chat,
+    };
+
+    const newMessage = await this.messageRepository.save(messageToSave);
+
     return await this.messageRepository.findOne({
       where: { id: newMessage.id },
       relations: { chat: true },
@@ -122,13 +134,47 @@ export class ChatService {
     }
   }
 
-  async getInbox(id: string) {
+  async getInbox(userId: string) {
     const chats = await this.chatRepository.find({
-      where: [{ user: { id } }, { otherUser: { id } }],
-      relations: ['user', 'otherUser'],
+      where: [{ user: { id: userId } }, { otherUser: { id: userId } }],
+      relations: ['user', 'otherUser', 'messages'],
     });
-    if (!chats || chats.length === 0)
+
+    if (!chats || chats.length === 0) {
       throw new BadRequestException('No chats found');
-    return chats;
+    }
+
+    const inbox = chats
+      .map((chat) => {
+        const messages = chat.messages || [];
+
+        const lastMessage =
+          messages.length > 0
+            ? messages.reduce((latest, current) =>
+                current.timestamp! > latest.timestamp! ? current : latest,
+              )
+            : null;
+
+        const otherUser = chat.user.id === userId ? chat.otherUser : chat.user;
+
+        return {
+          id: chat.id,
+          otherUserId: otherUser.id,
+          otherUsername: otherUser.name,
+          lastMessage: lastMessage
+            ? {
+                message: lastMessage.message,
+                timestamp: lastMessage.timestamp,
+              }
+            : null,
+        };
+      })
+      .sort((a, b) => {
+        const timeA = a.lastMessage ? a.lastMessage.timestamp!.getTime() : 0;
+        const timeB = b.lastMessage ? b.lastMessage.timestamp!.getTime() : 0;
+        return timeB - timeA;
+      });
+
+    return inbox;
   }
 }

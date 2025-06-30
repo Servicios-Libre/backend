@@ -20,5 +20,8 @@ export class MessageDto {
   timestamp: string;
 
   @IsEmpty()
+  isRead?: boolean;
+
+  @IsEmpty()
   chat?: Chat;
 }
