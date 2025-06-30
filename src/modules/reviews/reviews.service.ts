@@ -13,12 +13,14 @@ import { User } from '../users/entities/users.entity';
 import { ReviewDto } from './dtos/review.dto';
 import { ExtractPayload } from 'src/helpers/extractPayload.token';
 import { Payload } from '../auth/types/payload.type';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class ReviewsService {
   constructor(
     @InjectRepository(Review) private reviewRepository: Repository<Review>,
     @InjectRepository(User) private userRepository: Repository<User>,
+    private readonly emailService: EmailService,
   ) {}
 
   async getWorkerReviews(
@@ -102,6 +104,13 @@ export class ReviewsService {
     await this.reviewRepository.save(newReview);
 
     await this.updateRate(worker_id);
+
+    await this.emailService.receivedReviewEmail(
+      workerFound,
+      clientFound,
+      newReview,
+      new Date(),
+    );
 
     return { message: 'Review creada' };
   }
