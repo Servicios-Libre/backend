@@ -20,7 +20,12 @@ export class TicketsService {
     private readonly emailService: EmailService,
   ) {}
 
-  async getTickets(type?: TicketType, status?: TicketStatus) {
+  async getTickets(
+    page: number,
+    limit: number,
+    type?: TicketType,
+    status?: TicketStatus,
+  ) {
     if (type !== undefined && !Object.values(TicketType).includes(type))
       throw new BadRequestException('Invalid querys for type');
     if (status !== undefined && !Object.values(TicketStatus).includes(status))
@@ -28,8 +33,11 @@ export class TicketsService {
     const where: any = {};
     if (type) where.type = type;
     if (status) where.status = status;
+
+    const skip = (page - 1) * limit;
+
     if (type === TicketType.SERVICE)
-      return await this.ticketRepository.find({
+      return await this.ticketRepository.findAndCount({
         where,
         relations: ['service', 'user'],
         select: {
@@ -38,9 +46,11 @@ export class TicketsService {
             email: true,
           },
         },
+        skip,
+        take: limit,
       });
 
-    return await this.ticketRepository.find({
+    return await this.ticketRepository.findAndCount({
       where,
       relations: ['user'],
       select: {
@@ -50,6 +60,8 @@ export class TicketsService {
           email: true,
         },
       },
+      skip,
+      take: limit,
     });
   }
 
