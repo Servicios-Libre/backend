@@ -122,13 +122,53 @@ export class ChatService {
     }
   }
 
-  async getInbox(id: string) {
+  async getInbox(userId: string) {
     const chats = await this.chatRepository.find({
-      where: [{ user: { id } }, { otherUser: { id } }],
-      relations: ['user', 'otherUser'],
+      where: [{ user: { id: userId } }, { otherUser: { id: userId } }],
+      relations: ['user', 'otherUser', 'messages'],
     });
-    if (!chats || chats.length === 0)
+
+    if (!chats || chats.length === 0) {
       throw new BadRequestException('No chats found');
-    return chats;
+    }
+
+    const inbox = chats
+      .map((chat) => {
+        const messages = chat.messages || [];
+        const lastMessage =
+          messages.length > 0
+            ? messages.reduce((latest, current) =>
+                new Date(current.timestamp || 0) >
+                new Date(latest.timestamp || 0)
+                  ? current
+                  : latest,
+              )
+            : null;
+
+        const otherUser = chat.user.id === userId ? chat.otherUser : chat.user;
+
+        return {
+          id: chat.id,
+          otherUserId: otherUser.id,
+          otherUsername: otherUser.name,
+          lastMessage: lastMessage
+            ? {
+                message: lastMessage.message,
+                timestamp: lastMessage.timestamp,
+              }
+            : null,
+        };
+      })
+      .sort((a, b) => {
+        const timeA = a.lastMessage?.timestamp
+          ? new Date(a.lastMessage.timestamp).getTime()
+          : 0;
+        const timeB = b.lastMessage?.timestamp
+          ? new Date(b.lastMessage.timestamp).getTime()
+          : 0;
+        return timeB - timeA; // orden descendente por fecha
+      });
+
+    return inbox;
   }
 }
