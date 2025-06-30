@@ -16,7 +16,7 @@
 <tr>
 <td>
 
-**Servicios Libre** es una API REST robusta construida con NestJS y TypeScript que permite a los usuarios encontrar y contratar servicios locales, mientras que los trabajadores pueden ofrecer sus servicios y gestionar su perfil profesional. [1](#2-0) 
+**Servicio Libre** es una API REST robusta construida con NestJS y TypeScript que permite a los usuarios encontrar y contratar servicios locales, mientras que los trabajadores pueden ofrecer sus servicios y gestionar su perfil profesional. [1](#2-0) 
 
 </td>
 </tr>
