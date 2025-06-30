@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/users.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { ExtractPayload } from 'src/helpers/extractPayload.token';
 import { Address } from './entities/address.entity';
 import { Role } from './entities/roles.enum';
@@ -19,12 +19,26 @@ export class UsersService {
     @InjectRepository(Service) private serviceRepository: Repository<Service>,
   ) {}
 
-  async getAllUsers(page = 1, limit = 10, role?: Role) {
-    const where: any = {};
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (role) where.role = role;
+  async getAllUsers(page = 1, limit = 10, role?: Role, search?: string) {
+    const where: any[] = [];
+    if (search && search.trim() !== '') {
+      where.push(
+        { name: ILike(`%${search}%`) },
+        { email: ILike(`%${search}%`) },
+      );
+    }
+
+    if (role) {
+      if (where.length > 0) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment
+        where.forEach((cond, i) => (where[i] = { ...cond, role }));
+      } else {
+        where.push({ role });
+      }
+    }
+
     const [users, total] = await this.UserRepository.findAndCount({
-      where: { role },
+      where: where.length > 0 ? where : undefined,
       take: limit,
       skip: (page - 1) * limit,
     });
