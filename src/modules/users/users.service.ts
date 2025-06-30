@@ -9,12 +9,14 @@ import { Repository } from 'typeorm';
 import { ExtractPayload } from 'src/helpers/extractPayload.token';
 import { Address } from './entities/address.entity';
 import { Role } from './entities/roles.enum';
+import { Service } from '../workerServices/entities/service.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private UserRepository: Repository<User>,
     @InjectRepository(Address) private AddressRepository: Repository<Address>,
+    @InjectRepository(Service) private serviceRepository: Repository<Service>,
   ) {}
 
   async getAllUsers(page = 1, limit = 10, role?: Role) {
@@ -127,5 +129,27 @@ export class UsersService {
 
     if (!worker) throw new NotFoundException('Worker not found');
     return worker;
+  }
+
+  async workerToUser(id: string) {
+    const user = await this.UserRepository.findOneBy({ id });
+    if (!user) throw new NotFoundException('User not found');
+    if (user.role === 'user')
+      throw new BadRequestException('User is already a user');
+    await this.UserRepository.update(
+      { id },
+      { role: 'user', availability: false },
+    );
+
+    const services = await this.serviceRepository.find({
+      where: { worker: { id } },
+    });
+    if (services && services.length > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      services.map(async (service) => {
+        await this.serviceRepository.delete({ id: service.id });
+      });
+    }
+    return { message: 'Worker updated to user' };
   }
 }

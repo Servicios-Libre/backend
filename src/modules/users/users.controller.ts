@@ -57,4 +57,11 @@ export class UsersController {
   userToWorker(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.userToWorker(id);
   }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Put('to-user/:id')
+  workerToUser(@Param('id', ParseUUIDPipe) id: string) {
+    return this.usersService.workerToUser(id);
+  }
 }
