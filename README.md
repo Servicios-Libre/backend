@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>🛠️ Servicios Libre - Backend API</h1>
+  <h1>🛠️ Servicio Libre - Backend API</h1>
   <p><em>Una plataforma digital que conecta usuarios con trabajadores de servicios locales</em></p>
   
   <img src="https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS">
