@@ -24,10 +24,12 @@ export class TicketsController {
   @Roles('admin')
   @Get()
   getTickets(
+    @Query('page') page?: number = 1,
+    @Query('limit') limit?: number = 5,
     @Query('type') type?: TicketType,
     @Query('status') status?: TicketStatus,
   ) {
-    return this.ticketsService.getTickets(type, status);
+    return this.ticketsService.getTickets(page, limit, type, status);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
