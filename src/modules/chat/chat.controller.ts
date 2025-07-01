@@ -102,7 +102,7 @@ export class ChatController {
 
   @Post(':chatId/mark-as-read')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.user)
+  @Roles(Role.user, Role.worker)
   async markAsRead(
     @Param('chatId') chatId: string,
     @Req() req: any, // o @GetUser() según cómo tengas auth
