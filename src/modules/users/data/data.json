@@ -1,0 +1,238 @@
+[
+    {
+        "state": "Buenos Aires",
+        "cities": [
+            "La Plata",
+            "Mar del Plata",
+            "Bahía Blanca",
+            "Tandil",
+            "GBA Norte",
+            "GBA Sur",
+            "GBA Oeste"
+        ]
+    },
+    {
+        "state": "Catamarca",
+        "cities": [
+            "San Fernando del Valle de Catamarca",
+            "Andalgalá",
+            "Belén",
+            "Santa María",
+            "Tinogasta"
+        ]
+    },
+    {
+        "state": "Chaco",
+        "cities": [
+            "Resistencia",
+            "Presidencia Roque Sáenz Peña",
+            "Villa Ángela",
+            "Charata",
+            "General San Martín"
+        ]
+    },
+    {
+        "state": "Chubut",
+        "cities": [
+            "Rawson",
+            "Comodoro Rivadavia",
+            "Puerto Madryn",
+            "Trelew",
+            "Esquel"
+        ]
+    },
+    {
+        "state": "Córdoba",
+        "cities": [
+            "Córdoba",
+            "Villa María",
+            "Río Cuarto",
+            "San Francisco",
+            "Villa Carlos Paz"
+        ]
+    },
+    {
+        "state": "Corrientes",
+        "cities": [
+            "Corrientes",
+            "Goya",
+            "Paso de los Libres",
+            "Mercedes",
+            "Bella Vista"
+        ]
+    },
+    {
+        "state": "Entre Ríos",
+        "cities": [
+            "Paraná",
+            "Concordia",
+            "Gualeguaychú",
+            "Concepción del Uruguay",
+            "Villaguay"
+        ]
+    },
+    {
+        "state": "Formosa",
+        "cities": [
+            "Formosa",
+            "Clorinda",
+            "Pirané",
+            "El Colorado",
+            "Las Lomitas"
+        ]
+    },
+    {
+        "state": "Jujuy",
+        "cities": [
+            "San Salvador de Jujuy",
+            "Palpalá",
+            "Libertador General San Martín",
+            "Perico",
+            "La Quiaca"
+        ]
+    },
+    {
+        "state": "La Pampa",
+        "cities": [
+            "Santa Rosa",
+            "General Pico",
+            "Toay",
+            "Realicó",
+            "General Acha"
+        ]
+    },
+    {
+        "state": "La Rioja",
+        "cities": [
+            "La Rioja",
+            "Chilecito",
+            "Aimogasta",
+            "Chamical",
+            "Chepes"
+        ]
+    },
+    {
+        "state": "Mendoza",
+        "cities": [
+            "Mendoza",
+            "San Rafael",
+            "Godoy Cruz",
+            "Luján de Cuyo",
+            "Maipú"
+        ]
+    },
+    {
+        "state": "Misiones",
+        "cities": [
+            "Posadas",
+            "Oberá",
+            "Eldorado",
+            "Puerto Iguazú",
+            "Apóstoles"
+        ]
+    },
+    {
+        "state": "Neuquén",
+        "cities": [
+            "Neuquén",
+            "San Martín de los Andes",
+            "Cutral Có",
+            "Plottier",
+            "Zapala"
+        ]
+    },
+    {
+        "state": "Río Negro",
+        "cities": [
+            "Viedma",
+            "San Carlos de Bariloche",
+            "General Roca",
+            "Cipolletti",
+            "Villa Regina"
+        ]
+    },
+    {
+        "state": "Salta",
+        "cities": [
+            "Salta",
+            "San Ramón de la Nueva Orán",
+            "Tartagal",
+            "Metán",
+            "Cafayate"
+        ]
+    },
+    {
+        "state": "San Juan",
+        "cities": [
+            "San Juan",
+            "Rawson",
+            "Chimbas",
+            "Pocito",
+            "Caucete"
+        ]
+    },
+    {
+        "state": "San Luis",
+        "cities": [
+            "San Luis",
+            "Villa Mercedes",
+            "Merlo",
+            "La Punta",
+            "Justo Daract"
+        ]
+    },
+    {
+        "state": "Santa Cruz",
+        "cities": [
+            "Río Gallegos",
+            "Caleta Olivia",
+            "El Calafate",
+            "Pico Truncado",
+            "Puerto Deseado"
+        ]
+    },
+    {
+        "state": "Santa Fe",
+        "cities": [
+            "Santa Fe",
+            "Rosario",
+            "Rafaela",
+            "Venado Tuerto",
+            "Reconquista"
+        ]
+    },
+    {
+        "state": "Santiago del Estero",
+        "cities": [
+            "Santiago del Estero",
+            "La Banda",
+            "Termas de Río Hondo",
+            "Añatuya",
+            "Fernández"
+        ]
+    },
+    {
+        "state": "Tierra del Fuego",
+        "cities": [
+            "Ushuaia",
+            "Río Grande",
+            "Tolhuin"
+        ]
+    },
+    {
+        "state": "Tucumán",
+        "cities": [
+            "San Miguel de Tucumán",
+            "Tafí Viejo",
+            "Yerba Buena",
+            "Concepción",
+            "Aguilares"
+        ]
+    },
+    {
+        "state": "CABA",
+        "cities": [
+            "CABA"
+        ]
+    }
+]

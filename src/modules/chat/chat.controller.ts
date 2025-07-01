@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   Body,
   Controller,
@@ -20,6 +21,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './DTOs/message.dto';
 import { ExtractPayload } from 'src/helpers/extractPayload.token';
+import { Req } from '@nestjs/common';
 
 @ApiBearerAuth()
 @Controller('api/chat')
@@ -96,5 +98,18 @@ export class ChatController {
   @Put('contract/:id/completed')
   endContract(@Param('id', ParseUUIDPipe) id: string) {
     return this.chatService.endContract(id);
+  }
+
+  @Post(':chatId/mark-as-read')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.user, Role.worker)
+  async markAsRead(
+    @Param('chatId') chatId: string,
+    @Req() req: any, // o @GetUser() según cómo tengas auth
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const userId = req.user.id;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    return this.chatService.markMessagesAsRead(chatId, userId);
   }
 }
