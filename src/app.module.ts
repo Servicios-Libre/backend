@@ -18,13 +18,15 @@ import { Ticket } from './modules/tickets/entities/ticket.entity';
 import { EmailModule } from './modules/email/email.module';
 import { EmailService } from './modules/email/email.service';
 import { ChatModule } from './modules/chat/chat.module';
+import { StripeModule } from './modules/stripe/stripe.module';
+import stripeConfig from './config/stripe.config';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configTypeorm],
+      load: [configTypeorm, stripeConfig],
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -44,6 +46,7 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
     AuthModule,
     JwtConfig,
     TypeOrmModule.forFeature([Service, Category, User, Ticket]),
+    StripeModule,
     CategoriesModule,
     TicketsModule,
     EmailModule,

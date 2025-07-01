@@ -50,6 +50,9 @@ export class User {
   @Column({ nullable: true })
   user_pic?: string;
 
+  @Column({ nullable: true })
+  stripeCustomerId?: string;
+
   @Column({ default: false })
   premium: boolean;
 
