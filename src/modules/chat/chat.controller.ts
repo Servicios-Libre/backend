@@ -22,6 +22,7 @@ import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './DTOs/message.dto';
 import { ExtractPayload } from 'src/helpers/extractPayload.token';
 import { Req } from '@nestjs/common';
+import { ConfirmContractDto } from './DTOs/confirm.dto';
 
 @ApiBearerAuth()
 @Controller('api/chat')
@@ -111,5 +112,15 @@ export class ChatController {
     const userId = req.user.id;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return this.chatService.markMessagesAsRead(chatId, userId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.user, Role.worker)
+  @Put('contract/:id/confirm')
+  confirmService(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() confirmDto: ConfirmContractDto,
+  ) {
+    return this.chatService.confirmContractStep(id, confirmDto.role);
   }
 }
