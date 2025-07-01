@@ -36,8 +36,9 @@ export class TicketsService {
 
     const skip = (page - 1) * limit;
 
-    if (type === TicketType.SERVICE)
-      return await this.ticketRepository.findAndCount({
+    if (type === TicketType.SERVICE) {
+      const total = await this.ticketRepository.count({ where });
+      const tickets = this.ticketRepository.find({
         where,
         relations: ['service', 'user'],
         select: {
@@ -49,20 +50,32 @@ export class TicketsService {
         skip,
         take: limit,
       });
+      return {
+        total,
+        tickets,
+      };
+    }
 
-    return await this.ticketRepository.findAndCount({
-      where,
-      relations: ['user'],
-      select: {
-        user: {
-          id: true,
-          name: true,
-          email: true,
+    if (type === TicketType.TO_WORKER) {
+      const total = await this.ticketRepository.count({ where });
+      const tickets = await this.ticketRepository.find({
+        where,
+        relations: ['user'],
+        select: {
+          user: {
+            id: true,
+            name: true,
+            email: true,
+          },
         },
-      },
-      skip,
-      take: limit,
-    });
+        skip,
+        take: limit,
+      });
+      return {
+        total,
+        tickets,
+      };
+    }
   }
 
   async checkServiceTicketLimit(user_id: string) {
