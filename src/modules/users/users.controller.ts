@@ -18,6 +18,7 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Role } from './entities/roles.enum';
 import { SocialDto } from './DTOs/social.dto';
+import { ApiHeader } from '@nestjs/swagger';
 
 @ApiBearerAuth()
 @Controller('users')
@@ -41,11 +42,11 @@ export class UsersController {
     return this.usersService.GetUserById(token);
   }
 
-  @Get('worker/:id')
-  getWorkerById(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.getWorkerById(id);
-  }
-
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Bearer token',
+    required: false,
+  })
   @Put('update')
   UpdateUser(
     @Headers('authorization') token: string,
@@ -54,7 +55,12 @@ export class UsersController {
     return this.usersService.UpdateUser(token, body);
   }
 
-  @Post('social/')
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Bearer token',
+    required: false,
+  })
+  @Post('social')
   createSocial(
     @Headers('authorization') token: string,
     @Body() socialLinks: SocialDto,
@@ -62,7 +68,12 @@ export class UsersController {
     return this.usersService.createSocial(token, socialLinks);
   }
 
-  @Put('social/:id')
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Bearer token',
+    required: false,
+  })
+  @Put('social')
   updateSocial(
     @Headers('authorization') token: string,
     @Body() socialLinks: SocialDto,
@@ -82,5 +93,10 @@ export class UsersController {
   @Put('to-user/:id')
   workerToUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.workerToUser(id);
+  }
+
+  @Get('worker/:id')
+  getWorkerById(@Param('id', ParseUUIDPipe) id: string) {
+    return this.usersService.getWorkerById(id);
   }
 }

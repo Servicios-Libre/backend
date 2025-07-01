@@ -209,17 +209,19 @@ export class UsersService {
     const { id } = ExtractPayload(token);
     if (Object.keys(socialLinks).length === 0)
       throw new BadRequestException('Social links are required');
-    const user = await this.UserRepository.findOne({
-      where: { id },
-      relations: ['social'],
+
+    const social = await this.socialRepository.findOne({
+      where: { user: { id } },
     });
 
-    if (!user) throw new NotFoundException('User not found');
-
-    if (!user.social)
+    if (!social)
       throw new BadRequestException('User does not have social links');
 
-    await this.socialRepository.update({ user: { id } }, socialLinks);
+    for (const prop in socialLinks) {
+      if (socialLinks[prop] === undefined) socialLinks[prop] = null;
+    }
+
+    await this.socialRepository.update(social.id, socialLinks);
     return { message: 'Social links updated' };
   }
 }
