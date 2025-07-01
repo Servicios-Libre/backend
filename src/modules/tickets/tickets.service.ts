@@ -38,9 +38,14 @@ export class TicketsService {
 
     if (type === TicketType.SERVICE) {
       const total = await this.ticketRepository.count({ where });
-      const tickets = this.ticketRepository.find({
+      const tickets = await this.ticketRepository.find({
         where,
-        relations: ['service', 'user'],
+        relations: {
+          user: true,
+          service: {
+            work_photos: true,
+          },
+        },
         select: {
           user: {
             name: true,
@@ -52,7 +57,7 @@ export class TicketsService {
       });
       return {
         total,
-        tickets,
+        tickets: [...tickets],
       };
     }
 
@@ -73,7 +78,7 @@ export class TicketsService {
       });
       return {
         total,
-        tickets,
+        tickets: [...tickets],
       };
     }
   }
