@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
-import { Repository } from 'typeorm';
+import { Repository, Not } from 'typeorm';
 import { Contract } from './entities/contract.entity';
 import { ContractDto } from './DTOs/contract.dto';
 import { StatusContract } from './entities/statusContract.enum';
@@ -189,5 +189,17 @@ export class ChatService {
       });
 
     return inbox;
+  }
+
+  async markMessagesAsRead(chatId: string, userId: string) {
+    await this.messageRepository.update(
+      {
+        chat: { id: chatId },
+        isRead: false,
+        senderId: Not(userId),
+      },
+      { isRead: true },
+    );
+    return { message: 'Mensajes marcados como leídos' };
   }
 }
