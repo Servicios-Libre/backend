@@ -1,4 +1,12 @@
-import { Body, Controller, Headers, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Headers,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { StripeService } from './stripe.service';
 import { Response, Request as ExpressRequest } from 'express';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
@@ -34,9 +42,12 @@ export class StripeController {
     @Req() req: AuthRequest,
     @Res() res: Response,
   ) {
-    
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const user = req.user;
-    const url = await this.stripeService.createCheckoutSession(lookup_key, user);
+    const url = await this.stripeService.createCheckoutSession(
+      lookup_key,
+      user,
+    );
 
     if (!url) {
       return res

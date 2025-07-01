@@ -1,13 +1,20 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/users.entity';
+import { config as dotenvConfig } from 'dotenv';
+
+dotenvConfig({ path: ['.env', '.env.development.local'] });
 
 @Injectable()
 export class StripeService {
   private stripe: Stripe;
+  $FRONT_URL = process.env.FRONT_URL;
   private readonly logger = new Logger(StripeService.name);
 
   constructor(
@@ -23,13 +30,13 @@ export class StripeService {
   }
 
   async createCheckoutSession(lookup_key: string, user: any) {
-    
-    const userDB = await this.userRepository.findOne({ where: { id: user.id } });
+    const userDB = await this.userRepository.findOne({
+      where: { id: user.id },
+    });
     if (!userDB) throw new Error('Usuario no encontrado');
 
     let stripeCustomerId = userDB.stripeCustomerId;
     if (!stripeCustomerId) {
-
       const customer = await this.stripe.customers.create({
         email: userDB.email,
         name: userDB.name,
@@ -54,8 +61,8 @@ export class StripeService {
         },
       ],
       mode: 'subscription',
-      success_url: `http://localhost:3000/?success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:3000/?canceled=true`,
+      success_url: `${this.$FRONT_URL}/worker-profile/${userDB.id}/?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${this.$FRONT_URL}//worker-profile/${userDB.id}/?canceled=true`,
     };
     if (stripeCustomerId) {
       sessionParams.customer = stripeCustomerId;
@@ -73,7 +80,7 @@ export class StripeService {
 
     const portalSession = await this.stripe.billingPortal.sessions.create({
       customer: checkoutSession.customer as string,
-      return_url: `http://localhost:3000`,
+      return_url: `${this.$FRONT_URL}`,
     });
 
     return portalSession.url;
@@ -107,12 +114,14 @@ export class StripeService {
       case 'customer.subscription.created':
       case 'customer.subscription.updated':
         await this.handleSubscriptionUpdated(
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
           event.data.object as Stripe.Subscription,
         );
         break;
 
       case 'customer.subscription.deleted':
         await this.handleSubscriptionDeleted(
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
           event.data.object as Stripe.Subscription,
         );
         break;

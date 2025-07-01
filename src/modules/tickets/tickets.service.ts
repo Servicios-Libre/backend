@@ -36,8 +36,9 @@ export class TicketsService {
 
     const skip = (page - 1) * limit;
 
-    if (type === TicketType.SERVICE)
-      return await this.ticketRepository.findAndCount({
+    if (type === TicketType.SERVICE) {
+      const total = await this.ticketRepository.count({ where });
+      const tickets = this.ticketRepository.findAndCount({
         where,
         relations: ['service', 'user'],
         select: {
@@ -49,6 +50,12 @@ export class TicketsService {
         skip,
         take: limit,
       });
+
+      return {
+        tickets,
+        total,
+      }
+    }
 
     return await this.ticketRepository.findAndCount({
       where,
