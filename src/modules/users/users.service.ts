@@ -76,12 +76,18 @@ export class UsersService {
     if (!userDB) throw new NotFoundException('User not found');
     if (body.phone)
       await this.UserRepository.update({ id: userID }, { phone: body.phone });
+    if (body.description)
+      await this.UserRepository.update(
+        { id: userID },
+        { description: body.description },
+      );
 
     const addressActualization = {};
     for (const key in body) {
       if (body[key]) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        if (key !== 'phone') addressActualization[key] = body[key];
+        if (key !== 'phone' && key !== 'description')
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          addressActualization[key] = body[key];
       }
     }
 
@@ -124,6 +130,7 @@ export class UsersService {
         premium: true,
         email: true,
         phone: true,
+        description: true,
         availability: true,
         address_id: {
           id: true,
