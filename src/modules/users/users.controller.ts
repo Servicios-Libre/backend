@@ -5,6 +5,7 @@ import {
   Headers,
   Param,
   ParseUUIDPipe,
+  Post,
   Put,
   Query,
   UseGuards,
@@ -16,6 +17,8 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Role } from './entities/roles.enum';
+import { SocialDto } from './DTOs/social.dto';
+import { ApiHeader } from '@nestjs/swagger';
 
 @ApiBearerAuth()
 @Controller('users')
@@ -39,17 +42,48 @@ export class UsersController {
     return this.usersService.GetUserById(token);
   }
 
-  @Get('worker/:id')
-  getWorkerById(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.getWorkerById(id);
-  }
-
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Bearer token',
+    required: false,
+  })
   @Put('update')
   UpdateUser(
     @Headers('authorization') token: string,
     @Body() body: Partial<User>,
   ) {
     return this.usersService.UpdateUser(token, body);
+  }
+
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Bearer token',
+    required: false,
+  })
+  @Post('social')
+  createSocial(
+    @Headers('authorization') token: string,
+    @Body() socialLinks: SocialDto,
+  ) {
+    return this.usersService.createSocial(token, socialLinks);
+  }
+
+  @ApiHeader({
+    name: 'authorization',
+    description: 'Bearer token',
+    required: false,
+  })
+  @Put('social')
+  updateSocial(
+    @Headers('authorization') token: string,
+    @Body() socialLinks: SocialDto,
+  ) {
+    return this.usersService.updateSocial(token, socialLinks);
+  }
+
+  @Get('states')
+  getStates() {
+    return this.usersService.getStates();
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -64,5 +98,10 @@ export class UsersController {
   @Put('to-user/:id')
   workerToUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.workerToUser(id);
+  }
+
+  @Get('worker/:id')
+  getWorkerById(@Param('id', ParseUUIDPipe) id: string) {
+    return this.usersService.getWorkerById(id);
   }
 }
