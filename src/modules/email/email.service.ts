@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import emailHelper from 'src/helpers/emailHelper';

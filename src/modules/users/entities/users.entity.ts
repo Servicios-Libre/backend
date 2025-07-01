@@ -11,6 +11,7 @@ import { Service } from 'src/modules/workerServices/entities/service.entity';
 import { Ticket } from 'src/modules/tickets/entities/ticket.entity';
 import { Review } from 'src/modules/reviews/entities/review.entity';
 import { Chat } from 'src/modules/chat/entities/chat.entity';
+import { Social } from './social.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -50,12 +51,19 @@ export class User {
   @Column({ nullable: true })
   user_pic?: string;
 
+  @Column({ nullable: true })
+  stripeCustomerId?: string;
+
   @Column({ default: false })
   premium: boolean;
 
   @OneToOne(() => Address, (address) => address.user_id)
   @JoinColumn()
   address_id: Address;
+
+  @OneToOne(() => Social, (social) => social.user)
+  @JoinColumn()
+  social: Social;
 
   @OneToMany(() => Service, (service) => service.worker)
   services: Service[];

@@ -18,13 +18,20 @@ import { Ticket } from './modules/tickets/entities/ticket.entity';
 import { EmailModule } from './modules/email/email.module';
 import { EmailService } from './modules/email/email.service';
 import { ChatModule } from './modules/chat/chat.module';
+import { StripeModule } from './modules/stripe/stripe.module';
+import stripeConfig from './config/stripe.config';
 import { ReviewsModule } from './modules/reviews/reviews.module';
+import { UsersService } from './modules/users/users.service';
+import { Address } from './modules/users/entities/address.entity';
+import { Social } from './modules/users/entities/social.entity';
+import { State } from './modules/users/entities/state.entity';
+import { City } from './modules/users/entities/cities.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configTypeorm],
+      load: [configTypeorm, stripeConfig],
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -43,7 +50,17 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
     UsersModule,
     AuthModule,
     JwtConfig,
-    TypeOrmModule.forFeature([Service, Category, User, Ticket]),
+    TypeOrmModule.forFeature([
+      Service,
+      Category,
+      User,
+      Ticket,
+      Address,
+      Social,
+      State,
+      City,
+    ]),
+    StripeModule,
     CategoriesModule,
     TicketsModule,
     EmailModule,
@@ -51,12 +68,21 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
     ReviewsModule,
   ],
   controllers: [],
-  providers: [WorkerServicesService, TicketsService, EmailService],
+  providers: [
+    WorkerServicesService,
+    TicketsService,
+    EmailService,
+    UsersService,
+  ],
 })
 export class AppModule implements OnApplicationBootstrap {
-  constructor(private readonly workerServiceService: WorkerServicesService) {}
+  constructor(
+    private readonly workerServiceService: WorkerServicesService,
+    private readonly userService: UsersService,
+  ) {}
 
   async onApplicationBootstrap() {
     await this.workerServiceService.seedCategories();
+    await this.userService.seederStatesCities();
   }
 }

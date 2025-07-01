@@ -2,9 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Middleware raw para webhook Stripe
+  app.use('/stripe/webhook', bodyParser.raw({ type: 'application/json' }));
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Servicios Libres')
