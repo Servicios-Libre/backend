@@ -81,6 +81,11 @@ export class UsersController {
     return this.usersService.updateSocial(token, socialLinks);
   }
 
+  @Get('states')
+  getStates() {
+    return this.usersService.getStates();
+  }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Put('to-worker/:id')

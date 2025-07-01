@@ -12,6 +12,9 @@ import { Role } from './entities/roles.enum';
 import { Service } from '../workerServices/entities/service.entity';
 import { Social } from './entities/social.entity';
 import { SocialDto } from './DTOs/social.dto';
+import * as data from './data/data.json';
+import { State } from './entities/state.entity';
+import { City } from './entities/cities.entity';
 
 @Injectable()
 export class UsersService {
@@ -19,7 +22,11 @@ export class UsersService {
     @InjectRepository(User) private UserRepository: Repository<User>,
     @InjectRepository(Address) private AddressRepository: Repository<Address>,
     @InjectRepository(Service) private serviceRepository: Repository<Service>,
+    //redes sociales
     @InjectRepository(Social) private socialRepository: Repository<Social>,
+    //seeder de states y ciudades
+    @InjectRepository(State) private stateRepository: Repository<State>,
+    @InjectRepository(City) private cityRepository: Repository<City>,
   ) {}
 
   async getAllUsers(page = 1, limit = 10, role?: Role, search?: string) {
@@ -223,5 +230,35 @@ export class UsersService {
 
     await this.socialRepository.update(social.id, socialLinks);
     return { message: 'Social links updated' };
+  }
+
+  async seederStatesCities() {
+    for (const state of data) {
+      await this.stateRepository.save({ state: state.state });
+      for (const city of state.cities) {
+        const stateDB = await this.stateRepository.findOne({
+          where: { state: state.state },
+        });
+        if (!stateDB) throw new Error('State not found');
+        await this.cityRepository.save({
+          name: city,
+          state: stateDB,
+        });
+      }
+    }
+  }
+
+  async getStates() {
+    const states = await this.stateRepository.find({
+      relations: ['cities'],
+      select: {
+        state: true,
+        cities: {
+          name: true,
+        },
+      },
+    });
+
+    return states;
   }
 }
