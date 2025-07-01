@@ -10,6 +10,8 @@ import { ExtractPayload } from 'src/helpers/extractPayload.token';
 import { Address } from './entities/address.entity';
 import { Role } from './entities/roles.enum';
 import { Service } from '../workerServices/entities/service.entity';
+import { Social } from './entities/social.entity';
+import { SocialDto } from './DTOs/social.dto';
 
 @Injectable()
 export class UsersService {
@@ -17,6 +19,7 @@ export class UsersService {
     @InjectRepository(User) private UserRepository: Repository<User>,
     @InjectRepository(Address) private AddressRepository: Repository<Address>,
     @InjectRepository(Service) private serviceRepository: Repository<Service>,
+    @InjectRepository(Social) private socialRepository: Repository<Social>,
   ) {}
 
   async getAllUsers(page = 1, limit = 10, role?: Role, search?: string) {
@@ -53,7 +56,7 @@ export class UsersService {
     const payload = ExtractPayload(token);
     const user = await this.UserRepository.findOne({
       where: { id: payload.id },
-      relations: { address_id: true, tickets: true },
+      relations: { address_id: true, tickets: true, social: true },
     });
 
     if (!user) throw new NotFoundException('User not found');
@@ -106,6 +109,7 @@ export class UsersService {
       where: { id, role: 'worker' },
       relations: {
         address_id: true,
+        social: true,
         services: {
           work_photos: true,
           category: true,
@@ -165,5 +169,50 @@ export class UsersService {
       });
     }
     return { message: 'Worker updated to user' };
+  }
+
+  async createSocial(token: string, socialLinks: SocialDto) {
+    const { id } = ExtractPayload(token);
+
+    if (Object.keys(socialLinks).length === 0)
+      throw new BadRequestException('Social links are required');
+    const user = await this.UserRepository.findOne({
+      where: { id },
+      relations: ['social'],
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    if (user.social) {
+      throw new BadRequestException('User already has social links');
+    }
+
+    await this.socialRepository.save({
+      user: user,
+      facebook: socialLinks.facebook,
+      instagram: socialLinks.instagram,
+      linkedin: socialLinks.linkedin,
+      x: socialLinks.x,
+    });
+
+    return { message: 'Social links created' };
+  }
+
+  async updateSocial(token: string, socialLinks: SocialDto) {
+    const { id } = ExtractPayload(token);
+    if (Object.keys(socialLinks).length === 0)
+      throw new BadRequestException('Social links are required');
+    const user = await this.UserRepository.findOne({
+      where: { id },
+      relations: ['social'],
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    if (!user.social)
+      throw new BadRequestException('User does not have social links');
+
+    await this.socialRepository.update({ user: { id } }, socialLinks);
+    return { message: 'Social links updated' };
   }
 }

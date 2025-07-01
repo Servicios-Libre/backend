@@ -5,6 +5,7 @@ import {
   Headers,
   Param,
   ParseUUIDPipe,
+  Post,
   Put,
   Query,
   UseGuards,
@@ -16,6 +17,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Role } from './entities/roles.enum';
+import { SocialDto } from './DTOs/social.dto';
 
 @ApiBearerAuth()
 @Controller('users')
@@ -50,6 +52,22 @@ export class UsersController {
     @Body() body: Partial<User>,
   ) {
     return this.usersService.UpdateUser(token, body);
+  }
+
+  @Post('social/')
+  createSocial(
+    @Headers('authorization') token: string,
+    @Body() socialLinks: SocialDto,
+  ) {
+    return this.usersService.createSocial(token, socialLinks);
+  }
+
+  @Put('social/:id')
+  updateSocial(
+    @Headers('authorization') token: string,
+    @Body() socialLinks: SocialDto,
+  ) {
+    return this.usersService.updateSocial(token, socialLinks);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
