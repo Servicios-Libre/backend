@@ -26,4 +26,13 @@ export class Contract {
 
   @Column()
   payment: number;
+
+  @Column({ default: false })
+  clientConfirmed: boolean;
+
+  @Column({ default: false })
+  workerConfirmed: boolean;
+
+  @Column({ default: false })
+  completed: boolean;
 }

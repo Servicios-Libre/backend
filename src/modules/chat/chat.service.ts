@@ -9,6 +9,7 @@ import { Message } from './entities/message.entity';
 import { MessageDto } from './DTOs/message.dto';
 import { User } from '../users/entities/users.entity';
 import { ChatGateway } from './chat.gateway';
+import { Role } from '../users/entities/roles.enum';
 
 @Injectable()
 export class ChatService {
@@ -201,5 +202,27 @@ export class ChatService {
       { isRead: true },
     );
     return { message: 'Mensajes marcados como leídos' };
+  }
+
+  async confirmContractStep(id: string, role: Role) {
+    const contract = await this.ContractRepository.findOne({ where: { id } });
+    if (!contract) {
+      throw new BadRequestException('Contract not found');
+    }
+
+    if (role === Role.user) {
+      contract.clientConfirmed = true;
+    } else if (role === Role.worker) {
+      contract.workerConfirmed = true;
+    } else {
+      throw new BadRequestException('Invalid role');
+    }
+
+    if (contract.clientConfirmed && contract.workerConfirmed) {
+      contract.completed = true;
+      contract.endDate = new Date();
+    }
+
+    return await this.ContractRepository.save(contract);
   }
 }
