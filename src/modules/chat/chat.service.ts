@@ -147,7 +147,7 @@ export class ChatService {
     });
 
     if (!chats || chats.length === 0) {
-      throw new BadRequestException('No chats found');
+      return { message: 'No hay chats activos en tu bandeja de entrada' };
     }
 
     const inbox = chats
