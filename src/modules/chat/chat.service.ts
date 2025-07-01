@@ -1,13 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
-import { Repository } from 'typeorm';
+import { Repository, Not } from 'typeorm';
 import { Contract } from './entities/contract.entity';
 import { ContractDto } from './DTOs/contract.dto';
 import { StatusContract } from './entities/statusContract.enum';
 import { Message } from './entities/message.entity';
 import { MessageDto } from './DTOs/message.dto';
 import { User } from '../users/entities/users.entity';
+import { ChatGateway } from './chat.gateway';
 
 @Injectable()
 export class ChatService {
@@ -17,6 +18,7 @@ export class ChatService {
     @InjectRepository(Contract)
     private ContractRepository: Repository<Contract>,
     @InjectRepository(User) private userRepository: Repository<User>,
+    private chatGateway: ChatGateway,
   ) {}
 
   async getConversation(userId: string, otherUserId: string) {
@@ -78,10 +80,14 @@ export class ChatService {
 
     const newMessage = await this.messageRepository.save(messageToSave);
 
-    return await this.messageRepository.findOne({
+    const savedMessage = await this.messageRepository.findOne({
       where: { id: newMessage.id },
       relations: { chat: true },
     });
+
+    this.chatGateway.emitNewMessage(savedMessage!);
+
+    return savedMessage;
   }
 
   async getContract(worker: string, client: string) {
@@ -183,5 +189,17 @@ export class ChatService {
       });
 
     return inbox;
+  }
+
+  async markMessagesAsRead(chatId: string, userId: string) {
+    await this.messageRepository.update(
+      {
+        chat: { id: chatId },
+        isRead: false,
+        senderId: Not(userId),
+      },
+      { isRead: true },
+    );
+    return { message: 'Mensajes marcados como leídos' };
   }
 }
