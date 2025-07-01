@@ -19,6 +19,7 @@ import { EmailModule } from './modules/email/email.module';
 import { EmailService } from './modules/email/email.service';
 import { ChatModule } from './modules/chat/chat.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
+import { MercadoPagoModule } from './modules/mercadopago/mp.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
     EmailModule,
     ChatModule,
     ReviewsModule,
+    MercadoPagoModule,
   ],
   controllers: [],
   providers: [WorkerServicesService, TicketsService, EmailService],
