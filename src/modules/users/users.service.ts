@@ -147,6 +147,7 @@ export class UsersService {
           city: true,
           state: true,
           zip_code: true,
+          house_number: true,
         },
         services: {
           id: true,
