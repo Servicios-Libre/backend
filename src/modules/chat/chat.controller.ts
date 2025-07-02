@@ -83,7 +83,7 @@ export class ChatController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.user)
   @Put('contract/:id/accept')
-  acceptContract(@Param('id', ParseUUIDPipe) id: string) {
+  acceptContract(@Param('id') id: string) {
     return this.chatService.acceptContract(id);
   }
 
