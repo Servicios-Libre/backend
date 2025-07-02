@@ -88,4 +88,10 @@ export class WorkerServicesController {
   ) {
     return this.workerServicesService.deleteService(id, token);
   }
+
+  @ApiBearerAuth()
+  @Get('premium')
+  getAllServicesPremium() {
+    return this.workerServicesService.getAllServicesPremium();
+  }
 }
