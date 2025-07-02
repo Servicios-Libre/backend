@@ -239,6 +239,12 @@ export class ChatService {
       contract.endDate = new Date();
     }
 
-    return await this.ContractRepository.save(contract);
+    const saved = await this.ContractRepository.save(contract);
+
+    this.chatGateway.server
+      .to(`chat_${contract.chatId}`)
+      .emit('contractUpdated', saved);
+
+    return saved;
   }
 }
