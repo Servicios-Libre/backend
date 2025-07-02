@@ -12,6 +12,7 @@ import { Ticket } from 'src/modules/tickets/entities/ticket.entity';
 import { Review } from 'src/modules/reviews/entities/review.entity';
 import { Chat } from 'src/modules/chat/entities/chat.entity';
 import { Social } from './social.entity';
+import { Invoice } from 'src/modules/mercadopago/entities/factura.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -82,4 +83,7 @@ export class User {
 
   @OneToMany(() => Chat, (chat) => chat.otherUser)
   chatOtherUser: Chat[];
+
+  @OneToMany(() => Invoice, (Invoice) => Invoice.user)
+  invoices: Invoice[];
 }
