@@ -154,4 +154,10 @@ export class ReviewsService {
     workerFound.rate = averageRate;
     await this.userRepository.save(workerFound);
   }
+
+  async getRandomReviews() {
+    const reviews = await this.reviewRepository.find();
+    const randomReviews = reviews.sort(() => Math.random() - 0.5).slice(0, 6);
+    return randomReviews;
+  }
 }
