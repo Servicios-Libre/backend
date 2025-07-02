@@ -9,6 +9,9 @@ import { config as dotenvConfig } from 'dotenv';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/users.entity';
 import { Repository } from 'typeorm';
+import { Invoice } from './entities/factura.entity';
+import { PaymentProvider } from './entities/PaymentProvider';
+import { ExtractPayload } from 'src/helpers/extractPayload.token';
 
 dotenvConfig({ path: ['.env', '.env.development.local'] });
 
@@ -17,6 +20,7 @@ export class MercadoPagoService {
   constructor(
     private readonly jwtService: JwtService,
     @InjectRepository(User) private UserRepository: Repository<User>,
+    @InjectRepository(Invoice) private InvoiceRepository: Repository<Invoice>,
   ) {
     mercadopago.configure({
       access_token: process.env.MP_ACCESS_TOKEN,
@@ -64,6 +68,45 @@ export class MercadoPagoService {
       await this.UserRepository.save(user);
 
       console.log('Usuario actualizado a premium:', user.id);
+      const existingInvoice = await this.InvoiceRepository.findOneBy({
+        externalReference: String(payment.body.id),
+      });
+
+      if (existingInvoice) {
+        console.log('Factura ya registrada');
+        return;
+      } else {
+        const createdAt = new Date(payment.body.date_approved);
+
+        const expiredAt = new Date(createdAt);
+        expiredAt.setMonth(expiredAt.getMonth() + 1);
+        const invoice = this.InvoiceRepository.create({
+          externalReference: String(payment.body.id),
+          amount: payment.body.transaction_amount,
+          paymentMethod: payment.body.payment_method_id,
+          paymentType: payment.body.payment_type_id,
+          user: user,
+          createdAt,
+          expiredAt,
+          provider: PaymentProvider.MERCADO_PAGO,
+        });
+        await this.InvoiceRepository.save(invoice);
+        console.log('Usuario actualizado a premium y factura creada:', {
+          userId: user.id,
+          invoiceId: invoice.id,
+        });
+      }
     }
+  }
+  async getAllInvoiceService(token: string) {
+    const payload = ExtractPayload(token);
+    const userId = payload?.id;
+    if (!userId) {
+      throw new Error('Token inválido o usuario no autenticado');
+    }
+    const invoices = await this.InvoiceRepository.find({
+      where: { user: { id: userId } },
+    });
+    return invoices;
   }
 }

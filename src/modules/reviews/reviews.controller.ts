@@ -19,16 +19,6 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
-  @Get(':id')
-  getWorkerReviews(
-    @Param('id', ParseUUIDPipe) worker_id: string,
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 5,
-    @Query('sort') sort: 'recent' | 'oldest' | 'best' | 'worst' = 'recent',
-  ) {
-    return this.reviewsService.getWorkerReviews(worker_id, page, limit, sort);
-  }
-
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('user')
   @Post('/new/:id')
@@ -40,8 +30,18 @@ export class ReviewsController {
     return this.reviewsService.createReview(worker_id, review, token);
   }
 
-  @Get('ramdom')
+  @Get('random')
   getRandomReviews() {
     return this.reviewsService.getRandomReviews();
+  }
+
+  @Get(':id')
+  getWorkerReviews(
+    @Param('id', ParseUUIDPipe) worker_id: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 5,
+    @Query('sort') sort: 'recent' | 'oldest' | 'best' | 'worst' = 'recent',
+  ) {
+    return this.reviewsService.getWorkerReviews(worker_id, page, limit, sort);
   }
 }

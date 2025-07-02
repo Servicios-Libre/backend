@@ -147,6 +147,7 @@ export class UsersService {
           city: true,
           state: true,
           zip_code: true,
+          house_number: true,
         },
         services: {
           id: true,
@@ -262,5 +263,71 @@ export class UsersService {
     });
 
     return states;
+  }
+
+  async getPremiumUsers(): Promise<
+    {
+      id: string;
+      nombre: string;
+      profesion: string;
+      ubicacion: string;
+      imagen: string;
+      descripcion: string;
+    }[]
+  > {
+    const users = await this.UserRepository.find({
+      where: { premium: true },
+      relations: ['address_id'],
+      select: {
+        id: true,
+        name: true,
+        user_pic: true,
+        description: true,
+        address_id: {
+          city: true,
+          state: true,
+        },
+        role: true,
+      },
+    });
+
+    return users.map((u) => ({
+      id: u.id,
+      nombre: u.name,
+      profesion: u.role === 'worker' ? 'Especialista' : 'Usuario premium',
+      ubicacion: `${u.address_id?.city || ''}, ${u.address_id?.state || ''}`,
+      imagen: u.user_pic ?? 'https://example.com/default-avatar.png',
+      descripcion: u.description ?? 'Miembro premium de la comunidad',
+    }));
+  }
+
+  async anyUserToAdmin(id: string) {
+    const user = await this.UserRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (user.role === 'admin')
+      throw new BadRequestException('User is already an admin');
+
+    user.role = Role.admin;
+
+    await this.UserRepository.save(user);
+
+    return { message: 'User has been promoted to admin' };
+  }
+
+  async downgradeAdmin(id: string) {
+    const user = await this.UserRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (user.role !== 'admin')
+      throw new BadRequestException('User is not an admin');
+
+    user.role = Role.user;
+
+    await this.UserRepository.save(user);
+
+    return { message: 'User has been downgraded to user' };
   }
 }

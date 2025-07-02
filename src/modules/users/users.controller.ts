@@ -86,6 +86,11 @@ export class UsersController {
     return this.usersService.getStates();
   }
 
+  @Get('premium')
+  getPremiumUsers() {
+    return this.usersService.getPremiumUsers();
+  }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Put('to-worker/:id')
@@ -103,5 +108,19 @@ export class UsersController {
   @Get('worker/:id')
   getWorkerById(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.getWorkerById(id);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Put('to-admin/:id')
+  anyUserToAdmin(@Param('id', ParseUUIDPipe) id: string) {
+    return this.usersService.anyUserToAdmin(id);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Put('downgrade-admin/:id')
+  downgradeAdmin(@Param('id', ParseUUIDPipe) id: string) {
+    return this.usersService.downgradeAdmin(id);
   }
 }

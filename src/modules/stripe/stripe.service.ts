@@ -144,8 +144,8 @@ export class StripeService {
       return;
     }
 
-    user.premium =
-      status === 'active' || status === 'trialing' || status === 'complete';
+    /* user.premium =
+      status === 'active' || status === 'trialing' || status === 'complete'; */
     await this.userRepository.save(user);
     console.log(`User ${user.id} premium status updated to ${user.premium}`);
   }

@@ -13,8 +13,8 @@ const dataConfig = {
   username: process.env.DB_USERNAME,
   password: String(process.env.DB_PASSWORD),
   autoLoadEntities: true,
-  // dropSchema: true,
-  synchronize: false,
+  /* dropSchema: true, */
+  synchronize: true,
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/migrations/*{.ts,.js}'],
 };
