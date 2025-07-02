@@ -11,6 +11,7 @@ import { User } from '../users/entities/users.entity';
 import { Repository } from 'typeorm';
 import { Invoice } from './entities/factura.entity';
 import { PaymentProvider } from './entities/PaymentProvider';
+import { ExtractPayload } from 'src/helpers/extractPayload.token';
 
 dotenvConfig({ path: ['.env', '.env.development.local'] });
 
@@ -89,14 +90,23 @@ export class MercadoPagoService {
           expiredAt,
           provider: PaymentProvider.MERCADO_PAGO,
         });
-
         await this.InvoiceRepository.save(invoice);
-
         console.log('Usuario actualizado a premium y factura creada:', {
           userId: user.id,
           invoiceId: invoice.id,
         });
       }
     }
+  }
+  async getAllInvoiceService(token: string) {
+    const payload = ExtractPayload(token);
+    const userId = payload?.id;
+    if (!userId) {
+      throw new Error('Token inválido o usuario no autenticado');
+    }
+    const invoices = await this.InvoiceRepository.find({
+      where: { user: { id: userId } },
+    });
+    return invoices;
   }
 }
