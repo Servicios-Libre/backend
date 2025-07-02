@@ -111,7 +111,10 @@ export class StripeService {
       throw err;
     }
 
+    console.log('Received event:', event.type);
+
     switch (event.type) {
+      case 'checkout.session.completed':
       case 'customer.subscription.created':
       case 'customer.subscription.updated':
         await this.handleSubscriptionUpdated(
@@ -120,9 +123,7 @@ export class StripeService {
         break;
 
       case 'customer.subscription.deleted':
-        await this.handleSubscriptionDeleted(
-          event.data.object as Stripe.Subscription,
-        );
+        await this.handleSubscriptionDeleted(event.data.object);
         break;
 
       default:
@@ -148,7 +149,8 @@ export class StripeService {
       return;
     }
 
-    user.premium = status === 'active' || status === 'trialing';
+    user.premium =
+      status === 'active' || status === 'trialing' || status === 'complete';
     await this.userRepository.save(user);
     console.log(`User ${user.id} premium status updated to ${user.premium}`);
   }

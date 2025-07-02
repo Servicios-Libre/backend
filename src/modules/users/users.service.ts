@@ -88,11 +88,13 @@ export class UsersService {
         { id: userID },
         { description: body.description },
       );
+    if (body.name)
+      await this.UserRepository.update({ id: userID }, { name: body.name });
 
     const addressActualization = {};
     for (const key in body) {
       if (body[key]) {
-        if (key !== 'phone' && key !== 'description')
+        if (key !== 'phone' && key !== 'description' && key !== 'name')
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           addressActualization[key] = body[key];
       }
