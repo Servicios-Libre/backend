@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
+
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -90,6 +90,7 @@ export class StripeService {
     const endpointSecret = this.configService.get<string>(
       'STRIPE_WEBHOOK_SECRET',
     );
+    console.log('Endpoint Secret:', endpointSecret);
     if (!endpointSecret) {
       this.logger.error('Stripe webhook secret is not configured');
       throw new Error('Stripe webhook secret is not configured');
@@ -114,14 +115,12 @@ export class StripeService {
       case 'customer.subscription.created':
       case 'customer.subscription.updated':
         await this.handleSubscriptionUpdated(
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
           event.data.object as Stripe.Subscription,
         );
         break;
 
       case 'customer.subscription.deleted':
         await this.handleSubscriptionDeleted(
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
           event.data.object as Stripe.Subscription,
         );
         break;
