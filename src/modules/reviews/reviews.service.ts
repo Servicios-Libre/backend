@@ -156,7 +156,9 @@ export class ReviewsService {
   }
 
   async getRandomReviews() {
-    const reviews = await this.reviewRepository.find();
+    const reviews = await this.reviewRepository.find({
+      relations: ['author', 'worker'],
+    });
     const randomReviews = reviews.sort(() => Math.random() - 0.5).slice(0, 6);
     return randomReviews;
   }
