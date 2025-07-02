@@ -68,6 +68,15 @@ export class WorkerServicesService {
       total,
     };
   }
+  async getAllServicesPremium() {
+    const servicesPremium = await this.servicesRepository.find({
+      where: { worker: { premium: true } },
+      relations: ['category', 'worker', 'work_photos', 'ticket'],
+    });
+    const servicesAleatorios = servicesPremium.sort(() => Math.random() - 0.5);
+    const paginatedServices = servicesAleatorios.slice(0, 6);
+    return paginatedServices;
+  }
 
   async getAllServicesByWorkerId(id: string) {
     const [services, total] = await this.servicesRepository.findAndCount({
