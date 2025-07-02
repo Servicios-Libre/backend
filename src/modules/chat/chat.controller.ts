@@ -123,4 +123,12 @@ export class ChatController {
   ) {
     return this.chatService.confirmContractStep(id, confirmDto.role);
   }
+
+  @Post(':chatId/contract')
+  async createChatContract(
+    @Param('chatId') chatId: string,
+    @Body() dto: ContractDto,
+  ) {
+    return this.chatService.createContract({ ...dto, chatId });
+  }
 }

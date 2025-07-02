@@ -1,5 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { StatusContract } from './statusContract.enum';
+import { Chat } from './chat.entity';
+import { ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity()
 export class Contract {
@@ -35,4 +37,14 @@ export class Contract {
 
   @Column({ default: false })
   completed: boolean;
+
+  @ManyToOne(() => Chat, (chat) => chat.contracts, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'chatId' })
+  chat: Chat;
+
+  @Column()
+  chatId: string;
 }
