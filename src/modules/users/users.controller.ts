@@ -104,4 +104,10 @@ export class UsersController {
   getWorkerById(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.getWorkerById(id);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('premium')
+  getPremiumUsers() {
+    return this.usersService.getPremiumUsers();
+  }
 }
