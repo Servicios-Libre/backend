@@ -1,7 +1,7 @@
 import {
-  IsEmpty,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   IsUUID,
 } from 'class-validator';
@@ -23,13 +23,16 @@ export class ContractDto {
   @IsString()
   description: string;
 
-  @IsEmpty()
-  startDate?: Date;
+  @IsNotEmpty()
+  @IsString()
+  startDate: string;
 
-  @IsEmpty()
-  endDate?: Date;
+  @IsNotEmpty()
+  @IsString()
+  endDate: string;
 
-  @IsEmpty()
+  @IsOptional()
+  @IsString()
   status?: string;
 
   @IsNotEmpty()

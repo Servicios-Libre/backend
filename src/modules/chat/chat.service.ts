@@ -102,6 +102,8 @@ export class ChatService {
   }
 
   async createContract(contract: ContractDto) {
+    // eslint-disable-next-line prettier/prettier
+    console.log("🧪 Datos que llegan al service:", contract);
     const chat = await this.chatRepository.findOne({
       where: { id: contract.chatId },
     });
