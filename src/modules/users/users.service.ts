@@ -300,4 +300,34 @@ export class UsersService {
       descripcion: u.description ?? 'Miembro premium de la comunidad',
     }));
   }
+
+  async anyUserToAdmin(id: string) {
+    const user = await this.UserRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (user.role === 'admin')
+      throw new BadRequestException('User is already an admin');
+
+    user.role = Role.admin;
+
+    await this.UserRepository.save(user);
+
+    return { message: 'User has been promoted to admin' };
+  }
+
+  async downgradeAdmin(id: string) {
+    const user = await this.UserRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    if (user.role !== 'admin')
+      throw new BadRequestException('User is not an admin');
+
+    user.role = Role.user;
+
+    await this.UserRepository.save(user);
+
+    return { message: 'User has been downgraded to user' };
+  }
 }
