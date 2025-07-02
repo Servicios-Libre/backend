@@ -134,6 +134,8 @@ export class StripeService {
     const customerId = subscription.customer as string;
     const status = subscription.status;
 
+    console.log('entro al update');
+
     this.logger.log(
       `Subscription for customer ${customerId} changed status to ${status}`,
     );
