@@ -84,6 +84,7 @@ export class AuthService {
       email: confirmUser.email,
       role: confirmUser.role,
       name: confirmUser.name,
+      premium: confirmUser.premium,
     };
 
     const token = this.jwtService.sign(payload);
