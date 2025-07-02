@@ -134,6 +134,8 @@ export class StripeService {
     const customerId = subscription.customer as string;
     const status = subscription.status;
 
+    console.log('entro al update');
+
     this.logger.log(
       `Subscription for customer ${customerId} changed status to ${status}`,
     );
@@ -148,6 +150,7 @@ export class StripeService {
 
     user.premium = status === 'active' || status === 'trialing';
     await this.userRepository.save(user);
+    console.log(`User ${user.id} premium status updated to ${user.premium}`);
   }
 
   private async handleSubscriptionDeleted(subscription: Stripe.Subscription) {
