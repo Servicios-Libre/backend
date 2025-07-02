@@ -10,11 +10,8 @@ export class MercadoPagoController {
   async createOrder(
     @Body() body: any,
     @Headers('authorization') authHeader: string,
-    @Res() res: Response,
   ) {
-    const url = await this.paymentService.createOrder(body, authHeader);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return res.redirect(url.init_point);
+    return this.paymentService.createOrder(body, authHeader);
   }
 
   @Get('success')
