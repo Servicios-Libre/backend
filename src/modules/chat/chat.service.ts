@@ -102,8 +102,6 @@ export class ChatService {
   }
 
   async createContract(contract: ContractDto) {
-    // eslint-disable-next-line prettier/prettier
-    console.log("🧪 Datos que llegan al service:", contract);
     const chat = await this.chatRepository.findOne({
       where: { id: contract.chatId },
     });
@@ -112,7 +110,7 @@ export class ChatService {
     const status = StatusContract.pending;
     const startDate = new Date();
 
-    const newContract = this.ContractRepository.create({
+    const contractToSave = this.ContractRepository.create({
       ...contract,
       chat,
       chatId: contract.chatId,
@@ -120,7 +118,13 @@ export class ChatService {
       startDate,
     });
 
-    return await this.ContractRepository.save(newContract);
+    const savedContract = await this.ContractRepository.save(contractToSave);
+
+    this.chatGateway.server
+      .to(`chat_${contract.chatId}`)
+      .emit('newContract', savedContract);
+
+    return savedContract;
   }
 
   async acceptContract(id: string) {
