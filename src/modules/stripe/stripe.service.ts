@@ -90,7 +90,6 @@ export class StripeService {
     const endpointSecret = this.configService.get<string>(
       'STRIPE_WEBHOOK_SECRET',
     );
-    console.log('Endpoint Secret:', endpointSecret);
     if (!endpointSecret) {
       this.logger.error('Stripe webhook secret is not configured');
       throw new Error('Stripe webhook secret is not configured');
@@ -110,8 +109,6 @@ export class StripeService {
       );
       throw err;
     }
-
-    console.log('Received event:', event.type);
 
     switch (event.type) {
       case 'checkout.session.completed':
@@ -134,8 +131,6 @@ export class StripeService {
   private async handleSubscriptionUpdated(subscription: Stripe.Subscription) {
     const customerId = subscription.customer as string;
     const status = subscription.status;
-
-    console.log('entro al update');
 
     this.logger.log(
       `Subscription for customer ${customerId} changed status to ${status}`,
