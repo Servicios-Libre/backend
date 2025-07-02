@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Message } from './message.entity';
 import { User } from 'src/modules/users/entities/users.entity';
+import { Contract } from './contract.entity';
 
 @Entity()
 export class Chat {
@@ -23,4 +24,7 @@ export class Chat {
 
   @OneToMany(() => Message, (message) => message.chat)
   messages: Message[];
+
+  @OneToMany(() => Contract, (contract) => contract.chat)
+  contracts: Contract[];
 }

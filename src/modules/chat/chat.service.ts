@@ -102,10 +102,23 @@ export class ChatService {
   }
 
   async createContract(contract: ContractDto) {
+    const chat = await this.chatRepository.findOne({
+      where: { id: contract.chatId },
+    });
+    if (!chat) throw new BadRequestException('Chat not found');
+
     const status = StatusContract.pending;
     const startDate = new Date();
-    const contractToSave = { ...contract, status, startDate };
-    return await this.ContractRepository.save(contractToSave);
+
+    const newContract = this.ContractRepository.create({
+      ...contract,
+      chat,
+      chatId: contract.chatId,
+      status,
+      startDate,
+    });
+
+    return await this.ContractRepository.save(newContract);
   }
 
   async acceptContract(id: string) {
