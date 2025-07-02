@@ -110,7 +110,7 @@ export class ChatService {
     const status = StatusContract.pending;
     const startDate = new Date();
 
-    const newContract = this.ContractRepository.create({
+    const contractToSave = this.ContractRepository.create({
       ...contract,
       chat,
       chatId: contract.chatId,
@@ -118,18 +118,21 @@ export class ChatService {
       startDate,
     });
 
-    return await this.ContractRepository.save(newContract);
+    const savedContract = await this.ContractRepository.save(contractToSave);
+
+    this.chatGateway.server
+      .to(`chat_${contract.chatId}`)
+      .emit('newContract', savedContract);
+
+    return savedContract;
   }
 
   async acceptContract(id: string) {
-    try {
-      await this.ContractRepository.update(id, {
-        status: StatusContract.accepted,
-      });
-      return 'Contract accepted successfully';
-    } catch {
-      throw new BadRequestException('Contract not exist');
-    }
+    const contract = await this.ContractRepository.findOne({ where: { id } });
+    if (!contract) throw new BadRequestException('Contract not found');
+
+    contract.status = StatusContract.accepted;
+    return await this.ContractRepository.save(contract);
   }
 
   async rejectContract(id: string) {
