@@ -10,8 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/users.entity';
 import { Repository } from 'typeorm';
 
-dotenvConfig({ path: '.env.development.local' });
-dotenvConfig({ path: '.env' });
+dotenvConfig({ path: ['.env', '.env.development.local'] });
 
 @Injectable()
 export class MercadoPagoService {
@@ -34,11 +33,11 @@ export class MercadoPagoService {
           title: 'Suscripción Premium',
           quantity: 1,
           currency_id: 'ARS',
-          unit_price: 1000,
+          unit_price: 17000,
         },
       ],
       back_urls: {
-        success: `${process.env.FRONTEND_URL}/success`,
+        success: `${process.env.FRONT_URL}/success`,
       },
       notification_url: `${process.env.BACKEND_URL}/payment/webhook`,
       metadata: {
