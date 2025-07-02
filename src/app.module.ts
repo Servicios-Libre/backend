@@ -21,6 +21,7 @@ import { ChatModule } from './modules/chat/chat.module';
 import { StripeModule } from './modules/stripe/stripe.module';
 import stripeConfig from './config/stripe.config';
 import { ReviewsModule } from './modules/reviews/reviews.module';
+import { MercadoPagoModule } from './modules/mercadopago/mp.module';
 import { UsersService } from './modules/users/users.service';
 import { Address } from './modules/users/entities/address.entity';
 import { Social } from './modules/users/entities/social.entity';
@@ -66,6 +67,7 @@ import { City } from './modules/users/entities/cities.entity';
     EmailModule,
     ChatModule,
     ReviewsModule,
+    MercadoPagoModule,
   ],
   controllers: [],
   providers: [
