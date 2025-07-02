@@ -11,4 +11,8 @@ export class ReviewDto {
   @Min(0)
   @Max(5)
   rate: number;
+
+  @IsNotEmpty()
+  @IsString()
+  contractId: string;
 }
