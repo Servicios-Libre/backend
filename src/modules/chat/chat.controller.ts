@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   Body,
@@ -130,7 +129,6 @@ export class ChatController {
     @Param('chatId') chatId: string,
     @Body() dto: ContractDto,
   ) {
-    console.log("📥 DTO recibido:", dto);
     return this.chatService.createContract({ ...dto, chatId });
   }
 }
