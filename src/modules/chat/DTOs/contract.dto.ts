@@ -9,6 +9,10 @@ import {
 export class ContractDto {
   @IsNotEmpty()
   @IsUUID()
+  chatId: string;
+
+  @IsNotEmpty()
+  @IsUUID()
   workerId: string;
 
   @IsNotEmpty()
