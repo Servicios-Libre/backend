@@ -105,7 +105,6 @@ export class UsersController {
     return this.usersService.getWorkerById(id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('premium')
   getPremiumUsers() {
     return this.usersService.getPremiumUsers();
