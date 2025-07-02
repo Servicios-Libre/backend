@@ -120,6 +120,11 @@ export class AuthService {
       };
 
       const token = this.jwtService.sign(payload);
+      await this.emailService.registerEmail(
+        newUser.email,
+        newUser.name,
+        newUser.id,
+      );
       return { token };
     }
 
