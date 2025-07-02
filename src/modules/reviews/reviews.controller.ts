@@ -40,7 +40,7 @@ export class ReviewsController {
     return this.reviewsService.createReview(worker_id, review, token);
   }
 
-  @Get('ramdom')
+  @Get('random')
   getRandomReviews() {
     return this.reviewsService.getRandomReviews();
   }
