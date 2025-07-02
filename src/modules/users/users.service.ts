@@ -264,4 +264,40 @@ export class UsersService {
 
     return states;
   }
+
+  async getPremiumUsers(): Promise<
+    {
+      id: string;
+      nombre: string;
+      profesion: string;
+      ubicacion: string;
+      imagen: string;
+      descripcion: string;
+    }[]
+  > {
+    const users = await this.UserRepository.find({
+      where: { premium: true },
+      relations: ['address_id'],
+      select: {
+        id: true,
+        name: true,
+        user_pic: true,
+        description: true,
+        address_id: {
+          city: true,
+          state: true,
+        },
+        role: true,
+      },
+    });
+
+    return users.map((u) => ({
+      id: u.id,
+      nombre: u.name,
+      profesion: u.role === 'worker' ? 'Especialista' : 'Usuario premium',
+      ubicacion: `${u.address_id?.city || ''}, ${u.address_id?.state || ''}`,
+      imagen: u.user_pic ?? 'https://example.com/default-avatar.png',
+      descripcion: u.description ?? 'Miembro premium de la comunidad',
+    }));
+  }
 }
