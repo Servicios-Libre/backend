@@ -14,6 +14,7 @@ import { ReviewDto } from './dtos/review.dto';
 import { ExtractPayload } from 'src/helpers/extractPayload.token';
 import { Payload } from '../auth/types/payload.type';
 import { EmailService } from '../email/email.service';
+import { Contract } from '../chat/entities/contract.entity';
 
 @Injectable()
 export class ReviewsService {
@@ -21,6 +22,8 @@ export class ReviewsService {
     @InjectRepository(Review) private reviewRepository: Repository<Review>,
     @InjectRepository(User) private userRepository: Repository<User>,
     private readonly emailService: EmailService,
+    @InjectRepository(Contract)
+    private contractRepository: Repository<Contract>,
   ) {}
 
   async getWorkerReviews(
@@ -84,6 +87,21 @@ export class ReviewsService {
 
     if (!workerFound) {
       throw new NotFoundException('worker not found');
+    }
+
+    const contract = await this.contractRepository.findOne({
+      where: {
+        id: review.contractId,
+        clientId: payload.id,
+        workerId: worker_id,
+        completed: true,
+      },
+    });
+
+    if (!contract) {
+      throw new BadRequestException(
+        'No podés dejar una review hasta que el contrato esté completado.',
+      );
     }
 
     const reviewFound = await this.reviewRepository.findOne({

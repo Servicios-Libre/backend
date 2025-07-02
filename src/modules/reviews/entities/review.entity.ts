@@ -1,4 +1,5 @@
 import { User } from 'src/modules/users/entities/users.entity';
+import { Contract } from 'src/modules/chat/entities/contract.entity';
 import {
   Column,
   Entity,
@@ -37,4 +38,11 @@ export class Review {
     default: new Date(),
   })
   created_at: Date;
+
+  @ManyToOne(() => Contract, { nullable: false })
+  @JoinColumn()
+  contract: Contract;
+
+  @Column()
+  contractId: string;
 }
