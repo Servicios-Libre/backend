@@ -195,6 +195,7 @@ export class ChatService {
           id: chat.id,
           otherUserId: otherUser.id,
           otherUsername: otherUser.name,
+          otherUserPic: otherUser.user_pic,
           lastMessage: lastMessage
             ? {
                 message: lastMessage.message,
