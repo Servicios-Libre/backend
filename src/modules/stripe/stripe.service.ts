@@ -114,9 +114,12 @@ export class StripeService {
     console.log('Received event:', event.type);
 
     switch (event.type) {
+      case 'checkout.session.completed':
       case 'customer.subscription.created':
       case 'customer.subscription.updated':
-        await this.handleSubscriptionUpdated(event.data.object);
+        await this.handleSubscriptionUpdated(
+          event.data.object as Stripe.Subscription,
+        );
         break;
 
       case 'customer.subscription.deleted':

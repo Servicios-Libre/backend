@@ -89,10 +89,7 @@ export class UsersService {
         { description: body.description },
       );
     if (body.name)
-      await this.UserRepository.update(
-        { id: userID },
-        { description: body.name },
-      );
+      await this.UserRepository.update({ id: userID }, { name: body.name });
 
     const addressActualization = {};
     for (const key in body) {
