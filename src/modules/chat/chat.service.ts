@@ -132,7 +132,14 @@ export class ChatService {
     if (!contract) throw new BadRequestException('Contract not found');
 
     contract.status = StatusContract.accepted;
-    return await this.ContractRepository.save(contract);
+
+    const saved = await this.ContractRepository.save(contract);
+
+    this.chatGateway.server
+      .to(`chat_${saved.chatId}`)
+      .emit('contractUpdated', saved);
+
+    return saved;
   }
 
   async rejectContract(id: string) {
