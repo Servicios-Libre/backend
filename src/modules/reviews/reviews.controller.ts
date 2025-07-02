@@ -39,4 +39,9 @@ export class ReviewsController {
   ) {
     return this.reviewsService.createReview(worker_id, review, token);
   }
+
+  @Get('ramdom')
+  getRandomReviews() {
+    return this.reviewsService.getRandomReviews();
+  }
 }
