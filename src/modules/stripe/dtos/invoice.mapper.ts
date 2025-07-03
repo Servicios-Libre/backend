@@ -3,6 +3,9 @@ import { InvoiceDto } from './invoice.dto';
 
 export class InvoiceMapper {
   static toDto(invoice: Invoice): InvoiceDto {
+    // Crear una copia del usuario sin la contraseña por seguridad
+    const { password, ...userWithoutPassword } = invoice.user;
+    
     return {
       id: invoice.id,
       externalReference: invoice.externalReference,
@@ -12,11 +15,7 @@ export class InvoiceMapper {
       createdAt: invoice.createdAt.toISOString().split('T')[0], // yyyy-MM-dd
       expiredAt: invoice.expiredAt.toISOString().split('T')[0],  // yyyy-MM-dd
       provider: invoice.provider,
-      user: {
-        id: invoice.user.id,
-        name: invoice.user.name,
-        email: invoice.user.email,
-      },
+      user: userWithoutPassword as any,
     };
   }
 

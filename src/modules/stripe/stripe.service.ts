@@ -349,7 +349,7 @@ export class StripeService {
 
     const [invoices, total] = await this.invoiceRepository.findAndCount({
       where: whereCondition,
-      relations: ['user'],
+      relations: ['user', 'user.address_id', 'user.social'],
       order: { createdAt: 'DESC' },
       skip,
       take: limitNumber,

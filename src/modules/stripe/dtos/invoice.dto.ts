@@ -1,10 +1,5 @@
 import { PaymentProvider } from '../../mercadopago/entities/PaymentProvider';
-
-export class UserBasicDto {
-  id: string;
-  name: string;
-  email: string;
-}
+import { User } from '../../users/entities/users.entity';
 
 export class InvoiceDto {
   id: number;
@@ -15,5 +10,5 @@ export class InvoiceDto {
   createdAt: string; // Formato yyyy-MM-dd para el frontend
   expiredAt: string;  // Formato yyyy-MM-dd para el frontend
   provider: PaymentProvider;
-  user: UserBasicDto;
+  user: User;
 }
