@@ -45,8 +45,7 @@ export class ReviewsController {
     return this.reviewsService.getWorkerReviews(worker_id, page, limit, sort);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('user')
+  @UseGuards(JwtAuthGuard)
   @Get('check')
   checkIfReviewExists(
     @Query('contractId', ParseUUIDPipe) contractId: string,
