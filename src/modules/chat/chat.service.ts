@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
-import { Repository, Not, IsNull, In } from 'typeorm';
+import { Repository, Not, IsNull } from 'typeorm';
 import { Contract } from './entities/contract.entity';
 import { ContractDto } from './DTOs/contract.dto';
 import { StatusContract } from './entities/statusContract.enum';
@@ -107,19 +107,19 @@ export class ChatService {
     });
     if (!chat) throw new BadRequestException('Chat not found');
 
-    // 🛡️ Bloquear si ya hay contrato activo o pendiente sin finalizar
+    // Validar si ya hay un contrato activo o pendiente
     const existing = await this.ContractRepository.findOne({
       where: {
         workerId: contract.workerId,
         clientId: contract.clientId,
-        endDate: IsNull(), // aún no finalizado
-        status: In([StatusContract.pending, StatusContract.accepted]), // aún en curso
+        status: StatusContract.pending,
+        endDate: IsNull(), // ✅ correcto ahora
       },
     });
 
     if (existing) {
       throw new BadRequestException(
-        'Ya existe un contrato activo entre este cliente y trabajador',
+        'Ya existe un contrato sin finalizar entre este cliente y trabajador',
       );
     }
 
@@ -141,6 +141,21 @@ export class ChatService {
       .emit('newContract', savedContract);
 
     return savedContract;
+  }
+
+  async acceptContract(id: string) {
+    const contract = await this.ContractRepository.findOne({ where: { id } });
+    if (!contract) throw new BadRequestException('Contract not found');
+
+    contract.status = StatusContract.accepted;
+
+    const saved = await this.ContractRepository.save(contract);
+
+    this.chatGateway.server
+      .to(`chat_${saved.chatId}`)
+      .emit('contractUpdated', saved);
+
+    return saved;
   }
 
   async rejectContract(id: string) {
@@ -253,21 +268,6 @@ export class ChatService {
 
     this.chatGateway.server
       .to(`chat_${contract.chatId}`)
-      .emit('contractUpdated', saved);
-
-    return saved;
-  }
-
-  async acceptContract(id: string) {
-    const contract = await this.ContractRepository.findOne({ where: { id } });
-    if (!contract) throw new BadRequestException('Contract not found');
-
-    contract.status = StatusContract.accepted;
-
-    const saved = await this.ContractRepository.save(contract);
-
-    this.chatGateway.server
-      .to(`chat_${saved.chatId}`)
       .emit('contractUpdated', saved);
 
     return saved;

@@ -162,18 +162,4 @@ export class ReviewsService {
     const randomReviews = reviews.sort(() => Math.random() - 0.5).slice(0, 6);
     return randomReviews;
   }
-
-  async checkIfReviewExists(contractId: string, token: string) {
-    const payload = ExtractPayload(token);
-
-    const existingReview = await this.reviewRepository.findOne({
-      where: {
-        contract: { id: contractId },
-        author: { id: payload.id },
-      },
-      relations: ['contract', 'author'],
-    });
-
-    return { reviewExists: !!existingReview };
-  }
 }
