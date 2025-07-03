@@ -80,7 +80,7 @@ export class WorkerServicesController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('worker')
+  @Roles('worker', 'admin')
   @Delete('delete/:id')
   deleteService(
     @Param('id', ParseUUIDPipe) id: string,
