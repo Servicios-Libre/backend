@@ -25,8 +25,8 @@ export class MercadoPagoController {
     res.send('webhook recibido');
   }
 
-  @Get('byId')
-  getAllInvoices(@Headers('authorization') token: string) {
-    return this.paymentService.getAllInvoiceService(token);
-  }
+  // @Get('byId')
+  // getAllInvoices(@Headers('authorization') token: string) {
+  //   return this.paymentService.getAllInvoiceService(token);
+  // }
 }
