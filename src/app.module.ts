@@ -27,6 +27,7 @@ import { Address } from './modules/users/entities/address.entity';
 import { Social } from './modules/users/entities/social.entity';
 import { State } from './modules/users/entities/state.entity';
 import { City } from './modules/users/entities/cities.entity';
+import { Invoice } from './modules/mercadopago/entities/factura.entity';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { City } from './modules/users/entities/cities.entity';
       Social,
       State,
       City,
+      Invoice,
     ]),
     StripeModule,
     CategoriesModule,

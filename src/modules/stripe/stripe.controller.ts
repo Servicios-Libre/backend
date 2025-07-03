@@ -3,6 +3,8 @@ import {
   Controller,
   Headers,
   Post,
+  Get,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -10,6 +12,11 @@ import {
 import { StripeService } from './stripe.service';
 import { Response, Request as ExpressRequest } from 'express';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { ExtractPayload } from 'src/helpers/extractPayload.token';
+import { PaymentProvider } from '../mercadopago/entities/PaymentProvider';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from '../users/entities/roles.enum';
 
 interface AuthRequest extends ExpressRequest {
   user: any;
@@ -82,6 +89,121 @@ export class StripeController {
         .send(
           `Webhook Error: ${err instanceof Error ? err.message : 'Unknown error'}`,
         );
+    }
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.admin)
+  @Get('invoices')
+  async getInvoices(
+    @Query('provider') provider?: string,
+    @Query('year') year?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    try {
+      let paymentProvider: PaymentProvider | undefined;
+
+      if (provider) {
+        if (provider === 'stripe') {
+          paymentProvider = PaymentProvider.STRIPE;
+        } else if (provider === 'mercado_pago') {
+          paymentProvider = PaymentProvider.MERCADO_PAGO;
+        } else {
+          throw new Error('Proveedor inválido. Use "stripe" o "mercado_pago"');
+        }
+      }
+
+      const pageNumber = page ? parseInt(page, 10) : 1;
+      const limitNumber = limit ? parseInt(limit, 10) : 6;
+      const yearNumber = year ? parseInt(year, 10) : undefined;
+
+      // Validar que page y limit sean números válidos
+      if (isNaN(pageNumber) || pageNumber < 1) {
+        throw new Error('El parámetro "page" debe ser un número mayor a 0');
+      }
+
+      if (isNaN(limitNumber) || limitNumber < 1 || limitNumber > 100) {
+        throw new Error(
+          'El parámetro "limit" debe ser un número entre 1 y 100',
+        );
+      }
+
+      // Validar año si se proporciona
+      if (
+        year &&
+        (isNaN(yearNumber!) ||
+          yearNumber! < 1900 ||
+          yearNumber! > new Date().getFullYear() + 10)
+      ) {
+        throw new Error('El parámetro "year" debe ser un año válido');
+      }
+
+      const result = await this.stripeService.getAllInvoices(
+        paymentProvider,
+        yearNumber,
+        pageNumber,
+        limitNumber,
+      );
+      return result;
+    } catch (error) {
+      throw new Error(`Error al obtener facturas: ${error.message}`);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('invoices/user')
+  async getUserInvoices(
+    @Headers('authorization') authorization: string,
+    @Query('provider') provider?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    try {
+      const payload = ExtractPayload(authorization);
+      const userId = payload?.id;
+
+      if (!userId) {
+        throw new Error('Token inválido o usuario no autenticado');
+      }
+
+      let paymentProvider: PaymentProvider | undefined;
+
+      if (provider) {
+        if (provider === 'stripe') {
+          paymentProvider = PaymentProvider.STRIPE;
+        } else if (provider === 'mercado_pago') {
+          paymentProvider = PaymentProvider.MERCADO_PAGO;
+        } else {
+          throw new Error('Proveedor inválido. Use "stripe" o "mercado_pago"');
+        }
+      }
+
+      const pageNumber = page ? parseInt(page, 10) : 1;
+      const limitNumber = limit ? parseInt(limit, 10) : 6;
+
+      // Validar que page y limit sean números válidos
+      if (isNaN(pageNumber) || pageNumber < 1) {
+        throw new Error('El parámetro "page" debe ser un número mayor a 0');
+      }
+
+      if (isNaN(limitNumber) || limitNumber < 1 || limitNumber > 100) {
+        throw new Error(
+          'El parámetro "limit" debe ser un número entre 1 y 100',
+        );
+      }
+
+      const result = await this.stripeService.getAllInvoicesForUserById(
+        userId,
+        paymentProvider,
+        pageNumber,
+        limitNumber,
+      );
+      return result;
+    } catch (error) {
+      throw new Error(
+        `Error al obtener facturas del usuario: ${error.message}`,
+      );
     }
   }
 }
