@@ -110,6 +110,11 @@ export class UsersController {
     return this.usersService.getWorkerById(id);
   }
 
+  @Get('is-worker/:id')
+  isWorker(@Param('id', ParseUUIDPipe) id: string) {
+    return this.usersService.isWorker(id);
+  }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Put('to-admin/:id')
