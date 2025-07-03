@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
-import { Repository, Not } from 'typeorm';
+import { Repository, Not, IsNull, In } from 'typeorm';
 import { Contract } from './entities/contract.entity';
 import { ContractDto } from './DTOs/contract.dto';
 import { StatusContract } from './entities/statusContract.enum';
@@ -107,6 +107,22 @@ export class ChatService {
     });
     if (!chat) throw new BadRequestException('Chat not found');
 
+    // 🛡️ Bloquear si ya hay contrato activo o pendiente sin finalizar
+    const existing = await this.ContractRepository.findOne({
+      where: {
+        workerId: contract.workerId,
+        clientId: contract.clientId,
+        endDate: IsNull(), // aún no finalizado
+        status: In([StatusContract.pending, StatusContract.accepted]), // aún en curso
+      },
+    });
+
+    if (existing) {
+      throw new BadRequestException(
+        'Ya existe un contrato activo entre este cliente y trabajador',
+      );
+    }
+
     const status = StatusContract.pending;
     const startDate = new Date();
 
@@ -195,6 +211,8 @@ export class ChatService {
           id: chat.id,
           otherUserId: otherUser.id,
           otherUsername: otherUser.name,
+          otherUserPic: otherUser.user_pic,
+          otherUserPremium: otherUser.premium,
           lastMessage: lastMessage
             ? {
                 message: lastMessage.message,

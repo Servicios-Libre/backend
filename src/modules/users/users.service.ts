@@ -15,6 +15,11 @@ import { SocialDto } from './DTOs/social.dto';
 import * as data from './data/data.json';
 import { State } from './entities/state.entity';
 import { City } from './entities/cities.entity';
+import {
+  Ticket,
+  TicketStatus,
+  TicketType,
+} from '../tickets/entities/ticket.entity';
 
 @Injectable()
 export class UsersService {
@@ -27,6 +32,7 @@ export class UsersService {
     //seeder de states y ciudades
     @InjectRepository(State) private stateRepository: Repository<State>,
     @InjectRepository(City) private cityRepository: Repository<City>,
+    @InjectRepository(Ticket) private ticketRepository: Repository<Ticket>,
   ) {}
 
   async getAllUsers(page = 1, limit = 10, role?: Role, search?: string) {
@@ -185,6 +191,14 @@ export class UsersService {
         await this.serviceRepository.delete({ id: service.id });
       });
     }
+    const ticket = await this.ticketRepository.findOne({
+      where: {
+        user: { id },
+        type: TicketType.TO_WORKER,
+        status: TicketStatus.ACCEPTED,
+      },
+    });
+    if (ticket) await this.ticketRepository.delete({ id: ticket.id });
     return { message: 'Worker updated to user' };
   }
 
@@ -329,5 +343,12 @@ export class UsersService {
     await this.UserRepository.save(user);
 
     return { message: 'User has been downgraded to user' };
+  }
+  async isWorker(id: string) {
+    const user = await this.UserRepository.findOneBy({ id });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    return user.role === 'worker';
   }
 }
