@@ -11,7 +11,6 @@ import { User } from '../users/entities/users.entity';
 import { Repository } from 'typeorm';
 import { Invoice } from './entities/factura.entity';
 import { PaymentProvider } from './entities/PaymentProvider';
-import { ExtractPayload } from 'src/helpers/extractPayload.token';
 
 dotenvConfig({ path: ['.env', '.env.development.local'] });
 
@@ -41,7 +40,7 @@ export class MercadoPagoService {
         },
       ],
       back_urls: {
-        success: `${process.env.FRONT_URL}/success`,
+        success: `${process.env.FRONT_URL}/worker-profile/${userId}`,
       },
       notification_url: `${process.env.BACKEND_URL}/payment/webhook`,
       metadata: {
