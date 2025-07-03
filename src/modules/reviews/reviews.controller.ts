@@ -44,4 +44,14 @@ export class ReviewsController {
   ) {
     return this.reviewsService.getWorkerReviews(worker_id, page, limit, sort);
   }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('user')
+  @Get('check')
+  checkIfReviewExists(
+    @Query('contractId', ParseUUIDPipe) contractId: string,
+    @Headers('Authorization') token: string,
+  ) {
+    return this.reviewsService.checkIfReviewExists(contractId, token);
+  }
 }
