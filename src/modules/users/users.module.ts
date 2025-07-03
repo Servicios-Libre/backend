@@ -8,10 +8,19 @@ import { Service } from '../workerServices/entities/service.entity';
 import { Social } from './entities/social.entity';
 import { State } from './entities/state.entity';
 import { City } from './entities/cities.entity';
+import { Ticket } from '../tickets/entities/ticket.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Address, Service, Social, State, City]),
+    TypeOrmModule.forFeature([
+      User,
+      Address,
+      Service,
+      Social,
+      State,
+      City,
+      Ticket,
+    ]),
   ],
   controllers: [UsersController],
   providers: [UsersService],
