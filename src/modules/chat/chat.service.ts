@@ -143,21 +143,6 @@ export class ChatService {
     return savedContract;
   }
 
-  async acceptContract(id: string) {
-    const contract = await this.ContractRepository.findOne({ where: { id } });
-    if (!contract) throw new BadRequestException('Contract not found');
-
-    contract.status = StatusContract.accepted;
-
-    const saved = await this.ContractRepository.save(contract);
-
-    this.chatGateway.server
-      .to(`chat_${saved.chatId}`)
-      .emit('contractUpdated', saved);
-
-    return saved;
-  }
-
   async rejectContract(id: string) {
     try {
       await this.ContractRepository.update(id, {
