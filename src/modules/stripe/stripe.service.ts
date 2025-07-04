@@ -29,7 +29,7 @@ export class StripeService {
     private readonly invoiceRepository: Repository<Invoice>,
   ) {
     const secretKey = this.configService.get<string>('stripe.secretKey');
-    if (!secretKey) throw new Error('Stripe secret key not found');
+    if (!secretKey) throw new Error('Stripe secret key no encontrada');
     this.stripe = new Stripe(secretKey, {
       apiVersion: '2025-05-28.basil',
     });
@@ -144,14 +144,16 @@ export class StripeService {
     const status = subscription.status;
 
     this.logger.log(
-      `Processing subscription update - Customer: ${customerId}, Status: ${status}, Subscription ID: ${subscription.id}`,
+      `Procesando actualización de suscripción - Cliente: ${customerId}, Estado: ${status}, ID de suscripción: ${subscription.id}`,
     );
 
     const user = await this.userRepository.findOne({
       where: { stripeCustomerId: customerId },
     });
     if (!user) {
-      this.logger.warn(`User with stripeCustomerId ${customerId} not found`);
+      this.logger.warn(
+        `Usuario con stripeCustomerId ${customerId} no encontrado`,
+      );
       return;
     }
 
@@ -160,20 +162,20 @@ export class StripeService {
     // Solo actualizar si el estado cambió (idempotencia)
     if (user.premium === newPremiumStatus) {
       this.logger.log(
-        `User ${user.id} premium status is already ${newPremiumStatus}, no update needed`,
+        `El usuario ${user.id} ya tiene el estado premium en ${newPremiumStatus}, no es necesario actualizar.`,
       );
       return;
     }
 
     this.logger.log(
-      `User ${user.id} (${user.email}) - Current premium: ${user.premium}, New premium: ${newPremiumStatus}`,
+      `Usuario ${user.id} (${user.email}) - Premium actual: ${user.premium}, Nuevo premium: ${newPremiumStatus}`,
     );
 
     user.premium = newPremiumStatus;
     await this.userRepository.save(user);
 
     this.logger.log(
-      `User ${user.id} premium status successfully updated to ${user.premium}`,
+      `El estado premium del usuario ${user.id} se actualizó correctamente a ${user.premium}`,
     );
 
     // Generar factura si la suscripción está activa
@@ -184,13 +186,15 @@ export class StripeService {
 
   private async handleSubscriptionDeleted(subscription: Stripe.Subscription) {
     const customerId = subscription.customer as string;
-    this.logger.log(`Subscription deleted for customer ${customerId}`);
+    this.logger.log(`Suscripción eliminada para el cliente ${customerId}`);
 
     const user = await this.userRepository.findOne({
       where: { stripeCustomerId: customerId },
     });
     if (!user) {
-      this.logger.warn(`User with stripeCustomerId ${customerId} not found`);
+      this.logger.warn(
+        `Usuario con stripeCustomerId ${customerId} no encontrado`,
+      );
       return;
     }
 
@@ -201,12 +205,12 @@ export class StripeService {
   private async handleCheckoutSessionCompleted(
     session: Stripe.Checkout.Session,
   ) {
-    this.logger.log(`Checkout session completed: ${session.id}`);
+    this.logger.log(`Sesión de pago completada: ${session.id}`);
 
     // Solo procesar si es una suscripción
     if (session.mode !== 'subscription') {
       this.logger.log(
-        `Checkout session ${session.id} is not a subscription, skipping`,
+        `La sesión de pago ${session.id} no es una suscripción, omitiendo`,
       );
       return;
     }
@@ -219,7 +223,7 @@ export class StripeService {
       await this.handleSubscriptionUpdated(subscription);
     } else {
       this.logger.warn(
-        `Checkout session ${session.id} completed but no subscription found`,
+        `La sesión de pago ${session.id} se completó pero no se encontró suscripción`,
       );
     }
   }
@@ -236,7 +240,7 @@ export class StripeService {
 
       if (existingInvoice) {
         this.logger.log(
-          `Invoice already exists for subscription ${subscription.id}`,
+          `Ya existe una factura para la suscripción ${subscription.id}`,
         );
         return;
       }
@@ -279,11 +283,11 @@ export class StripeService {
       await this.invoiceRepository.save(invoice);
 
       this.logger.log(
-        `Invoice created for subscription ${subscription.id}, user ${user.id}, amount ${amount}`,
+        `Factura creada para la suscripción ${subscription.id}, usuario ${user.id}, monto ${amount}`,
       );
     } catch (error) {
       this.logger.error(
-        `Error creating invoice for subscription ${subscription.id}:`,
+        `Error al crear la factura para la suscripción ${subscription.id}:`,
         error,
       );
     }

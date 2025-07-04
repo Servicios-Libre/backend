@@ -26,22 +26,6 @@ interface AuthRequest extends ExpressRequest {
 export class StripeController {
   constructor(private readonly stripeService: StripeService) {}
 
-  // @Post('create-checkout-session')
-  // async createCheckout(
-  //   @Body('lookup_key') lookup_key: string,
-  //   @Res() res: Response,
-  // ) {
-  //   const url = await this.stripeService.createCheckoutSession(lookup_key);
-
-  //   if (!url) {
-  //     return res
-  //       .status(400)
-  //       .json({ error: 'No se pudo crear la sesión de checkout de Stripe' });
-  //   }
-
-  //   return res.redirect(303, url);
-  // }
-
   @UseGuards(JwtAuthGuard)
   @Post('create-checkout-session')
   async createCheckoutJson(
@@ -147,6 +131,7 @@ export class StripeController {
       );
       return result;
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       throw new Error(`Error al obtener facturas: ${error.message}`);
     }
   }
@@ -202,6 +187,7 @@ export class StripeController {
       return result;
     } catch (error) {
       throw new Error(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         `Error al obtener facturas del usuario: ${error.message}`,
       );
     }
