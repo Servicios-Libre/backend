@@ -17,6 +17,7 @@ import { PaymentProvider } from '../mercadopago/entities/PaymentProvider';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from '../users/entities/roles.enum';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 interface AuthRequest extends ExpressRequest {
   user: any;
@@ -76,6 +77,7 @@ export class StripeController {
     }
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.admin)
   @Get('invoices')
@@ -136,6 +138,7 @@ export class StripeController {
     }
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('invoices/user')
   async getUserInvoices(
