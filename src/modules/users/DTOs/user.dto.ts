@@ -15,8 +15,10 @@ import { ApiHideProperty } from '@nestjs/swagger';
 
 export class UserDto {
   /**
-  @example example@gmail.com
-  */
+   * Email del usuario.
+   * Debe ser un string con formato de email válido.
+   * @example example@gmail.com
+   */
   @IsNotEmpty({
     message: 'Debe haber un email',
   })
@@ -27,8 +29,10 @@ export class UserDto {
   email: string;
 
   /**
-  @example Contra123@
-  */
+   * Contraseña del usuario.
+   * Debe tener entre 8 y 20 caracteres, al menos una mayúscula y un carácter especial.
+   * @example Contra123@
+   */
   @IsNotEmpty({
     message: 'Debe haber una contraseña',
   })
@@ -47,8 +51,10 @@ export class UserDto {
   password: string;
 
   /**
-  @example Contra123@
-  */
+   * Confirmación de la contraseña.
+   * Debe coincidir con la contraseña ingresada.
+   * @example Contra123@
+   */
   @IsNotEmpty({
     message: 'Debe haber una confirmación de contraseña',
   })
@@ -58,8 +64,10 @@ export class UserDto {
   confirmPassword: string;
 
   /**
-  @example Nombre
-  */
+   * Nombre del usuario.
+   * Solo letras y espacios, máximo 20 caracteres.
+   * @example Nombre
+   */
   @IsNotEmpty({
     message: 'Debe haber un nombre',
   })
@@ -75,8 +83,10 @@ export class UserDto {
   name: string;
 
   /**
-  @example 03436569569
-  */
+   * Teléfono del usuario.
+   * String de hasta 20 caracteres.
+   * @example 03436569569
+   */
   @IsNotEmpty({
     message: 'Debe haber un teléfono',
   })
@@ -88,19 +98,29 @@ export class UserDto {
   })
   phone: string;
 
+  /**
+   * Rol del usuario (no debe ser incluido en el body).
+   * Oculto en Swagger.
+   */
   @ApiHideProperty()
   @IsEmpty({
     message: 'No debe haber un rol',
   })
   role: Role;
 
+  /**
+   * Indica si el usuario es premium (no debe ser incluido en el body).
+   * Oculto en Swagger.
+   */
   @ApiHideProperty()
   @IsEmpty({ message: 'No debe haber un premium' })
   premium: boolean;
 
   /**
-  @example Calle Falsa
-  */
+   * Calle del domicilio del usuario.
+   * Solo letras y espacios, máximo 20 caracteres.
+   * @example Calle Falsa
+   */
   @IsNotEmpty({
     message: 'Debe haber una calle',
   })
@@ -114,8 +134,10 @@ export class UserDto {
   street: string;
 
   /**
-  @example 123
-  */
+   * Número de casa del usuario.
+   * Entero entre 1 y 10000.
+   * @example 123
+   */
   @IsNotEmpty({
     message: 'Debe haber un número de casa',
   })
@@ -125,8 +147,10 @@ export class UserDto {
   house_number: number;
 
   /**
-  @example Gran Ciudad
-  */
+   * Ciudad del usuario.
+   * Solo letras y espacios, máximo 20 caracteres.
+   * @example Gran Ciudad
+   */
   @IsNotEmpty({
     message: 'Debe haber una ciudad',
   })
@@ -140,8 +164,10 @@ export class UserDto {
   city: string;
 
   /**
-  @example Gran Provincia
-  */
+   * Provincia del usuario.
+   * Solo letras y espacios, máximo 20 caracteres.
+   * @example Gran Provincia
+   */
   @IsNotEmpty({
     message: 'Debe haber una provincia',
   })
@@ -155,8 +181,10 @@ export class UserDto {
   state: string;
 
   /**
-  @example E3100
-  */
+   * Código postal del usuario.
+   * String de hasta 7 caracteres.
+   * @example E3100
+   */
   @IsNotEmpty({
     message: 'Debe haber un código postal',
   })
