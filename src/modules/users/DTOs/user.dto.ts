@@ -20,7 +20,7 @@ export class UserDto {
   @IsNotEmpty({
     message: 'Debe haber un email',
   })
-  @IsEmail()
+  @IsEmail({}, { message: 'El email debe ser válido' })
   @IsString({
     message: 'El email debe ser un string',
   })
