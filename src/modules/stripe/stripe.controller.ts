@@ -17,12 +17,13 @@ import { PaymentProvider } from '../mercadopago/entities/PaymentProvider';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from '../users/entities/roles.enum';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 interface AuthRequest extends ExpressRequest {
   user: any;
 }
 
+@ApiTags('💳 Stripe')
 @Controller('stripe')
 export class StripeController {
   constructor(private readonly stripeService: StripeService) {}

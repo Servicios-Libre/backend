@@ -13,8 +13,9 @@ import { TicketStatus, TicketType } from './entities/ticket.entity';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('📋 Tickets')
 @ApiBearerAuth()
 @Controller('tickets')
 export class TicketsController {

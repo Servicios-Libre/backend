@@ -15,19 +15,11 @@ const customCss = readFileSync(
   'utf8',
 );
 
-const customfavIcon = join(
-  process.cwd(),
-  'src',
-  'documentation',
-  'swagger',
-  'custom-assets',
-  'favicon.ico',
-);
-
 export const swaggerUiOptions: SwaggerCustomOptions = {
   customCss,
   customSiteTitle: 'Servicio Libre API Documentation',
-  customfavIcon,
+  customfavIcon:
+    'https://res.cloudinary.com/dz6uvtewy/image/upload/v1751688786/favicon_unw0nw.png',
   swaggerOptions: {
     persistAuthorization: true,
     displayRequestDuration: true,
