@@ -1,7 +1,9 @@
 import { Controller, Post, Get, Req, Res, Body, Headers } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { MercadoPagoService } from './mp.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('💳 Mercado Pago')
 @Controller('payment')
 export class MercadoPagoController {
   constructor(private readonly paymentService: MercadoPagoService) {}
