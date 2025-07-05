@@ -1,0 +1,631 @@
+/* Swagger UI Custom Styles for Servicio Libre - Clean & Modern Version */
+
+/* Reset and base styles */
+.swagger-ui {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Clean background - much less saturated */
+body {
+    margin: 0;
+    min-height: 100vh;
+}
+
+/* Main container with better spacing */
+.swagger-ui .swagger-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Elegant header with subtle gradient */
+.swagger-ui .topbar {
+    background-color: #2a7eff;
+    border: none;
+    padding: 20px 0;
+    box-shadow: 0 2px 10px rgba(79, 70, 229, 0.1);
+}
+
+.swagger-ui .topbar .topbar-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+}
+
+/* Hide the default Swagger logo */
+.swagger-ui .topbar .topbar-wrapper .link img,
+.swagger-ui .topbar .topbar-wrapper a img,
+.swagger-ui .topbar .topbar-wrapper .link svg,
+.swagger-ui .topbar .topbar-wrapper a svg {
+    display: none !important;
+}
+
+/* Logo in topbar */
+.swagger-ui .topbar .topbar-wrapper {
+    height: 80px;
+    background-image: url("https://serviciolibre.vercel.app/_next/image?url=%2Fimg%2Flogosl.png&w=256&q=75");
+    background-size: 200px auto;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding-left: 60px;
+}
+
+/* Info section - ANCHO COMPLETO con gradiente como la página original */
+.swagger-ui .info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    /* Gradiente azul igual al original */
+    background: linear-gradient(135deg, #0d00ff 0%, #0044b2 50%, #002c8b 100%);
+    padding: 60px 40px;
+    box-shadow: 0 4px 20px rgba(79, 70, 229, 0.15);
+    /* ANCHO COMPLETO - sin márgenes */
+    width: 100vw;
+    margin: -6px 0 0 0;
+    /* Centrar el contenido pero extender el fondo */
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+}
+
+.swagger-ui .info .title {
+    color: white;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column-reverse;
+    text-align: center;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.swagger-ui .info .title .version-stamp {
+    display: none;
+}
+
+.swagger-ui .info h1,
+.swagger-ui .info h2,
+.swagger-ui .info h3,
+.swagger-ui .info h4,
+.swagger-ui .info h5,
+.swagger-ui .info li,
+.swagger-ui .info p,
+.swagger-ui .info table {
+    color: white;
+    font-family: sans-serif;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.swagger-ui .info .description {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 0;
+    text-align: center;
+    max-width: 600px;
+}
+
+/* Subtle version badges */
+.swagger-ui .info .version {
+    background: #10b981;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    display: inline-block;
+    margin-left: 12px;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+/* BOTÓN AUTHORIZE ESTILIZADO Y CENTRADO */
+.swagger-ui .auth-wrapper {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.2);
+    border: none;
+    margin: 32px auto;
+    max-width: 500px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.swagger-ui .auth-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.swagger-ui .auth-wrapper h4 {
+    color: white;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.swagger-ui .auth-wrapper p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+    margin-bottom: 24px;
+}
+
+/* Botón Authorize principal */
+.swagger-ui .btn.authorize {
+    background: white;
+    color: #059669;
+    border: none;
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    text-transform: none;
+    min-width: 200px;
+}
+
+.swagger-ui .btn.authorize:hover {
+    background: #f8fafc;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    color: #047857;
+}
+
+.swagger-ui .btn.authorize svg {
+    margin-right: 8px;
+}
+
+/* SECCIONES ABIERTAS POR DEFECTO Y MEJOR ESTILIZADAS */
+
+/* Forzar que las secciones aparezcan abiertas */
+.swagger-ui .opblock-tag-section .opblock-tag {
+    cursor: pointer;
+}
+
+.swagger-ui .opblock-tag-section .opblock-tag[data-is-open="false"]:hover {
+    border-color: black;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Clean operations sections */
+.swagger-ui .opblock-tag-section {
+    margin: 24px 0;
+}
+
+.swagger-ui .opblock-tag {
+    
+    border-radius: 12px;
+    padding: 0;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 2px solid #e2e8f0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    padding: 2rem;
+}
+
+.swagger-ui .opblock-tag:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.1);
+    transform: translateY(-1px);
+}
+
+.swagger-ui .opblock-tag h3 {
+    color: #1e293b;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    border-bottom: 2px solid #e2e8f0;
+    position: relative;
+}
+
+.swagger-ui .opblock-tag h3::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #10b981, #f59e0b);
+}
+
+/* Iconos para las secciones cerradas */
+.swagger-ui .opblock-tag h3::before {
+    content: "📁";
+    margin-right: 12px;
+    font-size: 18px;
+}
+
+.swagger-ui .opblock-tag[data-is-open="true"] {
+    background: #2b7efe !important;
+}
+
+.swagger-ui .opblock-tag[data-is-open="true"] h3::before {
+    content: "📂";
+}
+
+.swagger-ui .opblock-tag-section .opblock-tag[data-is-open="false"] {
+    background: #2b7efe !important;
+    transition: all 0.3s ease;
+}
+
+.swagger-ui .opblock-tag-section .opblock-tag .nostyle span {
+    color: white;
+}
+
+/* Minimal operation blocks */
+.swagger-ui .opblock {
+    background: white;
+    border-radius: 8px;
+    margin: 8px 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.swagger-ui .opblock:hover {
+    border-color: #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+/* Subtle method colors */
+.swagger-ui .opblock.opblock-get {
+    border-left: 4px solid #3b82f6;
+}
+
+.swagger-ui .opblock.opblock-post {
+    border-left: 4px solid #10b981;
+}
+
+.swagger-ui .opblock.opblock-put {
+    border-left: 4px solid #f59e0b;
+}
+
+.swagger-ui .opblock.opblock-delete {
+    border-left: 4px solid #ef4444;
+}
+
+.swagger-ui .opblock.opblock-patch {
+    border-left: 4px solid #8b5cf6;
+}
+
+/* Clean operation summary */
+.swagger-ui .opblock .opblock-summary {
+    padding: 16px 24px;
+    background: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.swagger-ui .opblock .opblock-summary:hover {
+    background: #f8fafc;
+}
+
+.swagger-ui .opblock .opblock-summary-method {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    margin-right: 16px;
+    min-width: 60px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Refined method colors */
+.swagger-ui .opblock.opblock-get .opblock-summary-method {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    color: #1d4ed8;
+}
+
+.swagger-ui .opblock.opblock-post .opblock-summary-method {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #047857;
+}
+
+.swagger-ui .opblock.opblock-put .opblock-summary-method {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #d97706;
+}
+
+.swagger-ui .opblock.opblock-delete .opblock-summary-method {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    color: #dc2626;
+}
+
+.swagger-ui .opblock.opblock-patch .opblock-summary-method {
+    background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+    color: #7c3aed;
+}
+
+/* Clean path styling */
+.swagger-ui .opblock .opblock-summary-path {
+    color: #475569;
+    font-weight: 600;
+    font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
+    font-size: 14px;
+}
+
+/* Refined buttons */
+.swagger-ui .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 10px 20px;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.swagger-ui .btn.execute {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+}
+
+.swagger-ui .btn.execute:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+}
+
+.swagger-ui .btn.try-out__btn {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: white;
+    border: none;
+}
+
+.swagger-ui .btn.try-out__btn:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    transform: translateY(-1px);
+}
+
+.swagger-ui .btn.cancel {
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.swagger-ui .btn.cancel:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+}
+
+/* Subtle try-it-out section */
+.swagger-ui .try-out {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 16px 0;
+    border: 2px solid #bae6fd;
+}
+
+/* Clean response section */
+.swagger-ui .responses-wrapper {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 16px;
+    border: 1px solid #e2e8f0;
+}
+
+/* Parameters section */
+.swagger-ui .parameters-container {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 16px 0;
+    border: 1px solid #e2e8f0;
+}
+
+/* Refined input fields */
+.swagger-ui input[type="text"],
+.swagger-ui input[type="password"],
+.swagger-ui input[type="email"],
+.swagger-ui input[type="number"],
+.swagger-ui textarea,
+.swagger-ui select {
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+    background: white;
+}
+
+.swagger-ui input[type="text"]:focus,
+.swagger-ui input[type="password"]:focus,
+.swagger-ui input[type="email"]:focus,
+.swagger-ui input[type="number"]:focus,
+.swagger-ui textarea:focus,
+.swagger-ui select:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    transform: translateY(-1px);
+}
+
+.scheme-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    margin: 16px 0;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+/* Clean schema styling */
+.swagger-ui .model-box {
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.swagger-ui .model .model-title {
+    color: #374151;
+    font-weight: 600;
+}
+
+/* Subtle response codes */
+.swagger-ui .response-col_status {
+    font-weight: 700;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.swagger-ui .response-col_status.response-200,
+.swagger-ui .response-col_status.response-201 {
+    color: #047857;
+    background: #d1fae5;
+}
+
+.swagger-ui .response-col_status.response-400 {
+    color: #d97706;
+    background: #fef3c7;
+}
+
+.swagger-ui .response-col_status.response-401,
+.swagger-ui .response-col_status.response-404 {
+    color: #dc2626;
+    background: #fee2e2;
+}
+
+.swagger-ui .response-col_status.response-500 {
+    color: #b91c1c;
+    background: #fef2f2;
+}
+
+/* Clean scrollbars */
+.swagger-ui ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.swagger-ui ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.swagger-ui ::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
+    border-radius: 4px;
+}
+
+.swagger-ui ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+}
+
+/* Filter input styling */
+.swagger-ui .filter-container input {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px 20px;
+    color: #1e293b;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.swagger-ui .filter-container input::placeholder {
+    color: #94a3b8;
+}
+
+.swagger-ui .filter-container input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    transform: translateY(-1px);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .swagger-ui .swagger-container {
+        padding: 0 16px;
+    }
+
+    .swagger-ui .info {
+        padding: 40px 20px;
+    }
+
+    .swagger-ui .info .title {
+        font-size: 24px;
+    }
+
+    .swagger-ui .info .description {
+        font-size: 16px;
+    }
+
+    .swagger-ui .opblock-tag h3 {
+        padding: 16px 20px;
+        font-size: 18px;
+    }
+
+    .swagger-ui .opblock .opblock-summary {
+        padding: 12px 16px;
+    }
+
+    .swagger-ui .opblock .opblock-summary-method {
+        margin-right: 8px;
+        margin-bottom: 4px;
+    }
+
+    .swagger-ui .auth-wrapper {
+        margin: 24px 16px;
+        padding: 24px;
+    }
+}
+
+/* Hide unnecessary elements */
+.swagger-ui .topbar .download-url-wrapper {
+    display: none !important;
+}
+
+/* Clean loading states */
+.swagger-ui .loading-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+}
+
+/* Error messages */
+.swagger-ui .errors-wrapper {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border: 2px solid #fecaca;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 12px 0;
+}
+
+.swagger-ui .errors-wrapper .error-wrapper .error {
+    color: #dc2626;
+    font-size: 14px;
+    font-weight: 600;
+}
