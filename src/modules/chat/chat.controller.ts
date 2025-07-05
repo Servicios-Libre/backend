@@ -17,13 +17,14 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from '../users/entities/roles.enum';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './DTOs/message.dto';
 import { ExtractPayload } from 'src/helpers/extractPayload.token';
 import { Req } from '@nestjs/common';
 import { ConfirmContractDto } from './DTOs/confirm.dto';
 
+@ApiTags('💬 Chat')
 @ApiBearerAuth()
 @Controller('api/chat')
 export class ChatController {

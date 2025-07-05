@@ -17,31 +17,16 @@ import { PaymentProvider } from '../mercadopago/entities/PaymentProvider';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from '../users/entities/roles.enum';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 interface AuthRequest extends ExpressRequest {
   user: any;
 }
 
+@ApiTags('💳 Stripe')
 @Controller('stripe')
 export class StripeController {
   constructor(private readonly stripeService: StripeService) {}
-
-  // @Post('create-checkout-session')
-  // async createCheckout(
-  //   @Body('lookup_key') lookup_key: string,
-  //   @Res() res: Response,
-  // ) {
-  //   const url = await this.stripeService.createCheckoutSession(lookup_key);
-
-  //   if (!url) {
-  //     return res
-  //       .status(400)
-  //       .json({ error: 'No se pudo crear la sesión de checkout de Stripe' });
-  //   }
-
-  //   return res.redirect(303, url);
-  // }
 
   @UseGuards(JwtAuthGuard)
   @Post('create-checkout-session')
@@ -149,6 +134,7 @@ export class StripeController {
       );
       return result;
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       throw new Error(`Error al obtener facturas: ${error.message}`);
     }
   }
@@ -205,6 +191,7 @@ export class StripeController {
       return result;
     } catch (error) {
       throw new Error(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         `Error al obtener facturas del usuario: ${error.message}`,
       );
     }

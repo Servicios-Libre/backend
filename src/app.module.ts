@@ -11,7 +11,6 @@ import { Service } from './modules/workerServices/entities/service.entity';
 import { Category } from './modules/workerServices/entities/category.entity';
 import { User } from './modules/users/entities/users.entity';
 import { FilesModule } from './modules/files/files.module';
-import { CategoriesModule } from './modules/categories/categories.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
 import { TicketsService } from './modules/tickets/tickets.service';
 import { Ticket } from './modules/tickets/entities/ticket.entity';
@@ -64,7 +63,6 @@ import { Invoice } from './modules/mercadopago/entities/factura.entity';
       Invoice,
     ]),
     StripeModule,
-    CategoriesModule,
     TicketsModule,
     EmailModule,
     ChatModule,
