@@ -189,7 +189,7 @@ npm run start:dev
 
 **🔗 Deploy URL:** [https://back-servicio-libre.onrender.com/api](https://back-servicio-libre.onrender.com/api)
 
-[![Deploy](https://img.shields.io/badge/Deploy-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://serviciolibre-backend.onrender.com)
+[![Deploy](https://img.shields.io/badge/Deploy-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://back-servicio-libre.onrender.com/api)
 
 **⚡ Acceso rápido:** `Ctrl+Click` en el enlace de arriba
 
