@@ -28,6 +28,7 @@ import { State } from './modules/users/entities/state.entity';
 import { City } from './modules/users/entities/cities.entity';
 import { Invoice } from './modules/mercadopago/entities/factura.entity';
 import { InvoicesModule } from './modules/invoices/invoices.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -71,7 +72,7 @@ import { InvoicesModule } from './modules/invoices/invoices.module';
     MercadoPagoModule,
     InvoicesModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     WorkerServicesService,
     TicketsService,

@@ -27,7 +27,7 @@ export class InvoicesController {
       Number(limit),
       provider,
       yearNumber,
-    )
+    );
   }
 
   @ApiBearerAuth()
