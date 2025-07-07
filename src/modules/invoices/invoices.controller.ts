@@ -17,8 +17,8 @@ export class InvoicesController {
   getAllInvoices(
     @Query('provider') provider?: 'stripe' | 'mercado_pago',
     @Query('year') year?: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 6,
   ) {
     const yearNumber = year ? parseInt(year, 10) : undefined;
 
@@ -27,7 +27,7 @@ export class InvoicesController {
       Number(limit),
       provider,
       yearNumber,
-    );
+    )
   }
 
   @ApiBearerAuth()
@@ -38,7 +38,7 @@ export class InvoicesController {
     @Headers('Authorization') token: string,
     @Query('provider') provider?: 'stripe' | 'mercado_pago',
     @Query('page') page: number = 1,
-    @Query('limit') limit: number = 2,
+    @Query('limit') limit: number = 6,
   ) {
     return this.invoicesService.getInvoicesByUser(
       Number(page),
