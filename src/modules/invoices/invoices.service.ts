@@ -1,7 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Invoice } from '../mercadopago/entities/factura.entity';
 import { Between, Repository } from 'typeorm';
+import { ExtractPayload } from 'src/helpers/extractPayload.token';
 
 @Injectable()
 export class InvoicesService {
@@ -57,6 +62,33 @@ export class InvoicesService {
         createdAt: invoice.createdAt.toISOString().split('T')[0],
         updatedAt: invoice.expiredAt.toISOString().split('T')[0],
       };
+    });
+
+    const totalPages = Math.ceil(total / limit);
+    return { invoices, total, totalPages, currentPage: page, limit };
+  }
+
+  async getInvoicesByUser(
+    page: number,
+    limit: number,
+    token: string,
+    provider?: 'stripe' | 'mercado_pago',
+  ) {
+    const { id } = ExtractPayload(token);
+    const skip = (page - 1) * limit;
+    const where: any = { user: { id } };
+
+    if (provider === 'stripe' || provider === 'mercado_pago') {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      where.provider = provider;
+    }
+
+    const [invoices, total] = await this.invoiceRepository.findAndCount({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      where,
+      order: { createdAt: 'DESC' },
+      skip,
+      take: limit,
     });
 
     const totalPages = Math.ceil(total / limit);

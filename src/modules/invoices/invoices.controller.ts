@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Headers, Query, UseGuards } from '@nestjs/common';
 import { InvoicesService } from './invoices.service';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
@@ -32,5 +32,17 @@ export class InvoicesController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('worker')
   @Get('worker')
-  getInvoicesByUser() {}
+  getInvoicesByUser(
+    @Headers('Authorization') token: string,
+    @Query('provider') provider?: 'stripe' | 'mercado_pago',
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 2,
+  ) {
+    return this.invoicesService.getInvoicesByUser(
+      Number(page),
+      Number(limit),
+      token,
+      provider,
+    );
+  }
 }
