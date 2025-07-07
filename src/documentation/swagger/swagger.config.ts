@@ -16,4 +16,5 @@ export const swaggerConfig = new DocumentBuilder()
   .addTag('💬 Chat')
   .addTag('💳 Stripe')
   .addTag('💳 Mercado Pago')
+  .addTag('🖨 Invoices')
   .build();
