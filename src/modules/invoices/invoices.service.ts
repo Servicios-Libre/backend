@@ -41,11 +41,6 @@ export class InvoicesService {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       where,
       relations: ['user', 'user.address_id', 'user.social'],
-      select: {
-        user: {
-          password: false,
-        },
-      },
       order: { createdAt: 'DESC' },
       skip: (page - 1) * limit,
       take: limit,
@@ -54,10 +49,13 @@ export class InvoicesService {
     console.log(page, limit);
 
     const invoices = invoicesDB.map((invoice) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...cleanUser } = invoice.user;
       return {
         ...invoice,
         createdAt: invoice.createdAt.toISOString().split('T')[0],
         updatedAt: invoice.expiredAt.toISOString().split('T')[0],
+        user: cleanUser,
       };
     });
 
