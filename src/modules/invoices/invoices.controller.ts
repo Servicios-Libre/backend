@@ -1,6 +1,6 @@
 import { Controller, Get, Headers, Query, UseGuards } from '@nestjs/common';
 import { InvoicesService } from './invoices.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -10,6 +10,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 export class InvoicesController {
   constructor(private readonly invoicesService: InvoicesService) {}
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Get()
@@ -29,6 +30,7 @@ export class InvoicesController {
     );
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('worker')
   @Get('worker')

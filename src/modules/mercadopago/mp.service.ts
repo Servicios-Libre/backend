@@ -97,15 +97,4 @@ export class MercadoPagoService {
       }
     }
   }
-  // async getAllInvoiceService(token: string) {
-  //   const payload = ExtractPayload(token);
-  //   const userId = payload?.id;
-  //   if (!userId) {
-  //     throw new Error('Token inválido o usuario no autenticado');
-  //   }
-  //   const invoices = await this.InvoiceRepository.find({
-  //     where: { user: { id: userId } },
-  //   });
-  //   return invoices;
-  // }
 }
