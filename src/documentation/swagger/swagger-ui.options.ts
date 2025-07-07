@@ -16,9 +16,9 @@ const customCss = readFileSync(
 
 export const swaggerUiOptions: SwaggerCustomOptions = {
   customCss,
-  customSiteTitle: 'Servicio Libre API Documentation',
+  customSiteTitle: 'Servicio Libre - API Documentation',
   customfavIcon:
-    'https://res.cloudinary.com/dz6uvtewy/image/upload/v1751688786/favicon_unw0nw.png',
+    'https://res.cloudinary.com/dz6uvtewy/image/upload/v1751908858/favicon-w_noemoc.png',
   swaggerOptions: {
     persistAuthorization: true,
     displayRequestDuration: true,
