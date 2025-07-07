@@ -1,6 +1,5 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-// import { customJs } from './custom-assets/custom';
 import { SwaggerCustomOptions } from '@nestjs/swagger';
 
 const customCss = readFileSync(

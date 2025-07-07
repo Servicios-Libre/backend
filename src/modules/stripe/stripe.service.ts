@@ -5,12 +5,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from '../users/entities/users.entity';
 import { Invoice } from '../mercadopago/entities/factura.entity';
 import { PaymentProvider } from '../mercadopago/entities/PaymentProvider';
-import { InvoiceListResponseDto } from './dtos/invoice-response.dto';
-import { InvoiceMapper } from './dtos/invoice.mapper';
 import { config as dotenvConfig } from 'dotenv';
 
 dotenvConfig({ path: ['.env', '.env.development.local'] });
@@ -291,82 +289,5 @@ export class StripeService {
         error,
       );
     }
-  }
-
-  async getAllInvoicesForUserById(
-    userId: string,
-    provider?: PaymentProvider,
-    page?: number,
-    limit?: number,
-  ): Promise<InvoiceListResponseDto> {
-    const pageNumber = page ?? 1;
-    const limitNumber = limit ?? 6;
-    const skip = (pageNumber - 1) * limitNumber;
-
-    const whereCondition: any = { user: { id: userId } };
-    if (provider) {
-      whereCondition.provider = provider;
-    }
-
-    const [invoices, total] = await this.invoiceRepository.findAndCount({
-      where: whereCondition,
-      order: { createdAt: 'DESC' },
-      skip,
-      take: limitNumber,
-      relations: ['user'],
-    });
-
-    const totalPages = Math.ceil(total / limitNumber);
-
-    return {
-      invoices: InvoiceMapper.toDtoArray(invoices),
-      total,
-      totalPages,
-      currentPage: pageNumber,
-      limit: limitNumber,
-    };
-  }
-
-  async getAllInvoices(
-    provider?: PaymentProvider,
-    year?: number,
-    page?: number,
-    limit?: number,
-  ): Promise<InvoiceListResponseDto> {
-    const pageNumber = page ?? 1;
-    const limitNumber = limit ?? 6;
-    const whereCondition: any = {};
-
-    if (provider) {
-      whereCondition.provider = provider;
-    }
-
-    if (year) {
-      // Filtrar por año en la fecha de creación
-      const startOfYear = new Date(year, 0, 1); // 1 de enero del año
-      const endOfYear = new Date(year, 11, 31, 23, 59, 59, 999); // 31 de diciembre del año
-
-      whereCondition.createdAt = Between(startOfYear, endOfYear);
-    }
-
-    const skip = (pageNumber - 1) * limitNumber;
-
-    const [invoices, total] = await this.invoiceRepository.findAndCount({
-      where: whereCondition,
-      relations: ['user', 'user.address_id', 'user.social'],
-      order: { createdAt: 'DESC' },
-      skip,
-      take: limitNumber,
-    });
-
-    const totalPages = Math.ceil(total / limitNumber);
-
-    return {
-      invoices: InvoiceMapper.toDtoArray(invoices),
-      total,
-      totalPages,
-      currentPage: pageNumber,
-      limit: limitNumber,
-    };
   }
 }
