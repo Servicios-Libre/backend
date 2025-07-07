@@ -27,6 +27,7 @@ import { Social } from './modules/users/entities/social.entity';
 import { State } from './modules/users/entities/state.entity';
 import { City } from './modules/users/entities/cities.entity';
 import { Invoice } from './modules/mercadopago/entities/factura.entity';
+import { InvoicesModule } from './modules/invoices/invoices.module';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { Invoice } from './modules/mercadopago/entities/factura.entity';
     ChatModule,
     ReviewsModule,
     MercadoPagoModule,
+    InvoicesModule,
   ],
   controllers: [],
   providers: [
