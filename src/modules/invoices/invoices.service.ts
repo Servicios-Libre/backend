@@ -37,7 +37,6 @@ export class InvoicesService {
       where.createdAt = Between(startOfYear, endOfYear);
     }
 
-    const skip = (page - 1) * limit;
     const [invoicesDB, total] = await this.invoiceRepository.findAndCount({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       where,
@@ -48,9 +47,11 @@ export class InvoicesService {
         },
       },
       order: { createdAt: 'DESC' },
-      skip,
+      skip: (page - 1) * limit,
       take: limit,
     });
+
+    console.log(page, limit);
 
     const invoices = invoicesDB.map((invoice) => {
       return {
@@ -71,7 +72,6 @@ export class InvoicesService {
     provider?: 'stripe' | 'mercado_pago',
   ) {
     const { id } = ExtractPayload(token);
-    const skip = (page - 1) * limit;
     const where: any = { user: { id } };
 
     if (provider === 'stripe' || provider === 'mercado_pago') {
@@ -79,11 +79,13 @@ export class InvoicesService {
       where.provider = provider;
     }
 
+    console.log(page, limit);
+
     const [invoices, total] = await this.invoiceRepository.findAndCount({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       where,
       order: { createdAt: 'DESC' },
-      skip,
+      skip: (page - 1) * limit,
       take: limit,
     });
 
