@@ -14,11 +14,12 @@ import {
 import { WorkerServicesService } from './workerServices.service';
 import { ServiceDto } from './dtos/service.dto';
 import { EditServiceDto } from './dtos/edit-service.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
+@ApiTags('🛠 Servicios')
 @Controller('services')
 export class WorkerServicesController {
   constructor(private readonly workerServicesService: WorkerServicesService) {}
@@ -80,7 +81,7 @@ export class WorkerServicesController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('worker')
+  @Roles('worker', 'admin')
   @Delete('delete/:id')
   deleteService(
     @Param('id', ParseUUIDPipe) id: string,

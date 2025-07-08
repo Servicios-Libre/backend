@@ -10,30 +10,16 @@ import {
 import { StripeService } from './stripe.service';
 import { Response, Request as ExpressRequest } from 'express';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
 interface AuthRequest extends ExpressRequest {
   user: any;
 }
 
+@ApiTags('💳 Stripe')
 @Controller('stripe')
 export class StripeController {
   constructor(private readonly stripeService: StripeService) {}
-
-  // @Post('create-checkout-session')
-  // async createCheckout(
-  //   @Body('lookup_key') lookup_key: string,
-  //   @Res() res: Response,
-  // ) {
-  //   const url = await this.stripeService.createCheckoutSession(lookup_key);
-
-  //   if (!url) {
-  //     return res
-  //       .status(400)
-  //       .json({ error: 'No se pudo crear la sesión de checkout de Stripe' });
-  //   }
-
-  //   return res.redirect(303, url);
-  // }
 
   @UseGuards(JwtAuthGuard)
   @Post('create-checkout-session')

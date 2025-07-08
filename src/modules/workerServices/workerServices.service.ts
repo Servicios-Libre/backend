@@ -230,7 +230,7 @@ export class WorkerServicesService {
     });
 
     if (!service) throw new NotFoundException('Service not found');
-    if (service.worker.id !== payload.id) {
+    if (service.worker.id !== payload.id && payload.role === 'worker') {
       throw new BadRequestException(
         'Only the owner of the service can delete it',
       );

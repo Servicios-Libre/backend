@@ -16,11 +16,12 @@ import {
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
+@ApiTags('📷 Imágenes')
 @ApiBearerAuth()
 @Controller('files')
 export class FilesController {
