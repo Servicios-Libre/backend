@@ -53,14 +53,26 @@ export class ChatService {
       relations: ['user', 'otherUser'],
     });
 
-    if (!chat) {
-      throw new BadRequestException('Chat not found');
+    if (!chat || !chat.user || !chat.otherUser) {
+      throw new BadRequestException('Chat incompleto o usuarios no definidos');
     }
 
-    const user1 = await this.userRepository.findOneBy({ id: chat.user.id });
-    const user2 = await this.userRepository.findOneBy({
-      id: chat.otherUser.id,
-    });
+    const rawUser1 = chat.user;
+    const rawUser2 = chat.otherUser;
+
+    const user1 = {
+      id: rawUser1.id,
+      name: rawUser1.name,
+      role: rawUser1.role,
+      user_pic: rawUser1.user_pic || null,
+    };
+
+    const user2 = {
+      id: rawUser2.id,
+      name: rawUser2.name,
+      role: rawUser2.role,
+      user_pic: rawUser2.user_pic || null,
+    };
 
     return { messages, user1, user2 };
   }
