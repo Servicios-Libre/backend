@@ -370,6 +370,8 @@ export class UsersService {
         user_pic: true,
         description: true,
         role: true,
+        premium: true,
+        availability: true,
         address_id: {
           id: true,
           street: true,
