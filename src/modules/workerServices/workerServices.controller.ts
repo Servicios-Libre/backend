@@ -64,11 +64,13 @@ export class WorkerServicesController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('worker')
+  @UseGuards(JwtAuthGuard)
   @Post('new')
-  createService(@Body() service: ServiceDto) {
-    return this.workerServicesService.createService(service);
+  createService(
+    @Headers('authorization') token: string,
+    @Body() service: ServiceDto,
+  ) {
+    return this.workerServicesService.createService(service, token);
   }
 
   @ApiBearerAuth()

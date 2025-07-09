@@ -1,7 +1,9 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Service } from './entities/service.entity';
@@ -138,7 +140,14 @@ export class WorkerServicesService {
     return categories;
   }
 
-  async createService(service: ServiceDto) {
+  async createService(service: ServiceDto, token: string) {
+    const { id } = ExtractPayload(token);
+    if (!id) throw new UnauthorizedException('Invalid token');
+
+    if (id !== service.worker_id) {
+      throw new ForbiddenException('You can only create services for yourself');
+    }
+
     const { category, worker_id, ...serviceKeys } = service;
 
     await this.ticketsService.checkServiceTicketLimit(worker_id);
