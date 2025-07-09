@@ -157,7 +157,6 @@ export class UserDto {
   @IsString({
     message: 'La ciudad debe ser un string',
   })
-  @MaxLength(20, { message: 'La ciudad debe tener menos de 20 caracteres' })
   @Matches(/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/, {
     message: 'La ciudad debe tener solo letras y espacios',
   })
@@ -174,7 +173,6 @@ export class UserDto {
   @IsString({
     message: 'La provincia debe ser un string',
   })
-  @MaxLength(20, { message: 'La provincia debe tener máximo 20 caracteres' })
   @Matches(/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/, {
     message: 'La provincia debe tener solo letras y espacios',
   })
