@@ -351,4 +351,58 @@ export class UsersService {
     }
     return user.role === 'worker';
   }
+
+  async getUserById(id: string) {
+    const user: Partial<User> | null = await this.UserRepository.findOne({
+      where: { id },
+      relations: [
+        'address_id',
+        'tickets',
+        'services',
+        'services.category',
+        'services.work_photos',
+      ],
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        user_pic: true,
+        description: true,
+        role: true,
+        premium: true,
+        availability: true,
+        address_id: {
+          id: true,
+          street: true,
+          city: true,
+          state: true,
+          zip_code: true,
+          house_number: true,
+        },
+        tickets: {
+          id: true,
+          status: true,
+          type: true,
+          created_at: true,
+        },
+        services: {
+          id: true,
+          title: true,
+          description: true,
+          category: {
+            id: true,
+            name: true,
+          },
+          work_photos: {
+            id: true,
+            photo_url: true,
+          },
+        },
+      },
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
 }
