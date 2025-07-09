@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Headers,
   Param,
   ParseUUIDPipe,
   Post,
@@ -33,11 +34,15 @@ export class TicketsController {
     return this.ticketsService.getTickets(page, limit, type, status);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('user')
+  @UseGuards(JwtAuthGuard)
+  // RolesGuard
+  // @Roles('user')
   @Post('new/:id')
-  async createWorkerTicket(@Param('id', ParseUUIDPipe) id: string) {
-    return this.ticketsService.createWorkerTicket(id);
+  async createWorkerTicket(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Headers('authorization') token: string,
+  ) {
+    return this.ticketsService.createWorkerTicket(id, token);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

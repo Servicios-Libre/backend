@@ -4,6 +4,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Ticket, TicketStatus, TicketType } from './entities/ticket.entity';
@@ -11,6 +12,7 @@ import { In, Repository } from 'typeorm';
 import { Service } from '../workerServices/entities/service.entity';
 import { User } from '../users/entities/users.entity';
 import { EmailService } from '../email/email.service';
+import { ExtractPayload } from 'src/helpers/extractPayload.token';
 
 @Injectable()
 export class TicketsService {
@@ -123,9 +125,21 @@ export class TicketsService {
     return newTicket;
   }
 
-  async createWorkerTicket(id: string) {
-    const userFound = await this.userRepository.findOneBy({ id });
+  async createWorkerTicket(user_id: string, token: string) {
+    const { id } = ExtractPayload(token);
+    if (!id) throw new BadRequestException('Invalid token');
+    if (id !== user_id)
+      throw new UnauthorizedException(
+        'Solo puedes crear un ticket para ti mismo',
+      );
+
+    const userFound = await this.userRepository.findOneBy({ id: user_id });
     if (!userFound) throw new NotFoundException('User not found');
+    if (userFound.role !== 'user') {
+      throw new BadRequestException(
+        'Solo los usuarios pueden crear tickets para ser trabajadores',
+      );
+    }
 
     if (!userFound.user_pic)
       throw new BadRequestException('El usuario no tiene una foto de perfil');
